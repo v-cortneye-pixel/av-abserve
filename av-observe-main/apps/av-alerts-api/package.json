@@ -1,0 +1,12 @@
+{
+  "name": "av-alerts-lambda",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@aws-sdk/client-kms": "^3.896.0",
+    "@slack/web-api": "^7.9.2",
+    "axios": "^1.9.0",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.5.0"
+  }
+}

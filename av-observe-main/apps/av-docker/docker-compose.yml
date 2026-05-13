@@ -1,0 +1,16 @@
+services:
+  av-collector:
+    image: av-metrics-exporter:latest
+    ports:
+      - "3000:3000"
+    container_name: av-collector
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    container_name: av-prometheus
+    depends_on:
+      - av-collector

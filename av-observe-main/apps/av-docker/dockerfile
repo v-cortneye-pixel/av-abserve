@@ -1,0 +1,16 @@
+FROM node:18-alpine
+
+# Create app directory
+WORKDIR /app
+
+COPY shared/ ./shared/
+COPY apps/av-docker/ ./apps/av-docker/
+COPY package*.json ./
+COPY apps/av-docker/.env ./apps/av-docker/.env
+
+WORKDIR /app/apps/av-docker
+RUN npm install
+
+EXPOSE 3000
+
+CMD ["node", "./index.js"]

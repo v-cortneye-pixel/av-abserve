@@ -1,0 +1,39 @@
+{
+  "name": "av-observe",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/av-docker",
+    "shared"
+  ],
+  "scripts": {
+    "test": "node test/interactive-runner.js",
+    "test:zoom": "node test/scenarios/zoom-validation.js",
+    "test:sandbox": "node .ignore/sandbox.js",
+    "test:daily-update": "mode=testing node apps/av-daily-update/app.js",
+    "test:daily-update:slim": "mode=testing slim=true node apps/av-daily-update/app.js",
+    "splunk-only": "splunk_only=true node apps/av-daily-update/app.js",
+    "test:lambda": "curl -X POST https://x2bzkdfz2skxnzbsi4thtn6x4y0lbaml.lambda-url.us-west-2.on.aws/ -H 'Content-Type: application/json' -H 'User-Agent: npm-test-script' -d '{\"test\":\"message from package.json test script\"}'",
+    "app:docker": "node apps/av-docker/index.js",
+    "app:daily-update": "node apps/av-daily-update/app.js",
+    "script:reboot-docker": "bash apps/av-docker/redeploy.sh",
+    "script:package-alerts": "cd apps/av-alerts-api && bash package-lambda.sh",
+    "script:upload-alerts": "aws lambda update-function-code --function-name av-alerts-api --zip-file fileb://apps/av-alerts-api/code.zip --region us-west-2",
+    "script:deploy-alerts": "npm run script:package-alerts && npm run script:upload-alerts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-kms": "^3.896.0",
+    "@slack/web-api": "^7.9.2",
+    "axios": "^1.9.0",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.5.0",
+    "googleapis": "^150.0.1",
+    "help": "^3.0.2",
+    "ide_qsys": "^3.0.4",
+    "npm": "^11.6.3",
+    "oui": "^13.1.5",
+    "ssh2": "^1.16.0",
+    "version": "^0.1.2"
+  }
+}
