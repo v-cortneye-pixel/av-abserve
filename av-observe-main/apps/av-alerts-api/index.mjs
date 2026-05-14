@@ -7,7 +7,9 @@ import { handleZoomWebhookSync, handleZoomWebhookAsync } from './shared/modules/
 
 // Global instances - initialized after credential decryption
 let splunk;
-const splunkInstance = 'zgav_nonprod';
+// Splunk index target. Defaults to 'zgav_nonprod' to preserve current behavior;
+// production deployments should set the Lambda env var SPLUNK_INDEX=zgav-prod.
+const splunkInstance = process.env.SPLUNK_INDEX || 'zgav_nonprod';
 
 const validateSender = (headers) => {
   // Q-Sys validation

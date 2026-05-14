@@ -12,6 +12,11 @@ const qrem = new QREM();
 const domotz = new Domotz();
 const ipSchedule = new IpSchedule();
 
+// Splunk index target. Defaults to 'zgav_nonprod' to preserve current behavior;
+// production deployments should set SPLUNK_INDEX=zgav-prod. The value must be
+// in the allowlist enforced by shared/modules/Splunk.js#push.
+const SPLUNK_INDEX = process.env.SPLUNK_INDEX || 'zgav_nonprod';
+
 // ============================================================================
 // DATA COLLECTION FUNCTIONS - Each returns { bySite, splunkData }
 // ============================================================================
@@ -186,7 +191,7 @@ async function updateSplunk(dailyData) {
 	};
 	
 	try {
-		const result = await splunk.push(payload, 'zgav_nonprod', 'av.daily.update');
+		const result = await splunk.push(payload, SPLUNK_INDEX, 'av.daily.update');
 		
 		if (result.success) {
 			return [{
