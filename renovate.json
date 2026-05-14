@@ -1,0 +1,51 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":semanticCommits",
+    ":dependencyDashboard",
+    ":separateMajorReleases"
+  ],
+  "timezone": "America/Los_Angeles",
+  "schedule": ["after 6am and before 6pm on monday"],
+  "labels": ["dependencies"],
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  "rangeStrategy": "bump",
+  "npm": {
+    "minimumReleaseAge": "3 days"
+  },
+  "packageRules": [
+    {
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["patch", "minor"],
+      "groupName": "npm minor/patch",
+      "automerge": false
+    },
+    {
+      "matchPackageNames": ["@aws-sdk/client-kms"],
+      "description": "AWS SDK updates touch the Lambda; merge carefully.",
+      "labels": ["dependencies", "lambda"]
+    },
+    {
+      "matchPackageNames": ["@slack/web-api", "axios", "googleapis", "ssh2"],
+      "description": "Core service clients — surface as individual PRs.",
+      "groupName": null
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "labels": ["security", "dependencies"],
+    "schedule": ["at any time"]
+  },
+  "ignorePaths": [
+    "**/node_modules/**",
+    "av-observe-main/apps/av-alerts-api/code/**",
+    "av-observe-main/apps/av-alerts-api/temp-package/**"
+  ]
+}
