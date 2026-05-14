@@ -2,6 +2,7 @@
   "name": "@av-observe/shared",
   "version": "1.0.0",
   "description": "Shared modules and utilities",
+  "private": true,
   "type": "module",
   "exports": {
     "./modules/*": "./modules/*",
@@ -11,14 +12,9 @@
   },
   "main": "modules/index.js",
   "author": "Patrick Gilligan",
-  "license": "ISC",
-  "repository": {
-    "type": "git",
-    "url": "https://gitlab.zgtools.net/av/prod/av-observe.git",
-    "directory": "shared"
-  },
-  "publishConfig": {
-    "@av-observe:registry": "https://gitlab.zgtools.net/api/v4/projects/YOUR_PROJECT_ID/packages/npm/"
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=20"
   },
   "dependencies": {
     "dotenv": "^16.4.5"
@@ -29,4 +25,4 @@
     "systems.js",
     "config.json"
   ]
-} 
+}
