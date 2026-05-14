@@ -1,0 +1,62 @@
+# =============================================================================
+# av-observe .gitignore
+#
+# Note: the actual project lives in av-observe-main/. Patterns below are
+# repo-wide so they catch nested copies as well.
+# =============================================================================
+
+# -- Node / npm ---------------------------------------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+.npm/
+
+# -- Environment & secrets ----------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.aws/
+.aws-credentials
+
+# -- Runtime / generated data -------------------------------------------------
+# av-daily-update writes here outside of CI
+.ignore/
+# av-daily-update writes here inside CI (CI=true / GITLAB_CI=true)
+.data/
+# stale snapshot at repo root; the live copy is under .ignore/ or .data/
+data-output.json
+av-observe-main/data-output.json
+
+# -- Lambda build artifacts (apps/av-alerts-api/) -----------------------------
+code.zip
+temp-package/
+
+# -- Logs ---------------------------------------------------------------------
+logs/
+*.log
+
+# -- Coverage / test output ---------------------------------------------------
+coverage/
+.nyc_output/
+*.lcov
+
+# -- Editor / OS --------------------------------------------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.recommended.json
+*.swp
+*.swo
+*~
+
+# -- Misc ---------------------------------------------------------------------
+.cache/
+.tmp/
+tmp/
