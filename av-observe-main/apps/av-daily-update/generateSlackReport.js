@@ -13,7 +13,11 @@ export function generateReport(dailyData) {
 		report += `\n\n:gitlab-status-warning: This update ran in _Slim_ mode: many services and functions were ignored`;
 	}
 
-	if (process.env.mode === "testing") {
+	if (
+		process.env.mode === 'testing' ||
+		process.env.AV_OBSERVE_MODE === 'testing' ||
+		process.env.NODE_ENV === 'test'
+	) {
 		report += '\n\n:testing: This update ran in _Testing_ mode';
 	}
 

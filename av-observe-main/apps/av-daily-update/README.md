@@ -177,16 +177,23 @@ await saveDailyDataFiles(dailyData, report, slackChannel);
 
 **Data Output:**
 
-The application saves a complete data snapshot to `data-output.json` at the repository root:
+The application saves a complete data snapshot to `data-output.json`:
 
 - `data-output.json`: Complete dataset with `lastUpdated` timestamp
 
 **Key Features:**
 - File is overwritten each run (no accumulation of old files)
 - Includes a `lastUpdated` field with ISO 8601 timestamp
-- Created in all environments (local testing, CI/production)
 - Contains all collected data including Splunk payload structure
 - Tracked in Git for historical reference and CI artifact archival
+
+> **Note (path discrepancy):** the in-app `saveDataOutput` writes the file to
+> the runtime data directory (`.ignore/` locally, `.data/` in CI), but the
+> tracked copy lives at `av-observe-main/data-output.json`. Some external
+> step (probably a CI job) is expected to copy the runtime output up to the
+> repo root and commit it. If that step exists, it lives outside this repo;
+> if it doesn't, the tracked copy will go stale. Tracked as an open item in
+> [`MAINTENANCE.md`](../../../MAINTENANCE.md).
 
 #### 5.2 Splunk Integration
 ```javascript
@@ -276,14 +283,6 @@ npm run splunk-only
 - Optimized for analytics pipeline updates
 - Includes success notification to test channel
 
-### Outage Simulation Mode
-```bash
-npm run test:daily-update:outages
-```
-- Simulates Q-SYS Reflect API outages
-- Tests error handling and fallback mechanisms
-- Validates alert generation for service disruptions
-
 ## Configuration
 
 ### Environment Variables
@@ -327,13 +326,15 @@ JUNIPER_PASSWORD=your_juniper_password
 ```bash
 # Execution modes
 mode=testing              # Send to test channel, skip Splunk
-slim=true                # Skip resource-intensive operations
-splunk_only=true         # Skip Slack reports
-SIMULATE_OUTAGES=true    # Simulate Q-SYS outages
+slim=true                 # Skip resource-intensive operations
+splunk_only=true          # Skip Slack reports
+
+# Tunable defaults
+SPLUNK_INDEX=zgav_nonprod # Target Splunk index (see shared/modules/Splunk.js allowlist)
 
 # CI/CD environments
-CI=true                  # Use .data directory instead of .ignore
-GITLAB_CI=true          # GitLab CI environment
+CI=true                   # Use .data directory instead of .ignore
+GITLAB_CI=true            # GitLab CI environment
 ```
 
 ### Configuration Files
@@ -366,7 +367,7 @@ GITLAB_CI=true          # GitLab CI environment
 
 ### Data Output
 
-The application saves a single JSON file `data-output.json` at the repository root on every run:
+The application saves a single JSON file `data-output.json` on every run:
 
 #### `data-output.json`
 ```json
@@ -399,7 +400,8 @@ The application saves a single JSON file `data-output.json` at the repository ro
 - `lastUpdated` field indicates when the data was last generated
 - Contains all collected data including site-specific and Splunk payload structures
 - Can be used for downstream processing, archival, or external integrations
-- Tracked in Git for historical reference and CI artifact storage
+- Tracked in Git for historical reference and CI artifact storage (see the
+  "path discrepancy" note in Phase 5 above)
 
 ### Slack Report Format
 ```

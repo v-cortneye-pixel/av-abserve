@@ -12,6 +12,23 @@ const qrem = new QREM();
 const domotz = new Domotz();
 const ipSchedule = new IpSchedule();
 
+// Splunk index target. Defaults to 'zgav_nonprod' to preserve current behavior;
+// production deployments should set SPLUNK_INDEX=zgav-prod. The value must be
+// in the allowlist enforced by shared/modules/Splunk.js#push.
+const SPLUNK_INDEX = process.env.SPLUNK_INDEX || 'zgav_nonprod';
+
+// True when the run should target test channels and skip Splunk writes.
+// Historically the trigger was `mode=testing`; we now also accept the more
+// idiomatic NODE_ENV=test (or AV_OBSERVE_MODE=testing). The legacy lowercase
+// `mode` env var continues to work to avoid breaking any existing cron/CI.
+function isTestMode() {
+	return (
+		process.env.mode === 'testing' ||
+		process.env.AV_OBSERVE_MODE === 'testing' ||
+		process.env.NODE_ENV === 'test'
+	);
+}
+
 // ============================================================================
 // DATA COLLECTION FUNCTIONS - Each returns { bySite, splunkData }
 // ============================================================================
@@ -167,11 +184,12 @@ async function processQsysSiteMetrics(site, qsysSystems, dailyData) {
 	}
 }
 
-async function updateSplunk(dailyData) {
-	const splunk = new Splunk();
-	
-	const payload = {
-		timestamp: new Date().toISOString(),		
+// Build the Splunk-ready payload from a collected dailyData object. Shared
+// between updateSplunk() (live push) and saveDailyDataFiles() (on-disk copy
+// for query development) so the two cannot drift.
+function buildSplunkPayload(dailyData) {
+	return {
+		timestamp: new Date().toISOString(),
 		event: 'av.daily.update',
 		data: {
 			zoomReports: dailyData.splunkData.zoomReports || [],
@@ -184,9 +202,15 @@ async function updateSplunk(dailyData) {
 			networkValidation: dailyData.networkValidation?.splunkData || []
 		}
 	};
-	
+}
+
+async function updateSplunk(dailyData) {
+	const splunk = new Splunk();
+
+	const payload = buildSplunkPayload(dailyData);
+
 	try {
-		const result = await splunk.push(payload, 'zgav_nonprod', 'av.daily.update');
+		const result = await splunk.push(payload, SPLUNK_INDEX, 'av.daily.update');
 		
 		if (result.success) {
 			return [{
@@ -251,22 +275,8 @@ async function saveDailyDataFiles(dailyData, report, slackChannel) {
 
 	// Save Splunk payload to file for search query development (matches actual Splunk structure)
 	try {
-		const splunkPayload = {
-			timestamp: new Date().toISOString(),
-			event: 'av.daily.update',
-			data: {
-				zoomReports: dailyData.splunkData.zoomReports || [],
-				zoomRoomDevices: dailyData.splunkData.zoomRoomDevices || [],
-				domotzAgents: dailyData.splunkData.domotzAgents || [],
-				ipScheduleValidation: dailyData.splunkData.ipScheduleValidation || [],
-				qsysMetrics: dailyData.splunkData.qsysMetrics || [],
-				qsysScriptEvents: dailyData.splunkData.qsysScriptEvents || [],
-				qsysCores: dailyData.splunkData.qsysCores || [],
-				networkValidation: dailyData.networkValidation?.splunkData || []
-			}
-		};
+		const splunkPayload = buildSplunkPayload(dailyData);
 		fs.writeFileSync(`${dataDir}/splunkData.json`, JSON.stringify(splunkPayload, null, 2));
-		
 	} catch (error) {
 		console.error('Failed to save Splunk data files:', error.message);
 	}
@@ -346,8 +356,8 @@ async function sendSiteSpecificAlerts(dailyData) {
 		
 		// Send report if there's content
 		if (siteReport) {
-			const targetChannel = process.env.mode === "testing" 
-				? slack.testSiteChannelId 
+			const targetChannel = isTestMode()
+				? slack.testSiteChannelId
 				: slack.siteChannelIds[site];
 			if (targetChannel) {
 				console.log(`Sending ${site} alerts to channel`);
@@ -440,7 +450,7 @@ async function main() {
 		// 2. Generate and send Slack report
 		console.log('Generating daily report...');
 		const report = generateReport(dailyData);
-		const slackChannel = process.env.mode === 'testing' ? slack.testChannelId : slack.channelId;
+		const slackChannel = isTestMode() ? slack.testChannelId : slack.channelId;
 		await slack.sendMessage(report, slackChannel);
 		console.log('Slack message sent');
 		
@@ -448,7 +458,7 @@ async function main() {
 		await saveDailyDataFiles(dailyData, report, slackChannel);
 		
 		// 4. Update Splunk (skip in test mode)
-		if (process.env.mode !== 'testing') {
+		if (!isTestMode()) {
 			await processSplunkUpdates(dailyData);
 		} else {
 			console.log('Test mode - skipping Splunk updates');

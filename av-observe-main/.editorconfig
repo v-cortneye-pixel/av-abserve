@@ -1,0 +1,25 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Existing code uses a mix of tabs (apps/av-daily-update/app.js) and spaces
+# (apps/av-alerts-api/index.mjs). We default to tabs for new files to match
+# the orchestrator style; override per-file as needed.
+[*.{js,mjs,cjs,ts}]
+indent_style = tab
+indent_size = 4
+
+[*.{json,jsonc,yml,yaml,md}]
+indent_style = space
+indent_size = 2
+
+[Makefile]
+indent_style = tab
+
+[*.sh]
+indent_style = space
+indent_size = 2

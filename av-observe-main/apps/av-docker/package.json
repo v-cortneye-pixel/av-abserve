@@ -1,14 +1,18 @@
 {
   "name": "@av-observe/docker",
   "version": "1.0.0",
-  "description": "Docker container for metrics collection",
+  "description": "Docker container for metrics collection (deprecated)",
+  "private": true,
   "type": "module",
   "main": "src/index.js",
   "scripts": {
     "start": "node index.js"
   },
   "author": "Patrick Gilligan",
-  "license": "ISC",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
     "@av-observe/shared": "*",
     "axios": "^1.9.0",

@@ -4,6 +4,13 @@
 
 The av-alerts-api is an elegant AWS Lambda function that serves as a centralized traffic director for real-time webhooks from various AV systems. It provides intelligent webhook validation, data enrichment, immediate alerting, and comprehensive logging for all incoming events.
 
+> **Documentation status.** The inline code snippets in this README describe
+> intent and architecture; **`index.mjs` (and the modules under
+> `shared/modules/`, e.g. `qsysWebhooks.js`, `zoomWebhooks.js`) are the source
+> of truth.** Some snippets here may show an earlier inline-handler shape and
+> have not been re-flowed since the handlers were extracted into shared
+> modules. When in doubt, trust the source.
+
 ## Overview
 
 This serverless application acts as the real-time counterpart to the daily monitoring system, processing webhooks as they occur and providing immediate response to critical system events. It's designed to handle high-frequency webhook traffic with minimal latency while maintaining comprehensive logging and alerting capabilities.
