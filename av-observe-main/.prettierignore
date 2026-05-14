@@ -1,0 +1,13 @@
+node_modules/
+.ignore/
+.data/
+coverage/
+*.zip
+
+# Generated / vendored
+package-lock.json
+data-output.json
+
+# Legacy snapshot — see MAINTENANCE.md
+apps/av-alerts-api/code/
+apps/av-alerts-api/temp-package/
