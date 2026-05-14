@@ -28,9 +28,11 @@ pnpm-debug.log*
 .ignore/
 # av-daily-update writes here inside CI (CI=true / GITLAB_CI=true)
 .data/
-# stale snapshot at repo root; the live copy is under .ignore/ or .data/
-data-output.json
-av-observe-main/data-output.json
+# NOTE: av-observe-main/data-output.json IS deliberately tracked in Git per the
+# project's documented archival convention (see apps/av-daily-update/README.md).
+# Do NOT add it to .gitignore. See MAINTENANCE.md for the open question about
+# the mismatch between the documented repo-root path and where the live code
+# currently writes the file.
 
 # -- Lambda build artifacts (apps/av-alerts-api/) -----------------------------
 code.zip

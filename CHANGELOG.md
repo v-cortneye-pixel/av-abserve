@@ -52,12 +52,26 @@ runtime change preserves existing behavior when new env vars are unset.
 
 ### Removed
 
-- `av-observe-main/apps/av-alerts-api/code/` — stale snapshot.
+- `av-observe-main/apps/av-alerts-api/code/` — stale snapshot (22 files).
 - `av-observe-main/apps/av-alerts-api/code.zip` — build artifact.
-- `av-observe-main/data-output.json` — runtime data.
-  (~20k lines removed total.)
-- `publishConfig` placeholder in `shared/package.json`.
-- Outdated `repository` URL in `shared/package.json`.
+- `publishConfig` placeholder (`YOUR_PROJECT_ID`) in `shared/package.json`.
+  (~5,500 lines removed total.)
+
+### Reviewed and kept
+
+The initial pass also removed `av-observe-main/data-output.json` and the
+`repository` URL from `shared/package.json`. Both deletions were reverted
+after review:
+
+- **`data-output.json`** — `apps/av-daily-update/README.md` explicitly
+  documents this file as "Tracked in Git for historical reference and CI
+  artifact storage". The committed copy doesn't match what the in-app
+  `saveDataOutput()` writes (it writes to `.ignore/` or `.data/`), but
+  resolving that mismatch is a team decision, not a unilateral one. See
+  `MAINTENANCE.md` §4.3 for the three options.
+- **`shared/package.json` `repository` URL** — kept as provenance
+  information. Reconcile with the actual remote under `MAINTENANCE.md`
+  §11 rather than removing the URL outright.
 
 ### Notes
 

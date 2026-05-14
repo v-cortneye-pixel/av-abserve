@@ -16,6 +16,11 @@
   "engines": {
     "node": ">=20"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.zgtools.net/av/prod/av-observe.git",
+    "directory": "shared"
+  },
   "dependencies": {
     "dotenv": "^16.4.5"
   },

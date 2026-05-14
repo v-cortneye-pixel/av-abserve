@@ -177,8 +177,7 @@ await saveDailyDataFiles(dailyData, report, slackChannel);
 
 **Data Output:**
 
-The application also writes `data-output.json` into the same data directory
-(`.ignore/` locally, `.data/` in CI):
+The application saves a complete data snapshot to `data-output.json`:
 
 - `data-output.json`: Complete dataset with `lastUpdated` timestamp
 
@@ -186,7 +185,15 @@ The application also writes `data-output.json` into the same data directory
 - File is overwritten each run (no accumulation of old files)
 - Includes a `lastUpdated` field with ISO 8601 timestamp
 - Contains all collected data including Splunk payload structure
-- **Not tracked in Git** (matches `.gitignore`); use CI artifacts if you need archival
+- Tracked in Git for historical reference and CI artifact archival
+
+> **Note (path discrepancy):** the in-app `saveDataOutput` writes the file to
+> the runtime data directory (`.ignore/` locally, `.data/` in CI), but the
+> tracked copy lives at `av-observe-main/data-output.json`. Some external
+> step (probably a CI job) is expected to copy the runtime output up to the
+> repo root and commit it. If that step exists, it lives outside this repo;
+> if it doesn't, the tracked copy will go stale. Tracked as an open item in
+> [`MAINTENANCE.md`](../../../MAINTENANCE.md).
 
 #### 5.2 Splunk Integration
 ```javascript
@@ -360,8 +367,7 @@ GITLAB_CI=true            # GitLab CI environment
 
 ### Data Output
 
-The application saves a single JSON file `data-output.json` inside the
-runtime data directory (`.ignore/` locally, `.data/` in CI) on every run:
+The application saves a single JSON file `data-output.json` on every run:
 
 #### `data-output.json`
 ```json
@@ -394,7 +400,8 @@ runtime data directory (`.ignore/` locally, `.data/` in CI) on every run:
 - `lastUpdated` field indicates when the data was last generated
 - Contains all collected data including site-specific and Splunk payload structures
 - Can be used for downstream processing, archival, or external integrations
-- **Not tracked in Git.** Use CI artifacts or a separate archive if you need history.
+- Tracked in Git for historical reference and CI artifact storage (see the
+  "path discrepancy" note in Phase 5 above)
 
 ### Slack Report Format
 ```
