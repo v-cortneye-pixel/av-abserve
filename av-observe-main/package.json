@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "test": "node test/interactive-runner.js",
-    "test:unit": "node --test test/unit",
+    "test:unit": "node --test test/unit/*.test.js",
     "test:zoom": "node test/scenarios/zoom-validation.js",
     "test:sandbox": "node .ignore/sandbox.js",
     "test:daily-update": "mode=testing node apps/av-daily-update/app.js",
