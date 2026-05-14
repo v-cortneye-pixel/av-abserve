@@ -17,6 +17,18 @@ const ipSchedule = new IpSchedule();
 // in the allowlist enforced by shared/modules/Splunk.js#push.
 const SPLUNK_INDEX = process.env.SPLUNK_INDEX || 'zgav_nonprod';
 
+// True when the run should target test channels and skip Splunk writes.
+// Historically the trigger was `mode=testing`; we now also accept the more
+// idiomatic NODE_ENV=test (or AV_OBSERVE_MODE=testing). The legacy lowercase
+// `mode` env var continues to work to avoid breaking any existing cron/CI.
+function isTestMode() {
+	return (
+		process.env.mode === 'testing' ||
+		process.env.AV_OBSERVE_MODE === 'testing' ||
+		process.env.NODE_ENV === 'test'
+	);
+}
+
 // ============================================================================
 // DATA COLLECTION FUNCTIONS - Each returns { bySite, splunkData }
 // ============================================================================
@@ -351,8 +363,8 @@ async function sendSiteSpecificAlerts(dailyData) {
 		
 		// Send report if there's content
 		if (siteReport) {
-			const targetChannel = process.env.mode === "testing" 
-				? slack.testSiteChannelId 
+			const targetChannel = isTestMode()
+				? slack.testSiteChannelId
 				: slack.siteChannelIds[site];
 			if (targetChannel) {
 				console.log(`Sending ${site} alerts to channel`);
@@ -445,7 +457,7 @@ async function main() {
 		// 2. Generate and send Slack report
 		console.log('Generating daily report...');
 		const report = generateReport(dailyData);
-		const slackChannel = process.env.mode === 'testing' ? slack.testChannelId : slack.channelId;
+		const slackChannel = isTestMode() ? slack.testChannelId : slack.channelId;
 		await slack.sendMessage(report, slackChannel);
 		console.log('Slack message sent');
 		
@@ -453,7 +465,7 @@ async function main() {
 		await saveDailyDataFiles(dailyData, report, slackChannel);
 		
 		// 4. Update Splunk (skip in test mode)
-		if (process.env.mode !== 'testing') {
+		if (!isTestMode()) {
 			await processSplunkUpdates(dailyData);
 		} else {
 			console.log('Test mode - skipping Splunk updates');
