@@ -184,11 +184,12 @@ async function processQsysSiteMetrics(site, qsysSystems, dailyData) {
 	}
 }
 
-async function updateSplunk(dailyData) {
-	const splunk = new Splunk();
-	
-	const payload = {
-		timestamp: new Date().toISOString(),		
+// Build the Splunk-ready payload from a collected dailyData object. Shared
+// between updateSplunk() (live push) and saveDailyDataFiles() (on-disk copy
+// for query development) so the two cannot drift.
+function buildSplunkPayload(dailyData) {
+	return {
+		timestamp: new Date().toISOString(),
 		event: 'av.daily.update',
 		data: {
 			zoomReports: dailyData.splunkData.zoomReports || [],
@@ -201,7 +202,13 @@ async function updateSplunk(dailyData) {
 			networkValidation: dailyData.networkValidation?.splunkData || []
 		}
 	};
-	
+}
+
+async function updateSplunk(dailyData) {
+	const splunk = new Splunk();
+
+	const payload = buildSplunkPayload(dailyData);
+
 	try {
 		const result = await splunk.push(payload, SPLUNK_INDEX, 'av.daily.update');
 		
@@ -268,22 +275,8 @@ async function saveDailyDataFiles(dailyData, report, slackChannel) {
 
 	// Save Splunk payload to file for search query development (matches actual Splunk structure)
 	try {
-		const splunkPayload = {
-			timestamp: new Date().toISOString(),
-			event: 'av.daily.update',
-			data: {
-				zoomReports: dailyData.splunkData.zoomReports || [],
-				zoomRoomDevices: dailyData.splunkData.zoomRoomDevices || [],
-				domotzAgents: dailyData.splunkData.domotzAgents || [],
-				ipScheduleValidation: dailyData.splunkData.ipScheduleValidation || [],
-				qsysMetrics: dailyData.splunkData.qsysMetrics || [],
-				qsysScriptEvents: dailyData.splunkData.qsysScriptEvents || [],
-				qsysCores: dailyData.splunkData.qsysCores || [],
-				networkValidation: dailyData.networkValidation?.splunkData || []
-			}
-		};
+		const splunkPayload = buildSplunkPayload(dailyData);
 		fs.writeFileSync(`${dataDir}/splunkData.json`, JSON.stringify(splunkPayload, null, 2));
-		
 	} catch (error) {
 		console.error('Failed to save Splunk data files:', error.message);
 	}
