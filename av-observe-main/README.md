@@ -128,15 +128,20 @@ JUNIPER_PASSWORD=your_juniper_password
 ### Optional Environment Variables
 ```bash
 # Testing and debugging
-mode=testing                    # Run in test mode
-slim=true                      # Skip resource-intensive operations
-SIMULATE_OUTAGES=true          # Simulate Q-SYS outages for testing
-splunk_only=true              # Skip Slack reports, only update Splunk
+mode=testing                    # Run in test mode (send to test Slack channel, skip Splunk)
+slim=true                       # Skip resource-intensive operations
+splunk_only=true                # Skip Slack reports, only update Splunk
+
+# Tunable defaults (introduced during cleanup; all back-compat)
+SPLUNK_INDEX=zgav_nonprod       # Target Splunk index; must be in the allowlist in shared/modules/Splunk.js
 
 # CI/CD
-CI=true                       # Use .data directory instead of .ignore
-GITLAB_CI=true               # GitLab CI environment flag
+CI=true                         # Use .data directory instead of .ignore
+GITLAB_CI=true                  # GitLab CI environment flag
 ```
+
+> See `.env.example` at the root of `av-observe-main/` for the full list of
+> credential variables.
 
 ## Shared Modules
 
@@ -144,11 +149,12 @@ The platform includes a comprehensive set of shared modules located in `./shared
 
 ### Core Service Integrations
 - **`Zoom.js`** - Zoom API client for room management and device monitoring
-- **`qrc.js` (Core)** - Q-SYS Core direct communication via QRC protocol
+- **`qsysDiagnostics.js`** - Q-SYS Core direct diagnostics (uses `ide_qsys` for QRC)
 - **`qHttp.js` (QHTTP)** - Q-SYS HTTP API client for metrics and diagnostics
 - **`qReflect.js` (QREM)** - Q-SYS Reflect cloud API client
 - **`Domotz.js`** - Domotz network monitoring API client
 - **`Microsoft.js`** - Microsoft Graph API client for calendar integration
+- **`Google.js` / `GoogleCalendar.js` / `GoogleMeet.js`** - Google APIs (Sheets, Calendar, Admin SDK)
 
 ### Infrastructure & Networking
 - **`NetworkValidator.js`** - Network connectivity validation for critical infrastructure
@@ -165,7 +171,7 @@ The platform includes a comprehensive set of shared modules located in `./shared
 - **`zoomWebhooks.js`** - Zoom webhook processing and validation
 
 ### Utilities
-- **`ErrorSync.js`** - Error knowledge base synchronization with Google Sheets
+- **`apps/av-daily-update/ErrorSync.js`** - Error knowledge base synchronization with Google Sheets (lives with the daily-update app, not in `shared/modules/`)
 
 ## Data Flow
 

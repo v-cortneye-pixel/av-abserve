@@ -177,16 +177,16 @@ await saveDailyDataFiles(dailyData, report, slackChannel);
 
 **Data Output:**
 
-The application saves a complete data snapshot to `data-output.json` at the repository root:
+The application also writes `data-output.json` into the same data directory
+(`.ignore/` locally, `.data/` in CI):
 
 - `data-output.json`: Complete dataset with `lastUpdated` timestamp
 
 **Key Features:**
 - File is overwritten each run (no accumulation of old files)
 - Includes a `lastUpdated` field with ISO 8601 timestamp
-- Created in all environments (local testing, CI/production)
 - Contains all collected data including Splunk payload structure
-- Tracked in Git for historical reference and CI artifact archival
+- **Not tracked in Git** (matches `.gitignore`); use CI artifacts if you need archival
 
 #### 5.2 Splunk Integration
 ```javascript
@@ -276,14 +276,6 @@ npm run splunk-only
 - Optimized for analytics pipeline updates
 - Includes success notification to test channel
 
-### Outage Simulation Mode
-```bash
-npm run test:daily-update:outages
-```
-- Simulates Q-SYS Reflect API outages
-- Tests error handling and fallback mechanisms
-- Validates alert generation for service disruptions
-
 ## Configuration
 
 ### Environment Variables
@@ -327,13 +319,15 @@ JUNIPER_PASSWORD=your_juniper_password
 ```bash
 # Execution modes
 mode=testing              # Send to test channel, skip Splunk
-slim=true                # Skip resource-intensive operations
-splunk_only=true         # Skip Slack reports
-SIMULATE_OUTAGES=true    # Simulate Q-SYS outages
+slim=true                 # Skip resource-intensive operations
+splunk_only=true          # Skip Slack reports
+
+# Tunable defaults
+SPLUNK_INDEX=zgav_nonprod # Target Splunk index (see shared/modules/Splunk.js allowlist)
 
 # CI/CD environments
-CI=true                  # Use .data directory instead of .ignore
-GITLAB_CI=true          # GitLab CI environment
+CI=true                   # Use .data directory instead of .ignore
+GITLAB_CI=true            # GitLab CI environment
 ```
 
 ### Configuration Files
@@ -366,7 +360,8 @@ GITLAB_CI=true          # GitLab CI environment
 
 ### Data Output
 
-The application saves a single JSON file `data-output.json` at the repository root on every run:
+The application saves a single JSON file `data-output.json` inside the
+runtime data directory (`.ignore/` locally, `.data/` in CI) on every run:
 
 #### `data-output.json`
 ```json
@@ -399,7 +394,7 @@ The application saves a single JSON file `data-output.json` at the repository ro
 - `lastUpdated` field indicates when the data was last generated
 - Contains all collected data including site-specific and Splunk payload structures
 - Can be used for downstream processing, archival, or external integrations
-- Tracked in Git for historical reference and CI artifact storage
+- **Not tracked in Git.** Use CI artifacts or a separate archive if you need history.
 
 ### Slack Report Format
 ```
