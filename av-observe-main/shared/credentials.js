@@ -110,7 +110,10 @@ export const getCredentials = (type) => {
             ], 'Microsoft');
             return {
                 clientSecret: process.env.MICROSOFT_SECRET_VALUE,
-                clientId: '351ce072-2b29-46a8-9bc3-1248b8f1e242'  // Use the working client_id from curl
+                // The historical value of this Azure App Registration client_id
+                // was hardcoded; it is now overridable via env without changing
+                // the default. Override with MICROSOFT_CLIENT_ID once rotated.
+                clientId: process.env.MICROSOFT_CLIENT_ID || '351ce072-2b29-46a8-9bc3-1248b8f1e242'
             };
         case 'googleCalendar':
             validateCredentials([
