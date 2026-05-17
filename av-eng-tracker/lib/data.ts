@@ -5842,6 +5842,801 @@ export const ACCESS_TILES = [
 ];
 
 // =========================================================================
+// STACEY CARDS — the deck of findings, wins, and asks Cortney can "play" at
+// 1:1s or team meetings. Drip-fed strategically. NEVER lead with your
+// strongest card. NEVER use a card before its prerequisites are played.
+// This data feeds the /one-on-one private notebook view.
+// =========================================================================
+
+export type CardCategory =
+  | "Closed win"
+  | "Issue found"
+  | "Action taken"
+  | "Question to ask"
+  | "Operational excellence"
+  | "Architectural"
+  | "Relationship"
+  | "Bangalore / India"
+  | "FTE setup";
+
+export type CardPlayability = "1:1 only" | "Team meeting safe" | "Either" | "Never publicly";
+
+export interface StaceyCard {
+  id: string;
+  category: CardCategory;
+  headline: string; // The one-liner you'd say
+  framing: string; // How to introduce it — the natural sentence
+  staceyAngle: string; // Why Stacey personally cares
+  playability: CardPlayability;
+  weekIdeal: number; // ideal week to play (relative to start date)
+  prerequisites?: string[]; // card IDs that should be played first
+  doNotPlayWith?: string[]; // cards that would weaken if combined
+  jiraRef?: string;
+  quickWinRef?: string;
+  staceyKeyword?: string; // her phrase to echo back
+  dontSay: string[]; // anti-frames
+}
+
+export const STACEY_CARDS: StaceyCard[] = [
+  // ============ Week 1 — onboarding + relationship ============
+  {
+    id: "card-recap",
+    category: "Relationship",
+    headline:
+      "Reading recap — '#av-team back to Jan, plus #av-alerts and the daily bot output. Wanted to ground myself in the team's actual cadence before adding noise.'",
+    framing:
+      "Open the 1:1 with this. Shows you did homework without it being a flex.",
+    staceyAngle:
+      "She's been onboarding people her whole career. Engineers who read first land different than engineers who pitch first.",
+    playability: "1:1 only",
+    weekIdeal: 1,
+    staceyKeyword: "operational excellence",
+    dontSay: ["I've already identified X problems with Patrick's stack."],
+  },
+  {
+    id: "card-india-baseline",
+    category: "Bangalore / India",
+    headline:
+      "Bangalore BOMs — '3 questions on the spec, 1 suggestion on the standard. Mark routed the docs; wanted to come back to you with substantive feedback before going wide.'",
+    framing:
+      "Bring printed pages of the BOM with three margin questions written on them.",
+    staceyAngle:
+      "Steve Bennett publicly thanked her for Bangalore on May 15 — it's her signature initiative this year. You engaging substantively on it = signal that you understand what matters to her.",
+    playability: "1:1 only",
+    weekIdeal: 1,
+    quickWinRef: "QW30",
+    jiraRef: "WAVE-CT-060",
+    staceyKeyword: "Bangalore",
+    dontSay: [
+      "I think there's a better way to do X.",
+      "Why did Mark pick Y vendor?",
+    ],
+  },
+  {
+    id: "card-friday-email-format",
+    category: "Operational excellence",
+    headline:
+      "Friday wins/challenges format — 'thinking 3 lines: what closed this week with a link, what's in-flight, what's blocked. Want to make sure that lands the way you'd read it.'",
+    framing:
+      "Ask her to shape the format. Co-authorship + low cost.",
+    staceyAngle:
+      "Stacey lives on the Friday email. Asking her how she wants it formatted = she gets to feel ownership of your scoreboard.",
+    playability: "1:1 only",
+    weekIdeal: 1,
+    staceyKeyword: "operational excellence",
+    dontSay: ["Patrick never sent these properly."],
+  },
+
+  // ============ Week 2 — first small closures ============
+  {
+    id: "card-bot-iam-rekey",
+    category: "Closed win",
+    headline:
+      "AV alert bot Lambda — confirmed IAM identity + re-keyed under a service principal with Matt watching. Alerts are now durable against another offboarding.",
+    framing:
+      "'Closed loop on something Matt was carrying alone.' Credit Matt explicitly.",
+    staceyAngle:
+      "Matt's day-1 'AV alerts failed this morning' post was the canary. Stacey saw it. Closing it = the foundation-lift she's been waiting for.",
+    playability: "Either",
+    weekIdeal: 2,
+    quickWinRef: "QW31",
+    jiraRef: "WAVE-CT-001",
+    staceyKeyword: "operational excellence",
+    dontSay: [
+      "Patrick should have done this years ago.",
+      "It was running under his personal identity which is insane.",
+    ],
+  },
+  {
+    id: "card-notification-audit",
+    category: "Closed win",
+    headline:
+      "Notification routing audit — GitLab member-vs-owner trap, AWS SNS, Splunk, Domotz. Posted the before/after one-pager to #av-team. Matt is now Owner on every project.",
+    framing:
+      "'Cleared a hidden trap from the Mar 13 thread — Matt wasn't getting GitLab pipeline-failure emails.'",
+    staceyAngle:
+      "Operational excellence. The kind of mechanical hygiene that makes the team self-healing.",
+    playability: "Either",
+    weekIdeal: 2,
+    quickWinRef: "QW32",
+    jiraRef: "WAVE-CT-002",
+    dontSay: ["This was such a basic miss."],
+  },
+  {
+    id: "card-irv-1110",
+    category: "Issue found",
+    headline:
+      "IRV-1110 ZHL — bot's been flagging it offline every morning for weeks. Adali confirmed [status]. Either fixing or removing from monitoring this week.",
+    framing:
+      "'Combing the channels, noticed the daily bot has been ignoring an alert that's been red forever.'",
+    staceyAngle:
+      "Stale alerts = trained ignorance. This is exactly the noise-vs-signal discipline Patrick was talking about.",
+    playability: "Either",
+    weekIdeal: 2,
+    prerequisites: ["card-bot-iam-rekey"],
+    dontSay: ["I'm shocked nobody noticed this."],
+  },
+
+  // ============ Week 3 — first runbook + India momentum ============
+  {
+    id: "card-first-lambda-runbook",
+    category: "Operational excellence",
+    headline:
+      "First Lambda runbook shipped — one-page, plain English, what triggers / where logs go / how to silence / how to debug / owner. Linked in #av-team.",
+    framing:
+      "'Started the monitoring runbook you'd mentioned at year start. First Lambda done, scaling from there.'",
+    staceyAngle:
+      "This IS Stacey's 'operational excellence — dependable systems' annual goal that Patrick never delivered. Echo her words back.",
+    playability: "Either",
+    weekIdeal: 3,
+    quickWinRef: "QW35",
+    jiraRef: "WAVE-CT-090",
+    staceyKeyword: "operational excellence",
+    dontSay: [
+      "Patrick promised this and never shipped.",
+      "The whole stack is undocumented.",
+    ],
+  },
+  {
+    id: "card-kcy-discovery",
+    category: "Issue found",
+    headline:
+      "KCY (Kansas City) — found a 6th site in the bot's daily digest that isn't on our site map. KCY-1 Whiteboard 001 + KCY-1207 Focus showing persistent offline. Want to add KCY to the per-site fleet view + find an onsite contact.",
+    framing:
+      "'Tucked in the daily bot output — surfaced this combing the channels.'",
+    staceyAngle:
+      "She probably knows KCY exists but won't be tracking the room health. Surface = you're now eyes-on-glass for a site nobody owned.",
+    playability: "1:1 only",
+    weekIdeal: 3,
+    prerequisites: ["card-bot-iam-rekey"],
+    dontSay: ["Why didn't anyone notice this?"],
+  },
+  {
+    id: "card-india-followup",
+    category: "Bangalore / India",
+    headline:
+      "Bangalore — followed up with Mark on the BOM questions. Drafted a spec note on [item]. Want your eyes before it goes to Mark.",
+    framing:
+      "'Following the Bangalore thread. Want to keep you in the loop before posting anything Mark-facing.'",
+    staceyAngle:
+      "You're treating her Bangalore work with the gravity it deserves.",
+    playability: "1:1 only",
+    weekIdeal: 3,
+    prerequisites: ["card-india-baseline"],
+    staceyKeyword: "Bangalore",
+    dontSay: ["The Bangalore spec needs a major rework."],
+  },
+
+  // ============ Week 4 — visibility + Olympic ============
+  {
+    id: "card-velocity-check",
+    category: "Operational excellence",
+    headline:
+      "First-30-day velocity check — wanted to share QW IDs closed so far: QW31, QW32, QW34, QW42. Plus QW35 in flight.",
+    framing:
+      "'Wanted to give you the receipts heading into your standup. Stable IDs so you can drop them in a wins/challenges roll-up if useful.'",
+    staceyAngle:
+      "She uses your QW# IDs in her own roll-ups to her boss. Make her job easier.",
+    playability: "1:1 only",
+    weekIdeal: 4,
+    dontSay: ["I've done more than X has."],
+  },
+  {
+    id: "card-olympic-share",
+    category: "Action taken",
+    headline:
+      "Olympic 'Share button doesn't wake display' — Q-Sys logic change drafted with Matt. Demo'd to him; he signed off; deploying with him present.",
+    framing:
+      "'Closing the Humberto / Lloyd ask from a few weeks ago. Always with Matt's blessing on Olympic.'",
+    staceyAngle:
+      "Olympic is Tier 0 exec territory. Closing exec asks WITH Matt = the safest possible play.",
+    playability: "Either",
+    weekIdeal: 4,
+    prerequisites: ["card-first-lambda-runbook"],
+    dontSay: ["Patrick removed too many controls in Olympic."],
+  },
+  {
+    id: "card-nasdaq-question",
+    category: "Question to ask",
+    headline:
+      "NASDAQ broadcast — saw it listed in Steve's Q1 recap as something the team supports. Is there a runbook I should be reading / shadowing?",
+    framing:
+      "'Came across this in the org channel — wanted to flag in case there's prep I should be doing.'",
+    staceyAngle:
+      "Demonstrates org-level awareness above just the AV team. Steve cares = Stacey cares.",
+    playability: "1:1 only",
+    weekIdeal: 4,
+    dontSay: ["I had no idea we did this."],
+  },
+
+  // ============ Week 5 — UCI strawman ============
+  {
+    id: "card-uci-strawman-private",
+    category: "Architectural",
+    headline:
+      "UCI Tier 1/2/3 strawman — draft is with Matt + Mark for feedback. Reframing Patrick's 'no touch panel' thesis into a tiered standard. Want to mention it before it goes to you formally.",
+    framing:
+      "'Heads up — not asking for a decision, just want you to see the shape before Matt and Mark do.'",
+    staceyAngle:
+      "Stacey gets blindsided by architectural debates that surface in team meetings. Pre-briefing = she's never caught off-guard.",
+    playability: "1:1 only",
+    weekIdeal: 5,
+    prerequisites: ["card-first-lambda-runbook", "card-olympic-share"],
+    jiraRef: "WAVE-CT-031",
+    dontSay: [
+      "Patrick was wrong about UCIs.",
+      "I'm reversing Patrick's standards.",
+    ],
+  },
+  {
+    id: "card-zall-hall-backup",
+    category: "Relationship",
+    headline:
+      "Zall Hall — offered to be Matt's backup producer for the next event. Saw he was bypassing a SFO network failure during last setup; want to spread the load.",
+    framing:
+      "'Wanted to mention I floated this to Matt before bringing it up here.'",
+    staceyAngle:
+      "She knows Matt is overloaded. Offering to lighten his load = team-first. High-visibility.",
+    playability: "Either",
+    weekIdeal: 5,
+    dontSay: ["Matt shouldn't be doing this alone."],
+  },
+
+  // ============ Week 6 — Mac vs Windows + EDID ============
+  {
+    id: "card-mac-windows-memo",
+    category: "Architectural",
+    headline:
+      "Mac vs Q-Sys-Connect-Windows — one-page memo with status quo cost, roadmap conflict, ONE-room pilot, success criteria, decision date. Not asking to flip the standard; asking to validate before the next buildout.",
+    framing:
+      "'This is the architectural decision Patrick punted on. Want your read before I share with Matt + Mark.'",
+    staceyAngle:
+      "She'll see this is FTE-level work. Done right (not contradicting Mac standard, just asking to test) = capex hygiene she'll champion to Steve.",
+    playability: "1:1 only",
+    weekIdeal: 6,
+    prerequisites: ["card-uci-strawman-private", "card-olympic-share"],
+    jiraRef: "WAVE-CT-040",
+    quickWinRef: "QW38",
+    dontSay: [
+      "Mac Mini is the wrong call.",
+      "We're going to have to replace the whole fleet.",
+    ],
+  },
+  {
+    id: "card-edid-lab-proposal",
+    category: "Operational excellence",
+    headline:
+      "Before Mark POs $20k+ of Q-Sys NV — 2-week lab bench-test of EDID forcing + USB capture. ~$500 in test gear, no production impact, parallel data so we size the right NV investment.",
+    framing:
+      "'Capex hygiene play. Doesn't reopen the NV decision — runs parallel data.'",
+    staceyAngle:
+      "Operational excellence + capex hygiene = two of Stacey's love languages.",
+    playability: "Either",
+    weekIdeal: 6,
+    quickWinRef: "QW33",
+    jiraRef: "WAVE-CT-020",
+    staceyKeyword: "operational excellence",
+    dontSay: ["Mark might be jumping the gun on NV."],
+  },
+
+  // ============ Week 7-8 — Splunk runbook + dragon hunt ============
+  {
+    id: "card-splunk-runbook-complete",
+    category: "Operational excellence",
+    headline:
+      "Monitoring runbook — Patrick's promised doc, finally shipped. One page per Lambda, every alert routes documented. Linked from /splunk + #av-team.",
+    framing:
+      "'Closing one of the open items from year start. Wanted you to have the link before standup.'",
+    staceyAngle:
+      "The annual operational-excellence goal. Patrick agreed to it and never landed it. You delivering this = the strongest possible 'I'm-different-from-Patrick' signal.",
+    playability: "Either",
+    weekIdeal: 7,
+    prerequisites: ["card-first-lambda-runbook"],
+    jiraRef: "WAVE-CT-090",
+    quickWinRef: "QW35",
+    staceyKeyword: "operational excellence",
+    dontSay: ["Patrick should have written this."],
+  },
+  {
+    id: "card-tp-script-sweep",
+    category: "Closed win",
+    headline:
+      "TP-script memory leak sweep — applied Patrick's fix patterns across the 8 rooms he left untouched. Splunk memory curve is flat post-fix on each.",
+    framing:
+      "'Continuation of Patrick's Main-script work — applied the same patterns to the TP scripts he flagged but didn't get to.'",
+    staceyAngle:
+      "Honors Patrick's work + extends it. Doesn't criticize.",
+    playability: "Either",
+    weekIdeal: 7,
+    prerequisites: ["card-splunk-runbook-complete"],
+    quickWinRef: "QW40",
+    jiraRef: "WAVE-CT-051",
+    dontSay: ["Patrick left a lot of unfinished work."],
+  },
+  {
+    id: "card-nyc-1250-progress",
+    category: "Architectural",
+    headline:
+      "NYC-1250 leak mystery — diff against the clean NYC-1227 sibling, [pattern X] is the differentiator. Fix scheduled.",
+    framing:
+      "'Wanted to bring you the progress on Patrick's open investigation.'",
+    staceyAngle:
+      "This is THE dragon-slain card. Closing what Patrick couldn't = the FTE-conversion trump card.",
+    playability: "1:1 only",
+    weekIdeal: 8,
+    prerequisites: ["card-splunk-runbook-complete"],
+    quickWinRef: "QW37",
+    jiraRef: "WAVE-CT-052",
+    dontSay: ["I solved what Patrick couldn't."],
+  },
+
+  // ============ Week 9-12 — FTE conversion runway ============
+  {
+    id: "card-bangalore-eor",
+    category: "Bangalore / India",
+    headline:
+      "Bangalore — would like to volunteer as engineer of record on one room. Mark agrees on scope. Want your blessing before going formal.",
+    framing:
+      "'Picking up the Bangalore thread we started in Week 1.'",
+    staceyAngle:
+      "You're now offering to take ownership of her signature initiative. This is FTE-track ownership behavior.",
+    playability: "1:1 only",
+    weekIdeal: 9,
+    prerequisites: ["card-india-baseline", "card-india-followup"],
+    quickWinRef: "QW30",
+    jiraRef: "WAVE-CT-061",
+    staceyKeyword: "Bangalore",
+    dontSay: ["I want to lead Bangalore."],
+  },
+  {
+    id: "card-impact-log",
+    category: "FTE setup",
+    headline:
+      "90-day impact log — kept this since Week 1. Wanted you to have the receipts for the conversion conversation.",
+    framing:
+      "'Not asking for anything. Just wanted you to have the doc.'",
+    staceyAngle:
+      "She has to fight Steve and Finance for FTE headcount. The receipts you've already built make her job easy.",
+    playability: "1:1 only",
+    weekIdeal: 10,
+    prerequisites: [
+      "card-bot-iam-rekey",
+      "card-splunk-runbook-complete",
+      "card-nyc-1250-progress",
+    ],
+    dontSay: [
+      "Can we talk about FTE conversion?",
+      "I've earned a promotion.",
+    ],
+  },
+  {
+    id: "card-steve-framing",
+    category: "FTE setup",
+    headline:
+      "How I'd describe progress to Steve — wanted to align our story before any org-level update.",
+    framing:
+      "'Drafted a one-paragraph summary in your voice + my voice. Want your edits before this surfaces anywhere up the chain.'",
+    staceyAngle:
+      "Helps her say YES to FTE conversion in her own boss-conversation. Co-authored = aligned.",
+    playability: "1:1 only",
+    weekIdeal: 11,
+    prerequisites: ["card-impact-log"],
+    dontSay: ["I want Steve to know what I'm doing."],
+  },
+];
+
+export interface OneOnOneMeeting {
+  weekNumber: number;
+  type: "1:1" | "Team meeting";
+  theme: string;
+  cards: string[]; // StaceyCard ids you intend to play
+  agendaScript: string[];
+  questionsToAsk: string[];
+  whatToBring: string[]; // artifacts to have open in tabs
+  whatNotToBring: string[];
+}
+
+export const ONE_ON_ONE_PLAN: OneOnOneMeeting[] = [
+  {
+    weekNumber: 1,
+    type: "1:1",
+    theme: "Onboarding mode. Listen 70%. No pitches.",
+    cards: ["card-recap", "card-india-baseline", "card-friday-email-format"],
+    agendaScript: [
+      "Open with reading recap — you've grounded yourself in the team's cadence.",
+      "Share the 3 Bangalore BOM questions; ask Stacey for context.",
+      "Ask Stacey to shape the Friday wins/challenges email format.",
+      "End by asking ONE big-picture question (e.g., 'what would success in the first 90 days look like to you?').",
+    ],
+    questionsToAsk: [
+      "What would success in the first 90 days look like to you?",
+      "Anything you'd like me to keep especially quiet about in #av-team for now?",
+    ],
+    whatToBring: ["Printed Bangalore BOM with margin questions", "Friday email draft template"],
+    whatNotToBring: [
+      "Any opinion on Patrick's stack",
+      "Any architectural critique",
+      "Detailed Q-Sys / Lua content",
+    ],
+  },
+  {
+    weekNumber: 1,
+    type: "Team meeting",
+    theme: "Listen. Introduce yourself by the work, not the resume.",
+    cards: [],
+    agendaScript: [
+      "When Stacey calls on you: 30 seconds max. 'Spent the week reading #av-team back to January and the daily bot output. Want to start by helping Matt close the AV-alert re-keying he's been carrying — pairing on it this week.' That's it.",
+      "Reply to Matt + Mark with 'good catch' / 'agreed' / 'yes' where appropriate. Don't add depth.",
+      "Take a note when anyone names a person you don't recognize. Look them up after.",
+    ],
+    questionsToAsk: [],
+    whatToBring: ["Notebook"],
+    whatNotToBring: ["Slides", "Strong opinions"],
+  },
+  {
+    weekNumber: 2,
+    type: "1:1",
+    theme: "First closed wins. Credit Matt. Anchor to her phrase.",
+    cards: ["card-bot-iam-rekey", "card-notification-audit"],
+    agendaScript: [
+      "Lead: 'In service of operational excellence, closed two things this week with Matt.'",
+      "AV-alert bot re-keyed — frame as 'Matt was carrying this; we paired on it.'",
+      "Notification routing audit — share the one-pager link.",
+      "Mention you'll send the first Friday wins email Friday EOD.",
+    ],
+    questionsToAsk: ["Anything you'd want me to push faster or slow down on?"],
+    whatToBring: ["The one-pager link", "Friday wins email draft"],
+    whatNotToBring: ["Anything Patrick-critical", "Architectural opinions"],
+  },
+  {
+    weekNumber: 2,
+    type: "Team meeting",
+    theme: "Public Matt-credit. Closed wins only.",
+    cards: ["card-bot-iam-rekey", "card-notification-audit"],
+    agendaScript: [
+      "Cite WAVE-CT-001 + WAVE-CT-002 + QW31 + QW32 by ID.",
+      "Use 'Matt and I' for both.",
+      "Frame: 'operational-excellence pass — wanted to close out the day-1 alerts-down gap.'",
+    ],
+    questionsToAsk: [],
+    whatToBring: ["The Jira IDs in your notebook"],
+    whatNotToBring: ["Any open architectural item — those go in 1:1 only this week"],
+  },
+  {
+    weekNumber: 3,
+    type: "1:1",
+    theme: "First runbook ships. India momentum.",
+    cards: [
+      "card-first-lambda-runbook",
+      "card-kcy-discovery",
+      "card-india-followup",
+      "card-irv-1110",
+    ],
+    agendaScript: [
+      "Lead: 'Operational-excellence runbook — first Lambda one-pager is up.'",
+      "Then KCY surface — 'found a 6th office combing the daily bot.' Light touch, no alarm.",
+      "Bangalore: 'followed up with Mark on BOM questions; drafted a spec note.'",
+      "IRV-1110 ZHL: 'cleared a stale alert that's been red for weeks.'",
+    ],
+    questionsToAsk: [
+      "Who would you suggest I reach out to in KCY for onsite eyes?",
+      "Any internal Bangalore stakeholder I should be syncing with before next week's Mark conversation?",
+    ],
+    whatToBring: ["Runbook link", "Bangalore spec-note draft"],
+    whatNotToBring: ["UCI strawman yet"],
+  },
+  {
+    weekNumber: 3,
+    type: "Team meeting",
+    theme: "Runbook closure + IRV-1110 cleanup. Don't surface KCY here yet.",
+    cards: ["card-first-lambda-runbook", "card-irv-1110"],
+    agendaScript: [
+      "Mention the first Lambda runbook with link.",
+      "Mention IRV-1110 ZHL cleanup with Adali named explicitly.",
+      "Defer all Bangalore + KCY talk to 1:1.",
+    ],
+    questionsToAsk: [],
+    whatToBring: ["Runbook link", "Adali's shoutout language"],
+    whatNotToBring: ["KCY — needs Stacey-1:1 framing first"],
+  },
+  {
+    weekNumber: 4,
+    type: "1:1",
+    theme: "Velocity check + Olympic ask + NASDAQ question.",
+    cards: ["card-velocity-check", "card-olympic-share", "card-nasdaq-question"],
+    agendaScript: [
+      "Open with QW velocity — let her see the cadence.",
+      "Olympic share-button fix — closed with Matt's signoff.",
+      "End with the NASDAQ broadcast question. Curiosity, not concern.",
+    ],
+    questionsToAsk: [
+      "NASDAQ broadcast — runbook or shadow opportunity?",
+      "Is there a Q1 recap deck I should be reading?",
+    ],
+    whatToBring: ["List of QW IDs closed", "Steve Bennett's Q1 recap permalink"],
+    whatNotToBring: ["UCI strawman — next week"],
+  },
+  {
+    weekNumber: 4,
+    type: "Team meeting",
+    theme: "Olympic closure. Don't surface NASDAQ here.",
+    cards: ["card-olympic-share"],
+    agendaScript: [
+      "Mention Olympic share-button fix with Matt as co-author.",
+      "Credit John Gifford if he's been involved.",
+    ],
+    questionsToAsk: [],
+    whatToBring: ["WAVE-CT IDs"],
+    whatNotToBring: ["NASDAQ question — that's 1:1 only"],
+  },
+  {
+    weekNumber: 5,
+    type: "1:1",
+    theme: "Pre-brief on UCI strawman. Zall Hall offer.",
+    cards: ["card-uci-strawman-private", "card-zall-hall-backup"],
+    agendaScript: [
+      "Pre-brief the UCI Tier 1/2/3 draft. 'Heads up — going to Matt + Mark this week. Don't want you blindsided in team meeting.'",
+      "Zall Hall backup-producer offer — 'mentioned to Matt; bringing to your attention.'",
+    ],
+    questionsToAsk: [
+      "How would you frame the UCI direction to Steve if it lands?",
+      "Anything I should avoid bringing up directly with Mark on UCI?",
+    ],
+    whatToBring: ["UCI strawman draft (3 pages max)"],
+    whatNotToBring: ["The Mac-vs-Windows memo — save for next week"],
+  },
+  {
+    weekNumber: 5,
+    type: "Team meeting",
+    theme: "Quiet week. Closed wins only.",
+    cards: [],
+    agendaScript: [
+      "If you closed anything (QW#'s) this week, mention by ID + Matt credit.",
+      "Don't surface UCI strawman in team meeting until after Matt + Mark have seen it.",
+    ],
+    questionsToAsk: [],
+    whatToBring: ["WAVE-CT IDs"],
+    whatNotToBring: ["UCI strawman — Matt and Mark see it first"],
+  },
+  {
+    weekNumber: 6,
+    type: "1:1",
+    theme: "Mac vs Windows memo + EDID lab proposal.",
+    cards: ["card-mac-windows-memo", "card-edid-lab-proposal"],
+    agendaScript: [
+      "Mac-vs-Windows memo — share before it goes to Matt + Mark. Frame as 'validate before the next buildout.'",
+      "EDID + USB capture lab — capex-hygiene framing.",
+      "Both are 'asking to test, not asking to flip.' Tone matters.",
+    ],
+    questionsToAsk: [
+      "Anything in the Mac-vs-Windows framing that would land wrong with Mark?",
+      "Does Steve need to weigh in on either of these?",
+    ],
+    whatToBring: ["The Mac-Windows memo (one page)", "/hdmi#lab-proposal page open"],
+    whatNotToBring: ["Splunk runbook complete — next week"],
+  },
+  {
+    weekNumber: 6,
+    type: "Team meeting",
+    theme: "Tee up the UCI strawman publicly with Matt + Mark prior buy-in.",
+    cards: ["card-uci-strawman-private"],
+    agendaScript: [
+      "Only if Matt + Mark already saw the draft: mention 'UCI tiering draft — Matt + Mark have feedback in.'",
+      "Frame Mac-Windows + EDID as 1:1 items still being refined; don't surface in team meeting yet.",
+    ],
+    questionsToAsk: [],
+    whatToBring: ["UCI draft (if Matt+Mark already saw)"],
+    whatNotToBring: ["Mac-Windows memo, EDID proposal — not yet"],
+  },
+  {
+    weekNumber: 7,
+    type: "1:1",
+    theme: "Splunk runbook complete + TP-script sweep. Echo her annual goal.",
+    cards: ["card-splunk-runbook-complete", "card-tp-script-sweep"],
+    agendaScript: [
+      "Lead: 'In service of operational excellence + dependable systems — the monitoring runbook is done.'",
+      "TP-script sweep — extends Patrick's Main-script work without criticizing it.",
+      "Drop the line: 'this is the one you asked for at year start.'",
+    ],
+    questionsToAsk: ["Anything else from year-start operational excellence still open that I should pick up?"],
+    whatToBring: ["Runbook complete URL", "Splunk memory-curve screenshot for one room"],
+    whatNotToBring: ["NYC-1250 — next week, when you can show progress"],
+  },
+  {
+    weekNumber: 7,
+    type: "Team meeting",
+    theme: "Runbook public + TP-script sweep public. Credit Patrick.",
+    cards: ["card-splunk-runbook-complete", "card-tp-script-sweep"],
+    agendaScript: [
+      "Public Patrick credit: 'Picked up the TP-script work Patrick had flagged but hadn't gotten to.'",
+      "Cite WAVE-CT-090 + WAVE-CT-051 by ID.",
+    ],
+    questionsToAsk: [],
+    whatToBring: ["Runbook URL"],
+    whatNotToBring: ["FTE conversation — that lives in 1:1 only"],
+  },
+  {
+    weekNumber: 8,
+    type: "1:1",
+    theme: "NYC-1250 progress + Bangalore handoff.",
+    cards: ["card-nyc-1250-progress"],
+    agendaScript: [
+      "Lead with NYC-1250 diff findings. Don't say 'I solved what Patrick couldn't.' Say 'wanted to bring you the progress on Patrick's open investigation.'",
+      "If you've shipped the fix, mention the Splunk memory curve as proof.",
+      "Bangalore touch: confirm next-meeting cadence with Mark.",
+    ],
+    questionsToAsk: ["What's the Bangalore commissioning cadence look like over the next quarter?"],
+    whatToBring: ["NYC-1250 diff doc", "Splunk memory-curve screenshot before+after"],
+    whatNotToBring: [
+      "Impact log — save for week 10 when she sees more wins accumulated",
+      "FTE conversation — never lead with it",
+    ],
+  },
+  {
+    weekNumber: 9,
+    type: "1:1",
+    theme: "Bangalore engineer-of-record ask. Quietly.",
+    cards: ["card-bangalore-eor"],
+    agendaScript: [
+      "Frame: 'Mark agrees on scope. Want your blessing before going formal.'",
+      "Don't pitch. Make her say yes.",
+    ],
+    questionsToAsk: ["Anything in the room-spec I should bring to your attention first?"],
+    whatToBring: ["Bangalore room candidate list with one-line rationale"],
+    whatNotToBring: ["Impact log — next week"],
+  },
+  {
+    weekNumber: 10,
+    type: "1:1",
+    theme: "Hand her the receipts. Do not ask for FTE.",
+    cards: ["card-impact-log"],
+    agendaScript: [
+      "Open with: 'Not asking for anything today — just wanted you to have the receipts.'",
+      "Share the 90-day impact log Google Doc.",
+      "Walk her through it for 5 minutes. Mention 4 specific closures.",
+      "Close with: 'Let me know if anything's missing.'",
+      "STOP. Don't ask if it'll lead to FTE. Let her bring it up.",
+    ],
+    questionsToAsk: ["Anything in the log that surprised you?"],
+    whatToBring: ["The 90-day impact log Google Doc"],
+    whatNotToBring: [
+      "An ask",
+      "A proposal",
+      "A 'so what does this mean' question",
+    ],
+  },
+  {
+    weekNumber: 11,
+    type: "1:1",
+    theme: "Co-author the Steve narrative.",
+    cards: ["card-steve-framing"],
+    agendaScript: [
+      "Frame: 'Drafted a one-paragraph summary in your voice + my voice. Want your edits before this surfaces.'",
+      "Hand her the draft.",
+      "Let her edit it. Don't defend the original wording.",
+    ],
+    questionsToAsk: ["What's the right venue to surface this — your standup with Steve, or async?"],
+    whatToBring: ["Draft paragraph for Steve"],
+    whatNotToBring: ["Anything else — keep this meeting focused"],
+  },
+  {
+    weekNumber: 12,
+    type: "1:1",
+    theme: "Listen. Let her drive.",
+    cards: [],
+    agendaScript: [
+      "Open with: 'Anything on your mind?' Let her go first this week.",
+      "If she brings up FTE conversion — listen, agree, don't pitch.",
+      "If she doesn't — go to the standing wins update + ask about Bangalore commissioning logistics.",
+    ],
+    questionsToAsk: ["Anything on your mind this week?"],
+    whatToBring: ["Notebook"],
+    whatNotToBring: ["An agenda — let her drive"],
+  },
+];
+
+// The Friday wins/challenges email template — your scoreboard for Stacey.
+export const FRIDAY_EMAIL_TEMPLATE = {
+  subject: "AV — Wins & challenges, week of [DATE]",
+  body: [
+    "Hi Stacey,",
+    "",
+    "In service of operational excellence + dependable systems:",
+    "",
+    "**Closed this week**",
+    "• [WAVE-CT-XXX / QW#] — [one line]. Link: [Jira or doc URL]",
+    "• [WAVE-CT-XXX / QW#] — [one line, credit Matt or Mark if applicable]",
+    "",
+    "**In flight (target close date)**",
+    "• [WAVE-CT-XXX] — [one line] — close by [DATE]",
+    "",
+    "**Blocked / unblock from you**",
+    "• [Item] — needs [decision / access / intro] from [person]",
+    "",
+    "Thanks,",
+    "Cortney",
+  ],
+  rules: [
+    "Closed deliverables only — never 'almost done' or 'working on.'",
+    "Always use QW# or WAVE-CT-### IDs. She can grep them later.",
+    "Credit Matt or Mark by name on at least one closed item every week.",
+    "Anchor to 'operational excellence' OR 'dependable systems' verbatim — her phrases.",
+    "Three lines per section MAX. She skims in 30 seconds.",
+    "Hit 'Send' Friday by 4pm PT so she sees it before her own write-up.",
+  ],
+};
+
+export const NEVER_SAY_TO_STACEY = [
+  {
+    line: "\"Eventually I will…\"",
+    why: "Patrick's career-limiter. If you say it once she'll hear it forever. Replace with 'by [date].'",
+  },
+  {
+    line: "\"Patrick was wrong about X.\"",
+    why: "She backfilled Patrick personally. Indirectly criticizes her hiring + Steve's tenure. Use 'half-standard,' 'open,' or 'worth re-debating' instead.",
+  },
+  {
+    line: "\"Matt doesn't understand the code.\"",
+    why: "Matt has 4 years of equity with her. Even if true, never frame it as a deficit. Frame as 'I'm wrapping the code in plain-English runbooks so Matt has visibility.'",
+  },
+  {
+    line: "\"We should reopen the NV decision.\"",
+    why: "The HDMI / NV thread has Mark's signature on it. Reopening = undermining Mark. Frame as 'parallel data-gathering' or 'sizing the right investment.'",
+  },
+  {
+    line: "\"I want to talk about FTE conversion.\"",
+    why: "Never ask. Build receipts. Hand her the impact log at Week 10 with 'wanted you to have the receipts.' Let her bring it up.",
+  },
+  {
+    line: "\"Why didn't anyone notice X?\"",
+    why: "Indicts the team. Reframe as 'combing the channels I came across X — closing it.'",
+  },
+  {
+    line: "\"This is so much worse than I thought.\"",
+    why: "Adds pessimism + invalidates Stacey's annual goal pitch to Steve. Replace with 'real foundation work here — sizing it carefully.'",
+  },
+  {
+    line: "Any architectural disagreement in #av-team before DM'ing Mark or Matt first.",
+    why: "Public disagreement = Mark or Matt locks in. DM-first = they update. Mark's 'pretend I'm a new guy' tone is what to mirror.",
+  },
+  {
+    line: "Any criticism of Mark's NYC All Hands upgrade, Olympic upgrade, or Bangalore work.",
+    why: "These are Mark's + Stacey's pride pieces with public High-Fives on the record. Sacred ground.",
+  },
+];
+
+// The drip principles — Cortney's strategic operating rules
+export const DRIP_PRINCIPLES = [
+  "Never lead with your strongest card. Build trust with small closures (Week 1-3) before architectural memos (Week 6+) before the FTE-receipts conversation (Week 10).",
+  "Always pre-brief Stacey on anything she'll see in team meeting. She should never be surprised in front of Mark / Matt.",
+  "Cards have prerequisites for a reason. Don't play the NYC-1250 dragon-slain card before you've shipped the Splunk runbook — it'll feel like a flex without the foundation.",
+  "Use her words verbatim. 'Operational excellence,' 'dependable systems,' 'Bangalore.' Mirror = trust.",
+  "Two meetings per week is enough surface area. Don't DM her between meetings unless something's on fire.",
+  "Every Friday email is a card play in itself. Save your face-time cards for the things the email can't carry.",
+  "If Matt or Mark would be embarrassed by something you said in 1:1, don't say it. Stacey will repeat it.",
+];
+
+// =========================================================================
 // SLACK CHANNELS — every AV-related Slack channel Cortney has visibility into,
 // with combed findings, key people, what to monitor, and any items pulled out
 // for the issues/wins/jira boards.

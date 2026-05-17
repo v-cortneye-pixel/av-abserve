@@ -3,6 +3,7 @@ import Link from "next/link";
 const NAV_ITEMS = [
   { href: "/", label: "Dashboard" },
   { href: "/playbook", label: "Playbook (FTE)" },
+  { href: "/one-on-one", label: "1:1 Strategy (private)" },
   { href: "/jira", label: "Jira" },
   { href: "/channels", label: "Channels & Contacts" },
   { href: "/sites", label: "Sites" },
