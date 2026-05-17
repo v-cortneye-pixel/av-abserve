@@ -3406,3 +3406,878 @@ export const TEAM = {
     posture: "Claim, don't ask. Document as you go.",
   },
 };
+
+// =========================================================================
+// PATRICK AUDIT — categorize every Patrick contribution so we can quantify
+// what was real (analytics + support + direction) vs. what was fluff /
+// unanswered / left open for the team.
+// =========================================================================
+
+export type PatrickCategory =
+  | "Analytics" // monitoring, dashboards, alerts, data plumbing
+  | "Support" // ad-hoc fixes, ticket work, room-by-room help
+  | "Direction" // architectural / standards calls he made
+  | "Fluff"; // open, unanswered, abandoned, or "left it for someone else"
+
+export interface PatrickContribution {
+  id: string;
+  title: string;
+  category: PatrickCategory;
+  status: "Delivered" | "Partial" | "Open" | "Broken since departure";
+  description: string;
+  pickedUpBy?: ("Matt" | "Mark" | "Stacey" | "Cortney" | "John" | "QSC")[];
+  // Source: Slack quote or GitLab project
+  quote?: string;
+  who?: string;
+  when?: string;
+  permalink?: string;
+}
+
+export const PATRICK_PORTFOLIO: PatrickContribution[] = [
+  // ---------- ANALYTICS ----------
+  {
+    id: "av-alerts-channel",
+    title: "#av-alerts Slack channel (Domotz + custom alerts routing)",
+    category: "Analytics",
+    status: "Broken since departure",
+    description:
+      "Created the av-alerts channel to consolidate Domotz + Splunk + Lambda alerts into one signal. Goal: only meaningful alerts, low noise. Was Patrick's pet project.",
+    pickedUpBy: ["Matt"],
+    who: "Patrick Gilligan",
+    when: "Sep 2024",
+    quote:
+      "I create the public channel av-alerts but only invited Mark so far, because its still a wip. notice the word Domotz isn't in the channel, because over time, I want this to be a channel of mostly meaningful alerts, that aren't so noisy we don't pay attention to them.",
+  },
+  {
+    id: "splunk-dashboards",
+    title: "Splunk dashboard mockups (WAVE Sprint A)",
+    category: "Analytics",
+    status: "Partial",
+    description:
+      "Mocked up several dashboard models in Splunk for AV health. Asana subtask sequence Jan 2024.",
+    pickedUpBy: ["Matt"],
+    when: "Jan 2024 (WAVE Sprint A 1/8 - 1/19)",
+  },
+  {
+    id: "lambda-reflect-alerting",
+    title: "AWS Lambda Reflect alerting + Control Link Server noise filtering",
+    category: "Analytics",
+    status: "Delivered",
+    description:
+      "Wrote Lambda to surface Q-Sys Reflect events to Slack and filter the noisy 'Control Link Server...' messages. Includes auto power-cycle of QSC core on detected hangs.",
+    pickedUpBy: ["Matt"],
+    when: "Dec 2023",
+  },
+  {
+    id: "daily-updater",
+    title: "Daily updater / monitoring proxy",
+    category: "Analytics",
+    status: "Broken since departure",
+    description:
+      "Daily monitoring proxy that hit every Q-Sys core + device for health. The script Matt couldn't get to run the morning after Patrick was deactivated.",
+    pickedUpBy: ["Matt"],
+    quote:
+      "AV Alerts: I just noticed that it looks like the alerts failed to run this morning. I'm guessing this has to do with Patrick officially being gone. Probably something he overlooked that would fail once he was de-activated. I'm poking around now to see what, if anything, I can do.",
+    who: "Matt Cornick",
+    when: "Day 1 after Patrick's offboarding",
+  },
+  {
+    id: "av-devices-updater",
+    title: "GitLab: av-ops-tools / av-devices-updater",
+    category: "Analytics",
+    status: "Delivered",
+    description:
+      "GitLab project that pulls AV switch + device configs and backs them up to files. Patrick said the v1 was written in <20 minutes with AI.",
+    pickedUpBy: ["Cortney"],
+    quote:
+      "I just used one of Zillow's newer AI coding tools to write an app that pulls all of our AV switch configs and backs them up to files. It took me <20 minutes. Completely insane.",
+    who: "Patrick Gilligan",
+    when: "Jan 13, 2025",
+    permalink:
+      "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1736812165080269?thread_ts=1736803286.261809&cid=C04GF3S3KQF",
+  },
+  {
+    id: "q-sys-slack-updater",
+    title: "GitLab: av-ops-tools / q-sys-slack-updater",
+    category: "Analytics",
+    status: "Delivered",
+    description:
+      "Auto-restart on plugin script error, posts to #av-team / #av-alerts. The script that 'restart the script if it errors' lived here.",
+    pickedUpBy: ["Cortney"],
+    quote:
+      "A few weeks ago, I did add a feature to the alerting script - if the automation discovers a script error, it will restart the script. Its been working great so far, I will investigate why it didn't restart the Somfy one.",
+    who: "Patrick Gilligan",
+  },
+  {
+    id: "underscore-naming",
+    title: "Underscore tagging convention for non-monitored dev/test devices",
+    category: "Analytics",
+    status: "Delivered",
+    description:
+      "Established naming rule: anything dev/test gets a leading underscore so the monitoring stack ignores it. Small but real standard.",
+    pickedUpBy: ["Cortney"],
+    quote:
+      "I love how Matt added the underscore here. I think, as time goes on, anything that is for development purposes, whether its a zoom room, hostname for a device we are just using for testing, or anything else, the _ will notate the fact that its for testing, and not to be monitored or alerted.",
+    who: "Patrick Gilligan",
+  },
+  {
+    id: "ip-validator",
+    title: "IP doc validator + Zillow internal AV switch config tool",
+    category: "Analytics",
+    status: "Delivered",
+    description:
+      "Patrick + Matt eliminated clerical fields from the IP doc, automated config validation. Matt: 'tried to eliminate a bunch of clerical entries that end up out-dated and not maintained.'",
+    pickedUpBy: ["Matt", "Cortney"],
+    who: "Matt Cornick",
+    quote:
+      "As far as SN, MACs, etc we have the IP doc but it's really geared towards managing devices. SNs aren't on there because they can be a pain to always enter and you don't really need them unless you're replacing gear. Patrick and I tried to eliminate a bunch of clerical entries that end up out-dated and not maintained.",
+  },
+  {
+    id: "monitoring-doc",
+    title: "Comprehensive monitoring + alerting doc (promised, never delivered)",
+    category: "Fluff",
+    status: "Open",
+    description:
+      "Patrick: 'Eventually, I will have a doc that describes all of our monitoring and alerting efforts.' That doc never landed. The monitoring lived in his head.",
+    pickedUpBy: ["Cortney"],
+    quote:
+      "Just a documented understanding of what the tags are meant to do, so we are all on the same page. Eventually, I will have a doc that describes all of our monitoring and alerting efforts.",
+    who: "Patrick Gilligan",
+  },
+  {
+    id: "monitoring-handoff",
+    title: "Monitoring handoff / runbook for Matt / Stacey",
+    category: "Fluff",
+    status: "Broken since departure",
+    description:
+      "Stacey explicitly asked for 'operational excellence — dependable systems' as the team's annual goal. Patrick agreed and then the runbook never shipped. Matt is now reverse-engineering the stack.",
+    pickedUpBy: ["Matt", "Stacey"],
+    quote:
+      "This is a good start thanks Patrick, this year I'd like to focus on operational excellence as a team and having systems that are dependable, I see us doing this in a few ways, remote monitoring, better Bug Tracking, and having a dev environment to test before putting hardware and code updates there before going to Production environments, so having this data as our baseline to see how we can reduce eventual alerts and downtime will be really helpful.",
+    who: "Stacey Newman",
+  },
+
+  // ---------- SUPPORT ----------
+  {
+    id: "sea-3611-cto-response",
+    title: "SEA-3611 CTO incident response",
+    category: "Support",
+    status: "Partial",
+    description:
+      "Patrick responded to the CTO incident with the 'no touch panel' thesis. Resolved short-term but never re-tuned SEA-3611 + the rooms with the same UCI pattern.",
+    pickedUpBy: ["Cortney"],
+    when: "Mar 4, 2025",
+    permalink:
+      "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1741123050535009?thread_ts=1741123050.535009&cid=C04GF3S3KQF",
+  },
+  {
+    id: "main-script-memory-leaks",
+    title: "Memory-leak sweep on Q-Sys Main scripts",
+    category: "Support",
+    status: "Partial",
+    description:
+      "Refactored recursive Main scripts to stop the per-room memory leak. Explicitly flagged TP scripts as not yet touched — left for the team.",
+    pickedUpBy: ["Cortney"],
+  },
+  {
+    id: "max-concurrent-sessions",
+    title: "Max-concurrent-sessions check (2 cores only)",
+    category: "Support",
+    status: "Partial",
+    description:
+      "Matt + Patrick raised max concurrent sessions on 2 cores to unblock UCIs. Fleet was never swept.",
+    pickedUpBy: ["Cortney"],
+  },
+  {
+    id: "sea-3647-build",
+    title: "SEA-3647 single-page UCI build",
+    category: "Support",
+    status: "Delivered",
+    description:
+      "Built the simplified single-page UCI at SEA-3647 — the proof point Patrick used to validate his 'less is more' thesis.",
+    pickedUpBy: ["Cortney"],
+  },
+  {
+    id: "qsc-core-auto-cycle",
+    title: "Auto power-cycle QSC core on hang (scripted via Lambda)",
+    category: "Support",
+    status: "Delivered",
+    description:
+      "Hooked into the Reflect alerting Lambda — if the core hangs, the script power-cycles it.",
+    pickedUpBy: ["Matt"],
+  },
+  {
+    id: "applescript-elgato",
+    title: "AppleScript: Elgato stream light tied to meeting status",
+    category: "Fluff",
+    status: "Delivered",
+    description:
+      "Cute Cursor-AI demo, not Zillow infra. Useful to cite as a Cursor success story but adds nothing to room reliability.",
+    quote:
+      "I just brought my Elgato stream light of the garage. I used Cursor AI to write an Apple script that detects whether im in a meeting every 5 seconds and toggles my light accordingly. What a time to be alive. I wrote 0 code and was done in 10 minutes, after debugging.",
+    who: "Patrick Gilligan",
+    when: "Apr 1, 2025",
+    permalink:
+      "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1743535494415339?thread_ts=1743535494.415339&cid=C04GF3S3KQF",
+  },
+
+  // ---------- DIRECTION ----------
+  {
+    id: "single-page-uci-direction",
+    title: "Single-page UCI as the fleet template",
+    category: "Direction",
+    status: "Delivered",
+    description:
+      "Decided the team would standardize on single-page UCIs. Real direction — debatable, but a real call. Now being re-tiered by Cortney.",
+    pickedUpBy: ["Cortney"],
+  },
+  {
+    id: "no-touch-panel-thesis",
+    title: "\"No touch panel if no operator\" thesis",
+    category: "Direction",
+    status: "Partial",
+    description:
+      "Architectural call post-CTO. Cortney's counter-thesis pushes back: removing a panel just makes a BYOD room. Documented on /uci as a half-standard.",
+    pickedUpBy: ["Cortney"],
+  },
+  {
+    id: "cursor-ai-stack",
+    title: "Cursor + Claude + NotebookLM as the Q-Sys author stack",
+    category: "Direction",
+    status: "Delivered",
+    description:
+      "Made AI-assisted Lua/Q-Sys authoring the team's default workflow. The single best direction Patrick set — Cortney is inheriting it wholesale.",
+    pickedUpBy: ["Cortney"],
+  },
+  {
+    id: "aws-vm-designer",
+    title: "Q-Sys Designer on shared AWS Windows VM",
+    category: "Direction",
+    status: "Partial",
+    description:
+      "Set up the shared AWS Windows VM ($250/mo, 70GB) so Matt + Patrick could share a Q-Sys Designer workstation. TeamViewer pre-installed for QSC remote support.",
+    pickedUpBy: ["Matt", "Cortney"],
+    quote:
+      "I need to close out designer 10.1 please. I am going to delete it. This VM is out of HD space. We only have 70gigs on this VM, and AWS charges us like $250 a month for it.",
+    who: "Patrick Gilligan",
+    when: "Jan 30, 2026",
+    permalink:
+      "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1769789035479339?thread_ts=1769787997.205509&cid=C04GF3S3KQF",
+  },
+  {
+    id: "birddog-deployments",
+    title: "BirdDog NDI camera deployments (event spaces)",
+    category: "Direction",
+    status: "Partial",
+    description:
+      "Patrick stood up BirdDog as the all-hands / event-space camera. The team is now mid-phase-out (see /birddog). Direction was real; the choice didn't age well.",
+    pickedUpBy: ["Cortney"],
+  },
+  {
+    id: "gitlab-migration",
+    title: "Moved Q-Sys + AV scripts onto GitLab with #av-team push-notifications",
+    category: "Direction",
+    status: "Delivered",
+    description:
+      "Established GitLab as the source of truth for AV code, with #av-team bot posting on push. Real engineering direction.",
+    pickedUpBy: ["Cortney", "Matt"],
+  },
+  {
+    id: "asana-to-jira",
+    title: "Asana → Jira migration for WAVE tickets",
+    category: "Direction",
+    status: "Delivered",
+    description:
+      "Patrick + Matt moved AV work tracking from Asana to Jira (WAVE board). Cleaner workflow, but Patrick left mid-migration. Matt: 'Jira is newish for us and we're also trying to get in the routine.'",
+    pickedUpBy: ["Matt"],
+  },
+
+  // ---------- FLUFF / OPEN / UNANSWERED ----------
+  {
+    id: "irv-802-hidden-controls",
+    title: "IRV-802: hidden projector / screen controls",
+    category: "Fluff",
+    status: "Open",
+    description:
+      "Patrick removed projector and screen controls from the UCI; the only way to access them was via 'No source selected' on the routing page (undiscoverable). Matt had to roll screens up from QDS manually.",
+    pickedUpBy: ["Matt", "Cortney"],
+    quote:
+      "I also found out that I think Patrick removed projector and screen controls from the UI :eyeroll: so I had to roll the screens up and turn projectors off manually from QDS.",
+    who: "Matt Cornick",
+  },
+  {
+    id: "irv-802-followup",
+    title: "IRV-802 UCI redesign — Mark's open question",
+    category: "Fluff",
+    status: "Open",
+    description:
+      "Mark explicitly asked whether this room should just be a simple Zoom Room and where the routing plugin even came from. Patrick was the only person who knew. Now unanswered.",
+    pickedUpBy: ["Mark", "Cortney"],
+    quote:
+      "Looking at the file now, it should be redone. Correct me if I'm wrong but can't this just be a simple Zoom Room? Do they really need manual routing and all that? Also, do you know where this plugin comes from? Did Patrick write it or get it from his Q-Sys community? It's not on the Q-Sys Library.",
+    who: "Mark Hampson",
+  },
+  {
+    id: "plugin-provenance",
+    title: "Custom Q-Sys plugin provenance (projector control + others)",
+    category: "Fluff",
+    status: "Open",
+    description:
+      "Mark doesn't know if Patrick wrote the plugins or pulled them from the Q-Sys community Discord. No license info, no support contact. Black-box infrastructure.",
+    pickedUpBy: ["Mark", "Cortney"],
+  },
+  {
+    id: "hdmi-fleet-issue",
+    title: "HDMI sharing reliability across the fleet",
+    category: "Fluff",
+    status: "Open",
+    description:
+      "Recurring HDMI complaint (EDID handshake / source switching). Patrick acknowledged the issue but never proposed a fleet fix. See /hdmi — Cortney's NV-endpoint replacement proposal.",
+    pickedUpBy: ["Cortney"],
+  },
+  {
+    id: "tcc2-vs-mxa920",
+    title: "NYC-1204 ceiling mics: TCC2 vs MXA920 spec call",
+    category: "Fluff",
+    status: "Open",
+    description:
+      "Mark asked Patrick which ceiling-mic platform to standardize on for the NYC event space. Never got an answer. Tuning passes on the existing TCC2 also never happened.",
+    pickedUpBy: ["Mark", "Cortney"],
+  },
+  {
+    id: "tp-scripts-leaks",
+    title: "TP scripts memory-leak refactor",
+    category: "Fluff",
+    status: "Open",
+    description:
+      "Patrick fixed Main scripts and explicitly flagged TP scripts as the next pass — and then left.",
+    pickedUpBy: ["Cortney"],
+  },
+  {
+    id: "max-sessions-fleet",
+    title: "Max-concurrent-sessions audit on remaining cores",
+    category: "Fluff",
+    status: "Open",
+    description:
+      "Only 2 cores were ever bumped. The rest of the fleet still defaults low — silent UCI failures continue.",
+    pickedUpBy: ["Cortney"],
+  },
+  {
+    id: "mac-mini-vs-windows",
+    title: "Mac Mini host vs. Q-Sys Connect Windows-only architectural conflict",
+    category: "Fluff",
+    status: "Open",
+    description:
+      "Patrick punted on this entirely. Zillow standard is Mac Mini; Q-Sys Connect for Zoom Rooms is Windows-only. The conflict was never escalated to Matt + IT as a formal decision.",
+    pickedUpBy: ["Cortney"],
+  },
+  {
+    id: "wav16-premature-close",
+    title: "WAV-16 closed prematurely",
+    category: "Fluff",
+    status: "Open",
+    description:
+      "Ticket got resolved-and-closed without addressing all root causes. Documented on /issues — Cortney is reopening.",
+    pickedUpBy: ["Cortney"],
+  },
+  {
+    id: "neat-pickup-gaps",
+    title: "Neat Bar Pro / Center / Board pickup gaps in event spaces",
+    category: "Fluff",
+    status: "Open",
+    description:
+      "No documented decision on whether a ceiling mic should be added to Neat Center / Neat Board spaces. Patrick never specced it.",
+    pickedUpBy: ["Mark", "Cortney"],
+  },
+  {
+    id: "ipad-low-battery-script",
+    title: "iPad / dock low-battery → Slack webhook automation",
+    category: "Fluff",
+    status: "Open",
+    description:
+      "Matt asked Patrick to script a Controller / scheduling-display low-battery webhook into a Slack channel — easy lift Patrick acknowledged but never delivered. SFO-07 still gets rooms knocked offline by dead iPads.",
+    pickedUpBy: ["Matt", "Cortney"],
+    quote:
+      "I found two iPads off of their chargers yesterday EOD at SFO-07, one of which was dead. Unless users know how to pair to a room, this leaves the room unusable until the iPad gets enough charge to turn back on which takes awhile. What I believe is an easy lift that I've seen done at other sites, we use Controller or scheduling display battery is low webhook and have it sent to a channel.",
+    who: "Matt Cornick",
+  },
+  {
+    id: "deactivation-blast-radius",
+    title: "Deactivation blast radius — scripts tied to Patrick's auth",
+    category: "Fluff",
+    status: "Broken since departure",
+    description:
+      "Patrick's Lambda + alerting jobs failed the morning he was officially deactivated because they ran under his identity. He knew this and never re-keyed.",
+    pickedUpBy: ["Matt", "Cortney"],
+  },
+  {
+    id: "backfill-hire",
+    title: "Patrick backfill req → Cortney hire",
+    category: "Direction",
+    status: "Delivered",
+    description:
+      "Stacey ran the backfill: req went live for 48 hours, top 10 candidates pipeline, 3-way interview panel. That's how Cortney landed on the team.",
+    pickedUpBy: ["Stacey"],
+    quote:
+      "Ok Patrick's backfill req is going live today and then will be up for 48 hours and they'll be sending me the top 10 candidates and then all 3 of us will be able to interview them.",
+    who: "Stacey Newman",
+  },
+];
+
+// Who is currently picking up which Patrick item (post-departure handoff).
+// This is "what items is he working on with Matt/Mark/Stacey" reframed — Patrick
+// isn't working on anything anymore; these are the things they're inheriting.
+export interface ActiveHandoff {
+  owner: "Matt" | "Mark" | "Stacey" | "Cortney";
+  contributionIds: string[];
+  note: string;
+}
+
+export const ACTIVE_HANDOFFS: ActiveHandoff[] = [
+  {
+    owner: "Matt",
+    contributionIds: [
+      "daily-updater",
+      "av-alerts-channel",
+      "lambda-reflect-alerting",
+      "qsc-core-auto-cycle",
+      "splunk-dashboards",
+      "irv-802-hidden-controls",
+      "ipad-low-battery-script",
+      "deactivation-blast-radius",
+      "asana-to-jira",
+      "aws-vm-designer",
+      "monitoring-handoff",
+    ],
+    note:
+      "Matt is reverse-engineering the monitoring stack alone. He's also the one who manually rolled screens at IRV-802 when the UCI hid the controls. Free him up first — the most leveraged use of Cortney's first month is sharing the load on alerts.",
+  },
+  {
+    owner: "Mark",
+    contributionIds: [
+      "plugin-provenance",
+      "irv-802-followup",
+      "tcc2-vs-mxa920",
+      "neat-pickup-gaps",
+    ],
+    note:
+      "Mark is asking the questions Patrick never answered: plugin origins, ceiling-mic spec, whether IRV-802 should just become a simple Zoom Room. Give him decisions, not options.",
+  },
+  {
+    owner: "Stacey",
+    contributionIds: ["backfill-hire", "monitoring-handoff"],
+    note:
+      "Stacey ran the backfill (Cortney's req) and owns the 'operational excellence' annual goal Patrick never delivered the runbook for. Friday wins/challenges email is her scoreboard.",
+  },
+  {
+    owner: "Cortney",
+    contributionIds: [
+      "no-touch-panel-thesis",
+      "single-page-uci-direction",
+      "sea-3611-cto-response",
+      "main-script-memory-leaks",
+      "tp-scripts-leaks",
+      "max-sessions-fleet",
+      "max-concurrent-sessions",
+      "mac-mini-vs-windows",
+      "hdmi-fleet-issue",
+      "wav16-premature-close",
+      "birddog-deployments",
+      "cursor-ai-stack",
+      "av-devices-updater",
+      "q-sys-slack-updater",
+      "underscore-naming",
+      "monitoring-doc",
+      "ip-validator",
+      "gitlab-migration",
+    ],
+    note:
+      "Everything else lands on Cortney. Half of it is genuinely useful infra to inherit; the other half is fluff to clean up or hand back to the team for a real debate.",
+  },
+];
+
+// =========================================================================
+// PATRICK PATTERNS — observed strengths and weak spots so Cortney can
+// inherit the good and fill the gaps. Each pattern is backed by a Slack quote.
+// =========================================================================
+
+export interface PatrickPattern {
+  id: string;
+  kind: "Strength" | "Weakness";
+  pattern: string;
+  evidence: string;
+  who?: string;
+  when?: string;
+  permalink?: string;
+  cortneyMove: string; // what Cortney should do about it
+}
+
+export const PATRICK_PATTERNS: PatrickPattern[] = [
+  // ---------- STRENGTHS to inherit and amplify ----------
+  {
+    id: "noise-vs-signal",
+    kind: "Strength",
+    pattern: "Thought in noise-vs-signal terms — relentlessly killed noisy alert channels.",
+    evidence:
+      "A big part of building monitoring is cleaning up the noise. I am currently working on Zoom's webhooks, because I would like this channel to go away entirely, and have site specific slack messages for important messages, the rest go to the dashboard in Splunk. That way, we have the data for troubleshooting, but only get Slack messages if a reaction is expected.",
+    who: "Patrick Gilligan",
+    cortneyMove:
+      "Keep this discipline. Every new alert goes to Splunk by default; only escalates to a Slack channel if a human reaction is expected. Don't reverse this with chatty alerting just because Splunk feels harder.",
+  },
+  {
+    id: "re-poll-pattern",
+    kind: "Strength",
+    pattern: "Re-poll before alerting — confirm the failure is still present, then notify.",
+    evidence:
+      "Old way: Reflect sees error → Lambda → Slack + Splunk. New way: Reflect sees error → Lambda → polls the Reflect API on the device that just saw an error → if STILL in error, alert; if not, just logs to console.",
+    who: "Patrick Gilligan",
+    cortneyMove:
+      "This is the gold-standard alerting pattern. Apply it to every new source (Domotz, Zoom webhooks, Neat). Patrick already built the Lambda template — clone it.",
+  },
+  {
+    id: "ai-tooling-defaults",
+    kind: "Strength",
+    pattern: "Made AI-assisted authoring the default for Q-Sys Lua + Apple/Bash scripting.",
+    evidence:
+      "I just used one of Zillow's newer AI coding tools to write an app that pulls all of our AV switch configs and backs them up to files. It took me <20 minutes.",
+    who: "Patrick Gilligan",
+    when: "Jan 13, 2025",
+    cortneyMove:
+      "Inherit and broaden. Use Cursor to make Patrick's Lua / Lambda code LEGIBLE to Mark + Matt — solve Patrick's biggest weakness (single-coder lock-in) with the same tool that made him productive.",
+  },
+  {
+    id: "rcas",
+    kind: "Strength",
+    pattern: "Wrote real RCAs when something went wrong.",
+    evidence:
+      "Here is the RCA for our issues in IRV. Tedious, but it was good practice to go through this. I think there are several things we can learn from here. I documented as much as good, and tagged a few of you as well.",
+    who: "Patrick Gilligan",
+    cortneyMove:
+      "Find the IRV RCA doc in Google Drive (1DLhhQMdnv-dENGATLbzBWYi33mXc35bm6kPOyWg9ntA) and use the same format for every P0/P1 going forward. RCA discipline is Patrick's clearest team-supporting habit.",
+  },
+  {
+    id: "swim-lanes",
+    kind: "Strength",
+    pattern: "Defended AV ↔ IT swim lanes — refused to take on liability that wasn't ours.",
+    evidence:
+      "I think we should hold off on the IT advice until we put some documentation together. And I think we need some better 'swim lanes,' as Greg used to call it, between what is AV and what is IT. Last, I think that more IT items that we weigh in on, the more we open ourselves up to liability on those topics. 'BUT AV TOLD US WE NEED TO...'",
+    who: "Patrick Gilligan",
+    cortneyMove:
+      "Keep the swim lanes. When IT asks for AV input on iPad MDM, Zoom Rooms hosts, or laptops — answer narrowly to the AV impact, don't take ownership of IT's domain. Patrick's discipline here protected the team.",
+  },
+  {
+    id: "team-load-awareness",
+    kind: "Strength",
+    pattern: "Publicly acknowledged what the dashboard didn't show — Mark + John's invisible work.",
+    evidence:
+      "I usually look at the dashboard once per sprint, and this week, it makes me look like a rockstar and everyone look lazy (see screenshot). Doesn't include the fact that John is there every day, for example. Doesn't include the 9 million things that Mark is handling daily.",
+    who: "Patrick Gilligan",
+    cortneyMove:
+      "Friday wins/challenges email (Stacey's scoreboard) — call out Mark + Matt + John work that doesn't show in tickets. That's a deposit in the team relationship.",
+  },
+  {
+    id: "non-technical-vision",
+    kind: "Strength",
+    pattern: "Aimed for systems a non-technical person could eventually run.",
+    evidence:
+      "I have tried to embrace the challenge of making the systems + documentation + training so easy that a completely non-technical person can eventually get comfortable with these systems.",
+    who: "Patrick Gilligan",
+    cortneyMove:
+      "Aspiration was right. Execution was wrong (see 'cannot document' weakness below). Keep the aim — actually deliver the docs.",
+  },
+
+  // ---------- WEAKNESSES to fill ----------
+  {
+    id: "cannot-document",
+    kind: "Weakness",
+    pattern:
+      "Could not document his own systems — explicitly admitted the monitoring pipeline was un-troubleshootable by anyone else.",
+    evidence:
+      "Its pretty complex - I have spent a lot of time on it, and I am not sure how to document how to troubleshoot it. On the other hand, anybody who is into building software and/or doing programming, would have a nice time jumping in.",
+    who: "Patrick Gilligan",
+    cortneyMove:
+      "FILL THIS GAP FIRST. The Splunk pipeline + Lambdas + GitLab repos need a one-page README each: what it watches, where it lives, how to silence, how to debug, who to call. This is the foundation lift Stacey will measure you on.",
+  },
+  {
+    id: "eventually-syndrome",
+    kind: "Weakness",
+    pattern: "\"Eventually I will...\" promises that never shipped.",
+    evidence:
+      "Eventually, I will have a doc that describes all of our monitoring and alerting efforts. ... In time, I will set up Splunk to send an alert to the newer alerts channel, when its received the same webhook over and over.",
+    who: "Patrick Gilligan",
+    cortneyMove:
+      "Track every 'eventually' as a Jira ticket. If you say it in Slack, it goes in the WAVE board same day. No exceptions. This is how you out-deliver Patrick's reputation in the first 30 days.",
+  },
+  {
+    id: "single-point-of-failure",
+    kind: "Weakness",
+    pattern: "Built scripts under his own AWS identity — failed the moment he was deactivated.",
+    evidence:
+      "AV Alerts: I just noticed that it looks like the alerts failed to run this morning. I'm guessing this has to do with Patrick officially being gone. Probably something he overlooked that would fail once he was de-activated.",
+    who: "Matt Cornick",
+    when: "Day 1 post-Patrick",
+    cortneyMove:
+      "Migrate every Patrick-authored Lambda / cron / scheduled job to a service account or team-owned IAM role. Inventory the full blast radius BEFORE you touch anything else. See /splunk for the workflow.",
+  },
+  {
+    id: "solo-coder",
+    kind: "Weakness",
+    pattern: "Treated the code as his — nobody else could read it, so nobody else could change it.",
+    evidence:
+      "Looking at the file now, it should be redone. Correct me if I'm wrong but can't this just be a simple Zoom Room? Also, do you know where this plugin comes from? Did Patrick write it or get it from his Q-Sys community? It's not on the Q-Sys Library.",
+    who: "Mark Hampson",
+    cortneyMove:
+      "Code reviews on every Q-Sys MR going forward. Use Cursor to add comments + diagrams. Mark + Matt should be able to read every plugin in the repo. Plugin source / license / support owner documented per plugin.",
+  },
+  {
+    id: "scope-discipline-gap",
+    kind: "Weakness",
+    pattern: "Started ambitious projects, abandoned them mid-flight.",
+    evidence:
+      "In case you want to check it out, I have been spending most of the last few work days extracting as much data as possible from our Zoom Webhooks as possible. Dashboarding is actually a lot harder than I thought.",
+    who: "Patrick Gilligan",
+    cortneyMove:
+      "Zoom Webhooks → Splunk migration was mid-flight when he left. Decide: finish it, or kill it. Don't let it sit in limbo for another year.",
+  },
+  {
+    id: "no-escalation",
+    kind: "Weakness",
+    pattern: "Punted on architectural conflicts that needed IT politics, not code.",
+    evidence:
+      "Mac Mini standard never escalated to a Q-Sys-Connect-Windows architectural decision. No record of him taking it to Matt + IT formally.",
+    cortneyMove:
+      "You're better positioned for IT politics than Patrick was. Bring Mac vs. Windows AV-appliance to Matt as a formal decision in your first 60 days. Patrick avoided this — that's your wedge.",
+  },
+  {
+    id: "dependency-tracking",
+    kind: "Weakness",
+    pattern: "Cross-team dependencies were tracked in his head, not in a doc.",
+    evidence:
+      "starting next new buildout, can we both take note of all cross team dependencies needed for new jobs, so that we can advance them properly and have them documented? I think it will tighten up our game a bit. Not trying to pawn this off, I'm happy to help. Just want to flag this as I thought of it.",
+    who: "Patrick Gilligan",
+    cortneyMove:
+      "Stand up a 'cross-team dependencies' tracker (Jira label or Confluence page) day 1. Every new build = explicit Network/IT/Security/Facilities dependencies logged.",
+  },
+  {
+    id: "punted-to-others",
+    kind: "Weakness",
+    pattern: "Relied on other people's docs (Alana for IRV training) without owning the followups.",
+    evidence:
+      "I think Alana made a guide. She coordinated a large training session about adding the NDI stream after a reboot....that session's scope got a little out of hand. I think there was some kind of accompanying documentation.",
+    who: "Patrick Gilligan",
+    cortneyMove:
+      "Find Alana's IRV NDI guide. Either adopt it as the standard or replace it. Don't leave training docs in ambiguous ownership — that's where rooms regress quietly.",
+  },
+];
+
+// =========================================================================
+// SPLUNK WORKFLOW — Patrick's real Splunk pipeline. Cortney's runbook.
+// Reconstructed from Slack record: access path, pipeline, dashboards,
+// inherited in-flight work, and a how-to for adding a new alert.
+// =========================================================================
+
+export const SPLUNK_WORKFLOW = {
+  access: {
+    appUrl: "https://zillowgroup.splunkcloud.com/en-US/app/zgav/zgav_non-prod",
+    appName: "zgav (Zillow Group AV)",
+    nonProdView: "zgav_non-prod",
+    requestAccessUrl:
+      "https://zillow.service-now.com/esc?id=sc_cat_item&table=sc_cat_item&sys_id=2c137a826f5b1e800e129aad5d3ee4ff&searchTerm=splunk",
+    requestAccessNote:
+      "ServiceNow tile Patrick linked when teammates needed access. Mark already has Splunk access (confirmed Slack). Cortney should file this on day 1.",
+    awsConsoleNote:
+      "Splunk is paired with AWS — Patrick said 'AWS probably needs an access tile as well.' File the AWS ServiceNow request the same day so you can read Lambda CloudWatch logs alongside Splunk dashboards.",
+    confirmedAccess: [
+      { who: "Mark Hampson", quote: "I have splunk access" },
+      { who: "Patrick Gilligan (departed)", quote: "was the dashboard author" },
+    ],
+  },
+
+  // The actual end-to-end pipeline Patrick built
+  pipeline: [
+    {
+      step: 1,
+      name: "Source: Q-Sys Reflect",
+      detail:
+        "Each Q-Sys core's Reflect feature emits events on plugin error, script error, or device offline. Reflect pushes to a webhook URL.",
+    },
+    {
+      step: 2,
+      name: "AWS Lambda receives webhook",
+      detail:
+        "Patrick's Lambda is the entrypoint. Owned in GitLab project av-ops-tools (Q-Sys Slack Updater + companion). Currently failing because it ran under Patrick's identity.",
+    },
+    {
+      step: 3,
+      name: "Lambda re-polls Reflect API on the affected device",
+      detail:
+        "Critical signal-vs-noise step Patrick added. If the device has recovered between the webhook and the poll, Lambda logs to CloudWatch only — no Slack ping. Replaces the old 'every blip → Slack' pattern.",
+    },
+    {
+      step: 4,
+      name: "Branch A: still in error → write to Splunk (HEC)",
+      detail:
+        "Persistent failures get an event into Splunk via HTTP Event Collector. Indexed for dashboards + alert rules.",
+    },
+    {
+      step: 5,
+      name: "Branch B: still in error AND reaction expected → post to #av-alerts",
+      detail:
+        "Site-specific Slack message goes to #av-alerts (the channel Patrick created — 'mostly meaningful alerts, that aren't so noisy we don't pay attention'). Filters out 'Control Link Server...' noise.",
+    },
+    {
+      step: 6,
+      name: "Auto-recovery: power-cycle QSC core if hang detected",
+      detail:
+        "If the core itself is hung, Lambda triggers a power cycle via API before alerting. Documented in WAVE 'Add Reflect alerting to Lambda, filter out Control Link Server messages to reduce noise, power cycle QSC core to test.'",
+    },
+    {
+      step: 7,
+      name: "Daily updater digest → #av-daily-update",
+      detail:
+        "Once-a-day site-organized digest of everything Splunk saw. Cross-references IP doc to MAC table to suppress ARP-aged false positives. Includes Zoom offline events from Zoom API and Q-Sys plugin status sweep.",
+    },
+  ],
+
+  // Dashboards Patrick built or had in-flight
+  dashboards: [
+    {
+      name: "zgav_non-prod (the main AV dashboard)",
+      url: "https://zillowgroup.splunkcloud.com/en-US/app/zgav/zgav_non-prod",
+      status: "Built — primary view",
+      contains: [
+        "Q-Sys plugin status sweep (per-core)",
+        "System temperature per core",
+        "System memory per core",
+        "Zoom offline events (from Zoom API)",
+        "Speed tests (Patrick was considering moving these out of Slack)",
+        "Site-organized daily digest links",
+      ],
+    },
+    {
+      name: "Zoom Webhooks ingest",
+      status: "Mid-flight when Patrick left — INHERITED",
+      contains: [
+        "Sensor data webhooks (room_name, device_id, occupancy)",
+        "Real Time People Count (Neat-room only — hardware-dependent)",
+        "Meeting started/ended events",
+        "Calendar mismatch events",
+      ],
+      cortneyAction:
+        "Decide: finish the Zoom webhook ingest OR archive the project. Patrick said 'Dashboarding is actually a lot harder than I thought.' Don't let it rot — make a call.",
+    },
+    {
+      name: "Wilson's Splunk logs (referenced, location TBD)",
+      status: "Patrick mentioned having a link — never shared in #av-team",
+      cortneyAction:
+        "Ask Wilson (or his manager) for the link and inventory. Possible hidden value here.",
+    },
+  ],
+
+  // Inherited Splunk + monitoring work Cortney is picking up
+  inheritedWork: [
+    {
+      title: "Re-key every Lambda + cron under a service account",
+      severity: "P0",
+      reason:
+        "Alerts already failed on day 1 of Patrick's departure. Until this is done, the pipeline is one outage away from going fully dark.",
+    },
+    {
+      title: "Inventory every Splunk HEC token + dashboard owner",
+      severity: "P0",
+      reason: "If tokens were created under Patrick's identity, they expire next.",
+    },
+    {
+      title: "Migrate the 'Eventually-Splunk-will-send-the-alert' rule",
+      severity: "P1",
+      reason:
+        "Patrick promised: 'In time, I will set up Splunk to send an alert to the newer alerts channel, when its received the same webhook over and over, and the device is still offline.' Never landed. Write the Splunk alert rule yourself.",
+    },
+    {
+      title: "Finish or kill the Zoom Webhooks → Splunk migration",
+      severity: "P1",
+      reason: "Mid-flight, valuable, but stalled. Decide.",
+    },
+    {
+      title: "Document the pipeline (one-page runbook per Lambda)",
+      severity: "P1",
+      reason:
+        "Patrick explicitly said: 'I am not sure how to document how to troubleshoot it.' Fill the gap.",
+    },
+    {
+      title: "Build a Splunk dashboard panel for Neat Bar Pro / Center fleet health",
+      severity: "P2",
+      reason: "Currently no first-class view on the Neat fleet — gap noted in /issues.",
+    },
+    {
+      title: "Cross-reference Domotz alerts INTO Splunk (not just Slack)",
+      severity: "P2",
+      reason: "Patrick's stated end-goal: kill the noisy Domotz Slack channel, route through Splunk first.",
+    },
+    {
+      title: "Move speedtests out of Slack into Splunk-only",
+      severity: "P3",
+      reason: "Patrick flagged this as planned but never executed.",
+    },
+  ],
+
+  // Practical: how to add a new alert end-to-end
+  howToAddAlert: [
+    "1. Decide the SOURCE: Reflect, Domotz, Zoom Webhook, Neat API, or custom Q-Sys script.",
+    "2. Route the source to the AWS Lambda entrypoint (clone Patrick's existing Lambda for Reflect — it's the template).",
+    "3. Inside Lambda: implement the re-poll pattern. Do NOT alert on first signal — confirm persistence first.",
+    "4. Write the event to Splunk via HEC. Use a structured event (room_name, severity, device_id, source).",
+    "5. Decide: dashboard-only, or also Slack? Default to dashboard-only. Only escalate to Slack if a human reaction is expected.",
+    "6. If Slack: target #av-alerts. Patrick's channel intent: 'mostly meaningful alerts, that aren't so noisy we don't pay attention to them.'",
+    "7. Add a panel to zgav_non-prod dashboard for the new source.",
+    "8. Write a one-page runbook: what triggers, where it logs, how to silence, who to escalate to. Commit to GitLab next to the Lambda.",
+    "9. Tag dev/test devices with leading underscore so the pipeline ignores them (Patrick's convention).",
+    "10. Add the new alert to the team's Friday wins/challenges email scoreboard.",
+  ],
+
+  // Patrick docs Cortney should claim
+  patrickDocs: [
+    {
+      label: "IRV RCA document",
+      url: "https://docs.google.com/document/d/1DLhhQMdnv-dENGATLbzBWYi33mXc35bm6kPOyWg9ntA/edit?tab=t.0",
+      why: "Real RCA Patrick wrote for an IRV outage. Reuse format for every P0/P1.",
+    },
+    {
+      label: "Podium QR target doc (SFO podium)",
+      url: "https://docs.google.com/document/d/1pGcefYSQAf3UwCE81C4J-mTlBRta-5N47CNjwp7CE-8/edit",
+      why: "Hidden — the QR on the SFO podium links here. Confirm it's still current.",
+    },
+    {
+      label: "Patrick handoff doc",
+      url: "https://docs.google.com/document/d/1LxQvEdRCjbbALY6pb4Kqcr4-L7_EMIlJskAKjCL7XdI/edit?tab=t.0",
+      why: "Linked by Patrick near departure — claim and read.",
+    },
+    {
+      label: "Patrick second doc (context TBD)",
+      url: "https://docs.google.com/document/d/1wseabp4r983exUw7j7n-p2QINQH7wO-5lchPQmZjt8o/edit?tab=t.0",
+      why: "Second Patrick-authored doc shared in #av-team. Title unknown — open and tag.",
+    },
+  ],
+};
+
+// Helper: compute summary percentages by category and by status.
+export const PATRICK_SUMMARY = (() => {
+  const total = PATRICK_PORTFOLIO.length;
+  const byCat: Record<PatrickCategory, number> = {
+    Analytics: 0,
+    Support: 0,
+    Direction: 0,
+    Fluff: 0,
+  };
+  const byStatus: Record<PatrickContribution["status"], number> = {
+    Delivered: 0,
+    Partial: 0,
+    Open: 0,
+    "Broken since departure": 0,
+  };
+  for (const c of PATRICK_PORTFOLIO) {
+    byCat[c.category]++;
+    byStatus[c.status]++;
+  }
+  return { total, byCat, byStatus };
+})();

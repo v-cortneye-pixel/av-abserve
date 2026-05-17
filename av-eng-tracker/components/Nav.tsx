@@ -8,6 +8,8 @@ const NAV_ITEMS = [
   { href: "/nv-fleet", label: "NV Fleet" },
   { href: "/birddog", label: "BirdDog" },
   { href: "/uci", label: "UCI" },
+  { href: "/patrick-audit", label: "Patrick Audit" },
+  { href: "/splunk", label: "Splunk" },
   { href: "/mac-mini", label: "Mac Mini" },
   { href: "/hdmi", label: "HDMI" },
   { href: "/handoff", label: "Handoff" },
