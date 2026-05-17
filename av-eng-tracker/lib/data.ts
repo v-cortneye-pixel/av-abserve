@@ -6277,6 +6277,381 @@ export interface OneOnOneMeeting {
 }
 
 // =========================================================================
+// TEAM & CHANNEL TIMELINE — when each teammate joined, who created which
+// channels, key milestones. Reconstructed from Slack record + user IDs +
+// channel IDs (Slack IDs are issued in order, so they encode age).
+// =========================================================================
+
+export interface TeammateTenure {
+  name: string;
+  userId: string;
+  role: string;
+  startContext: string; // best-evidence date + how we know
+  zillowTenureEstimate: string; // how long at Zillow overall
+  avTeamStart: string; // when they joined THIS team specifically
+  timezone: string;
+  status: "Active" | "Departed" | "On Leave" | "New";
+  keyMilestones: { date: string; what: string; permalink?: string }[];
+}
+
+export const TEAM_TENURE: TeammateTenure[] = [
+  {
+    name: "Stacey Newman",
+    userId: "U0VTNG9HN",
+    role: "Senior Manager, Workplace Experience (AV team manager)",
+    startContext:
+      "Slack User ID U0VTNG9HN (8-char format) = early Slack era. Active in #av-team from its first messages May 19, 2023. Bangalore office work goes back at least to mid-2024 (Aug 15, 2024 message references 'where we should build an office maybe in 2025').",
+    zillowTenureEstimate:
+      "Multi-year Zillow tenure predating the AV team formation. Manager of more than just AV — title is broader Workplace Experience.",
+    avTeamStart: "Before May 2023 (#av-team channel start)",
+    timezone: "America/Los_Angeles (PT)",
+    status: "Active",
+    keyMilestones: [
+      {
+        date: "Jan 2, 2024",
+        what: "Posted Mark Hampson's resume to #av-team for John + Patrick review 'before he begins' — Mark's hire was Stacey's call.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1704216661862389",
+      },
+      {
+        date: "Oct 8, 2024",
+        what: "Announced Matt's FTE conversion: 'Mr. Matthew Cornick has decided to accept a full-time position at Zillow and luckily it's on our team!!! His official start date is 12/16 but he'll continue on as a contractor until then.'",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1728410978995399?thread_ts=1728410978.995399&cid=C04GF3S3KQF",
+      },
+      {
+        date: "Mar 16, 2026",
+        what: "Announced Patrick's departure to the team.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1773679449503289?thread_ts=1773679449.503289&cid=C04GF3S3KQF",
+      },
+      {
+        date: "May 15, 2026",
+        what: "Public Friday High-Five from Steve Bennett for the Bangalore office work — flown there twice, leadership of the design near-final.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04N9U9HURY/p1778890419763979?thread_ts=1778890419.763979&cid=C04N9U9HURY",
+      },
+    ],
+  },
+  {
+    name: "Steve Bennett",
+    userId: "U2FGA8AAK",
+    role: "Org head — Cloud HQ Experience (Stacey's manager)",
+    startContext:
+      "User ID U2FGA8AAK (8-char old-era format). Active in #av-team since at least June 30, 2023 — already setting the testing roadmap then ('lean into a testing roadmap in 2H 2023').",
+    zillowTenureEstimate:
+      "Long-tenured Zillow. Owns the broader Cloud HQ Experience org that contains AV.",
+    avTeamStart: "Pre-existed the team formation — Stacey reports to him",
+    timezone: "Unknown",
+    status: "Active",
+    keyMilestones: [
+      {
+        date: "Jun 30, 2023",
+        what: "First major #av-team post — sets 2H 2023 testing roadmap (Logitech Sight, Shure wireless mics, all-in-one AV solution tests).",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1688166120991359",
+      },
+      {
+        date: "May 15, 2026",
+        what: "Friday High-Five to Stacey for Bangalore. The cross-org artifact you should be matching.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04N9U9HURY/p1778890419763979?thread_ts=1778890419.763979&cid=C04N9U9HURY",
+      },
+    ],
+  },
+  {
+    name: "Patrick Gilligan",
+    userId: "U02B7MS304X",
+    role: "AV Engineer (departed Mar 2026)",
+    startContext:
+      "User ID U02B7MS304X (U02 prefix = early Slack user, dates to Zillow's older Slack era). Patrick himself: 'I thought Vahhab came with ShowingTime. I feel like I had been here for a year before he joined.' ShowingTime acquired Sept 2021 → Patrick was at Zillow at least ~12 months before ShowingTime arrival = roughly mid-2020 or earlier. Was the AV engineer from #av-team channel start (May 19, 2023).",
+    zillowTenureEstimate:
+      "~5-6 years at Zillow at departure. ~3 years on the AV team specifically (May 2023 onward, possibly earlier).",
+    avTeamStart: "Before May 19, 2023 (channel start)",
+    timezone: "America/Los_Angeles (PT) — based in SEA",
+    status: "Departed",
+    keyMilestones: [
+      {
+        date: "May 19, 2023",
+        what: "Tagged by John Gifford in the very first non-bot message in #av-team — about Sea-36-AV-002/003 reimaged computers. Was already the team's engineer.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1684525899054619",
+      },
+      {
+        date: "Sep 2024",
+        what: "Created #av-alerts: 'I create the public channel av-alerts but only invited Mark so far... I want this to be a channel of mostly meaningful alerts.'",
+      },
+      {
+        date: "Nov 21, 2025",
+        what: "Went on paternity leave — Mark: 'Patrick, good luck with the delivery and enjoy paternity leave! Don't rush it because it goes by too fast.'",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1763757384787869?thread_ts=1763757384.787869&cid=C04GF3S3KQF",
+      },
+      {
+        date: "Mar 13, 2026",
+        what: "Wrote the handoff doc. The thread Mark + Matt picked apart in real time — your single richest piece of role context.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1773425550031039?thread_ts=1773342215.611929&cid=C04GF3S3KQF",
+      },
+      {
+        date: "Mar 16, 2026",
+        what: "Departure announced by Stacey.",
+      },
+      {
+        date: "Mar 20, 2026",
+        what: "Last Friday on the team — Stacey: 'Last Friday with us 4 as a team. Here's some of my favorite memories with Mr Gilligan.'",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1774017542591529?thread_ts=1774017542.591529&cid=C04GF3S3KQF",
+      },
+    ],
+  },
+  {
+    name: "John Gifford III",
+    userId: "U04T5LAQ48M",
+    role: "On-site tech / floor support (SEA + roving)",
+    startContext:
+      "User ID U04T5LAQ48M (U04 prefix) = at Zillow before Mark/Matt but after Patrick. First active in #av-team from day 1 (May 19, 2023) — tagged Patrick about the AV booth machines.",
+    zillowTenureEstimate:
+      "Multi-year. Was at Zillow before the AV team formalized under Steve in 2023.",
+    avTeamStart: "Before May 19, 2023 (channel start)",
+    timezone: "America/Los_Angeles (PT) — SEA-based",
+    status: "Active",
+    keyMilestones: [
+      {
+        date: "May 19, 2023",
+        what: "Author of the very first non-bot #av-team message — pinged Patrick about reimaged computers Sea-36-AV-002/003.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1684525899054619",
+      },
+      {
+        date: "Jun 8, 2023",
+        what: "Already running New Hires AV Prep ('There is also an AMA session with Rich, David Beitel and Deepthi. I'm going to stress test the lapel mics and plan to use those.').",
+      },
+    ],
+  },
+  {
+    name: "Mark Hampson",
+    userId: "U06CYG7HYSK",
+    role: "AV Implementation Manager",
+    startContext:
+      "User ID U06CYG7HYSK (U06 prefix = newer Slack era). Stacey posted his resume to John + Patrick on Jan 2, 2024 'before he begins' — meaning Mark's start date was right after that, likely mid-January 2024.",
+    zillowTenureEstimate:
+      "~2.5 years at Zillow when Cortney arrived (Jan 2024 → May 2026).",
+    avTeamStart: "Mid-January 2024",
+    timezone: "America/New_York (ET) — based in NYC area",
+    status: "Active",
+    keyMilestones: [
+      {
+        date: "Jan 2, 2024",
+        what: "Stacey shared his resume to #av-team for John + Patrick to review before he started.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1704216661862389",
+      },
+      {
+        date: "Feb 6, 2026",
+        what: "Public Friday High-Five with Adali for Irvine commissioning during active construction. 'Traveled to Irvine twice in the last month... personally installed Zoom Room devices across multiple rooms.'",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04N9U9HURY/p1770413574076409",
+      },
+      {
+        date: "Apr 30, 2026",
+        what: "Olympic AV upgrade announcement — newer switch, AV processor replaced (was EOL), table HDMI fixed, simplified iPad UI all in Zoom app.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C054SPG1LDB/p1777584156928919?thread_ts=1777584156.928919&cid=C054SPG1LDB",
+      },
+      {
+        date: "May 8, 2026",
+        what: "Sent Matt a Friday High-Five for the Olympic upgrade — 'pulled this off down an engineer, AND while handling the Google Migration.'",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04N9U9HURY/p1778250498022089?thread_ts=1778250498.022089&cid=C04N9U9HURY",
+      },
+    ],
+  },
+  {
+    name: "Matt Cornick",
+    userId: "U06KHP9S407",
+    role: "Senior AV Engineer (theater/stagehand background)",
+    startContext:
+      "User ID U06KHP9S407 (U06 prefix). Started as a CONTRACTOR around Feb 2024 (first #av-team post Feb 21, 2024). Stacey announced Matt's FTE conversion Oct 8, 2024 with start date Dec 16, 2024 — CRITICAL precedent for Cortney's own contractor → FTE arc.",
+    zillowTenureEstimate:
+      "Contractor: ~Feb 2024 → Dec 16, 2024 (10 months). FTE: Dec 16, 2024 → present.",
+    avTeamStart:
+      "Feb 2024 as contractor; Dec 16, 2024 as FTE — 10-month contractor-to-FTE arc is the precedent Cortney is on",
+    timezone: "America/New_York (ET)",
+    status: "Active",
+    keyMilestones: [
+      {
+        date: "Feb 21, 2024",
+        what: "First #av-team post: 'By all of the Cores, do you mean everywhere or just the site you're at?' Started as contractor.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1708556324093289?thread_ts=1708556066.943239&cid=C04GF3S3KQF",
+      },
+      {
+        date: "Oct 8, 2024",
+        what: "FTE offer accepted. Stacey: 'Mr. Matthew Cornick has decided to accept a full-time position at Zillow and luckily it's on our team!!!'",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1728410978995399?thread_ts=1728410978.995399&cid=C04GF3S3KQF",
+      },
+      {
+        date: "Dec 16, 2024",
+        what: "Official FTE start date.",
+      },
+      {
+        date: "Mar 13, 2026",
+        what: "The 'lighting console' / 'unicorn' / 'broken heart armor' thread with Patrick on the handoff doc.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1773425550031039?thread_ts=1773342215.611929&cid=C04GF3S3KQF",
+      },
+      {
+        date: "May 8, 2026",
+        what: "Mark's Friday High-Five for the Olympic upgrade.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04N9U9HURY/p1778250498022089?thread_ts=1778250498.022089&cid=C04N9U9HURY",
+      },
+    ],
+  },
+  {
+    name: "Cortney Eison",
+    userId: "U0B1D4BK5GT",
+    role: "AV Systems Engineer (contractor backfill — Patrick's replacement)",
+    startContext:
+      "User ID U0B1D4BK5GT — newest in the team. Welcomed in #av-team by Mark + Stacey early May 2026 (May 8 / May 11 timeframe based on first posts). Stacey's Monday standup shows 'Cortney Onboarding' as a top-of-mind item.",
+    zillowTenureEstimate: "Started May 2026.",
+    avTeamStart: "Early May 2026",
+    timezone: "Likely PT — SF area based on Stacey's 'driving back to SF' comment",
+    status: "New",
+    keyMilestones: [
+      {
+        date: "May 8, 2026",
+        what: "Welcomed by Stacey + Mark in #av-team. Already added to #av-alerts, #av-workplace, #sea-av, #av_networking on day 1.",
+      },
+      {
+        date: "May 12, 2026",
+        what: "Active in #av_networking with Danny + Jon on the SFO UPS replacement (sfo-zit-u07-002, NEMA twist-lock 30A).",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C05UGQ0REM6/p1778617069525529?thread_ts=1778604630.869839&cid=C05UGQ0REM6",
+      },
+      {
+        date: "May 15, 2026",
+        what: "First substantive AV proposal in #av-team — G62 codec / Neat Bar Pro + AVIO Dante companion for open-space zRetreat rooms.",
+      },
+    ],
+  },
+];
+
+export interface AvChannelHistory {
+  name: string;
+  channelId: string;
+  approxCreated: string;
+  creator?: string;
+  purpose: string;
+  notableForCortney: string;
+}
+
+export const AV_CHANNEL_HISTORY: AvChannelHistory[] = [
+  {
+    name: "#org-channel-cloud-hq-experience",
+    channelId: "C04N9U9HURY",
+    approxCreated: "2023 (C04 series — older era)",
+    creator: "Steve Bennett or earlier org owner",
+    purpose:
+      "Steve Bennett's parent org channel. AV team is a sub-team. Friday High-Fives + Org All Hands recaps live here.",
+    notableForCortney:
+      "Higher visibility than #av-team — Friday High-Fives Mark and Steve send here are the FTE-conversion preview.",
+  },
+  {
+    name: "#av-team",
+    channelId: "C04GF3S3KQF",
+    approxCreated: "~May 2023 (first known message May 19, 2023)",
+    creator:
+      "Likely Stacey when she became the AV team manager — Patrick + John were active from day one as her two existing engineers/techs",
+    purpose:
+      "The primary AV team workspace. Standups, architectural discussions, vendor coordination, banter.",
+    notableForCortney:
+      "Existed roughly a year before Mark joined (Jan 2024) and ~9 months before Matt (Feb 2024).",
+  },
+  {
+    name: "#founders-suite-av-support",
+    channelId: "C054SPG1LDB",
+    approxCreated: "~2024 (C054 series)",
+    creator: "Likely Mark or Stacey when Founder's Suite became a recurring exec touch point",
+    purpose:
+      "Olympic boardroom + Founder's Suite escalations. Direct channel with EAs and execs.",
+    notableForCortney: "Where the recent Olympic upgrade was announced. Tier 0 exec territory.",
+  },
+  {
+    name: "#fs_zeus_ex-sup-team_and_av-team",
+    channelId: "C05PVF65A2F",
+    approxCreated: "~2024 (C05P series)",
+    creator: "Likely Mark or Humberto when Zeus (Exec Support) needed a joint channel with AV",
+    purpose:
+      "Joint channel with Exec Support team. Olympic Mac Mini + HDMI issues + Lloyd-tier exec asks.",
+    notableForCortney:
+      "Where Matt's '100Mbps vs 1Gbps' jumper-cable root cause was reported (Apr 7, 2026) — your Mac-vs-Windows memo cites this thread.",
+  },
+  {
+    name: "#av_networking",
+    channelId: "C05UGQ0REM6",
+    approxCreated: "~2024 (C05U series)",
+    creator: "Likely Mark or Jon Ross when AV needed a dedicated joint channel with Networking",
+    purpose: "AV team × Network team operational coordination. Service Express vendor work.",
+    notableForCortney:
+      "You're already trusted here. Cortney's NEMA twist-lock UPS thread with Danny + Jon (May 12, 2026) is your earliest active-engineering footprint.",
+  },
+  {
+    name: "#av-alerts",
+    channelId: "C07SY86AY31",
+    approxCreated: "Sep 2024",
+    creator:
+      "Patrick Gilligan — his own admission: 'I create the public channel av-alerts but only invited Mark so far'",
+    purpose:
+      "Signal-only alerts channel. AV Slack Bot's daily digest + Lambda-triggered anomalies.",
+    notableForCortney:
+      "PATRICK'S CROWN JEWEL. The bot survived his deactivation but the Lambda IAM identity is unconfirmed. P0 to verify.",
+  },
+  {
+    name: "#sea-av · #irvine-av · #nyc-av",
+    channelId: "C-series mid-2024 onward",
+    approxCreated: "~2024",
+    creator:
+      "Likely Patrick / Mark — the bot needed per-site channels to post site-segregated digests",
+    purpose: "Site-specific daily digest + onsite responses.",
+    notableForCortney:
+      "John Gifford responds to SEA bot alerts. Adali responds to IRV. Grace Oh to NYC. Match the cadence.",
+  },
+  {
+    name: "#olympic_zoom_webhooks",
+    channelId: "C04B26YDH27",
+    approxCreated: "Earlier (C04 series)",
+    creator: "Patrick — 'my webhooks channel that specifically monitors the Olympic room'",
+    purpose:
+      "Olympic-room-specific Zoom webhooks feed. Patrick's one-off because Olympic was exec-critical.",
+    notableForCortney:
+      "Lower priority post-upgrade since Olympic's iPad UI now lives in Zoom. Audit whether to keep, archive, or merge into #av-alerts.",
+  },
+  {
+    name: "wave_q-sys_webhooks (archived)",
+    channelId: "C05J80EHBPC",
+    approxCreated: "~2024 (C05J series)",
+    creator: "Patrick",
+    purpose:
+      "Q-Sys Reflect webhooks dump channel. Patrick archived it once Splunk + the re-poll pattern made it redundant.",
+    notableForCortney:
+      "Confirms the noise-vs-signal discipline. The channel's death = success.",
+  },
+];
+
+export const TEAM_TIMELINE_INSIGHTS = [
+  "**The Patrick-John-Stacey era (May 2023 – Jan 2024):** Three people — Patrick (engineer), John Gifford (onsite tech), Stacey (manager). Steve Bennett was already setting roadmap from above. This is when #av-team was created.",
+  "**Mark joined ~mid-January 2024.** Stacey posted his resume to John + Patrick on Jan 2, 2024 'before he begins.' Mark added Manager / PM / Implementation discipline to a team that had been engineer-heavy.",
+  "**Matt joined as a CONTRACTOR around Feb 2024.** First #av-team post Feb 21, 2024. He contracted for 10 months before converting to FTE — Stacey's announcement Oct 8, 2024 ('Mr. Matthew Cornick has decided to accept a full-time position'), official start Dec 16, 2024. **This is exactly Cortney's path** — same contractor-to-FTE arc, same manager, same team. Cortney's FTE conversion has a one-employee precedent within the team itself.",
+  "**Patrick paternity leave Nov 21, 2025.** Returned briefly before announcing departure Mar 16, 2026. Last Friday with the team Mar 20, 2026.",
+  "**'4 as a team' (Stacey's words March 2026):** Stacey, Patrick, Mark, Matt. John Gifford is active in #av-team but appears to be on a separate sub-team (onsite tech / floor support, not engineering). Cortney = Patrick's backfill, bringing the team back to 4.",
+  "**Patrick was the channel creator of the monitoring stack.** #av-alerts (Sep 2024), the wave_q-sys_webhooks channel, and #olympic_zoom_webhooks were all his initiatives. The daily AV bot posts to all of them.",
+  "**Mark + Matt are both East Coast.** Mark NY-area, Matt NY. Stacey + Patrick (gone) + Cortney are Pacific. Geographic split matters for live-event production (Zall Hall) and on-site IRV (Mark traveled twice in a month).",
+];
+
+// =========================================================================
 // BANGALORE QUESTIONS — the actual substantive Bangalore-BOM questions
 // Cortney should bring to the Week 1 Stacey 1:1. Each one is framed as a
 // clarification, not a critique. Each one shows real AV-engineering depth

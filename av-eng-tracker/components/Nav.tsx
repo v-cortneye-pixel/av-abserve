@@ -6,6 +6,7 @@ const NAV_ITEMS = [
   { href: "/one-on-one", label: "1:1 Strategy (private)" },
   { href: "/jira", label: "Jira" },
   { href: "/channels", label: "Channels & Contacts" },
+  { href: "/timeline", label: "Team Timeline" },
   { href: "/sites", label: "Sites" },
   { href: "/tracker", label: "Tracker" },
   { href: "/questions", label: "Questions" },
