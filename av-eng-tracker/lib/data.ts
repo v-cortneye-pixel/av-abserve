@@ -5842,6 +5842,565 @@ export const ACCESS_TILES = [
 ];
 
 // =========================================================================
+// SLACK CHANNELS — every AV-related Slack channel Cortney has visibility into,
+// with combed findings, key people, what to monitor, and any items pulled out
+// for the issues/wins/jira boards.
+// =========================================================================
+
+export interface SlackChannelEntry {
+  name: string; // e.g. "#av-team"
+  purpose: string;
+  watchValue: "Critical" | "High" | "Medium" | "Low";
+  whatItIs: string;
+  keyPeople: string[];
+  findings: string[]; // surfaced new findings Cortney should know
+  cortneyAction: string;
+}
+
+export const SLACK_CHANNELS: SlackChannelEntry[] = [
+  {
+    name: "#av-team",
+    purpose: "Main AV-team workspace (Cortney, Matt, Mark, Stacey, Patrick).",
+    watchValue: "Critical",
+    whatItIs:
+      "The primary channel. All escalations, standup green-circles, internal architecture conversations, vendor pings, and team-banter. The richest source of context in the entire workspace.",
+    keyPeople: ["Stacey Newman", "Mark Hampson", "Matt Cornick", "Patrick Gilligan (gone)", "Cortney Eison"],
+    findings: [
+      "Already deeply combed — every quote on this site originates here or from a referenced channel.",
+      "Cortney is already posting in-channel as a recognized teammate as of May 2026.",
+    ],
+    cortneyAction:
+      "Keep posting Monday green-circles + Friday wins. Reply within an hour during business hours — that's the social contract.",
+  },
+  {
+    name: "#av-alerts",
+    purpose: "Patrick's signal-only alerts channel — daily AV digest + Lambda-triggered anomalies.",
+    watchValue: "Critical",
+    whatItIs:
+      "AV Slack Bot posts a daily 'Good Morning! Here is your daily AV update!' with quick-links: Q-Sys Reflect Dashboard, Zoom Offline Rooms, Domotz Portal, Splunk Dashboard, IP Schedule. Also posts MAC-address mismatches with SSH-into instructions (e.g., ny1-12b-avi-001.net.zillowgroup.net). The IP-drift validator IS the bot.",
+    keyPeople: ["AV Slack Bot (Patrick's Lambda)", "Matt Cornick", "Mark Hampson"],
+    findings: [
+      "BOT IS STILL ALIVE post-Patrick — but if it dies, this is where you'd see it first. Confirm the Lambda's IAM identity ASAP.",
+      "Bot posts an MAC-address + SSH target when it finds an IP-drift anomaly: '0 34 00:18:1a:11:84:d0 10.15.104.137 AVerMedia Information Inc.' on ny1-12b-avi-001.net.zillowgroup.net.",
+      "Matt is actively managing the IP list: 'I need to spend some time updating the IP list. That should take care of a lot of the errors.'",
+      "Mark openly uses Claude in this channel: 'by me I mean Claude...' — AI tooling is socially accepted by Mark.",
+    ],
+    cortneyAction:
+      "P0 — verify the bot's underlying Lambda is NOT running under Patrick's IAM identity. If it is, re-key TODAY. This is the team's daily signal.",
+  },
+  {
+    name: "#sea-av",
+    purpose: "Seattle site-specific daily digest + onsite responses.",
+    watchValue: "High",
+    whatItIs:
+      "AV Slack Bot posts 'Good Morning, SEA!' daily with status per room. References https://docs.google.com/spreadsheets/d/1h57WezGBw0MSdFIZmpaV7zZc330Fla7wunTy8N5vlXQ as 'Common AV Errors' reference. John Gifford III responds with actions.",
+    keyPeople: ["AV Slack Bot", "John Gifford III (onsite SEA)", "Cortney Eison (already in-channel)"],
+    findings: [
+      "Recurring offline / disconnect: SEA-3829 controller, SEA-3737 audio test failed, SEA-4003 zRetreat offline, SEA-3950, SEA-3830, SEA-3916 (DTEN went bad — replaced), SEA-3619 All Hands controller.",
+      "Common AV Errors reference doc: https://docs.google.com/spreadsheets/d/1h57WezGBw0MSdFIZmpaV7zZc330Fla7wunTy8N5vlXQ",
+      "John Gifford does the operational walk: 'controller didn't have zoom open / DTEN went bad. Replaced. Updated Orbit/Zoom.'",
+    ],
+    cortneyAction:
+      "Match the John Gifford response pattern. If the bot flags a SEA room, reply with action taken — same cadence John has set.",
+  },
+  {
+    name: "#irvine-av",
+    purpose: "Irvine site-specific daily digest + onsite (Adali) responses.",
+    watchValue: "High",
+    whatItIs:
+      "Per-day room health report for IRV. Persistent offline state for IRV-1110 ZHL — a room nobody seems to be actively un-blocking.",
+    keyPeople: ["AV Slack Bot", "Adali Talavera (onsite IRV)", "Mark Hampson"],
+    findings: [
+      "IRV-1110 ZHL has been OFFLINE every single morning the bot has posted recently. This is a stale 'always red' alert nobody acts on — the worst form of monitoring drift.",
+      "IRV-1250 controller disconnects recurring (separate from the BirdDog P110 RMA).",
+      "IRV-802 All Hands controller disconnect appears here (the room with the hidden projector controls).",
+      "Adali Talavera is the IRV onsite contact for packages, vendor coordination, and floor work. Already known to Stacey.",
+    ],
+    cortneyAction:
+      "Day-1 win: investigate IRV-1110 ZHL — either remove it from monitoring (decommissioned room?) or restore it. Closes a stale alert + earns immediate Mark credit.",
+  },
+  {
+    name: "#nyc-av",
+    purpose: "NYC site-specific daily digest.",
+    watchValue: "Medium",
+    whatItIs:
+      "Bot posts NYC daily status. Mostly green (NYC is the cleanest fleet right now). Occasional HDMI-share back-and-forth between John Gifford + Grace Oh.",
+    keyPeople: ["AV Slack Bot", "John Gifford III", "Grace Oh"],
+    findings: [
+      "NYC fleet currently the cleanest — most days are 'All Zoom Rooms Operating Normally.'",
+      "Grace Oh is the NYC onsite contact for room availability + checks.",
+      "Mark's NYC All Hands AV upgrade is complete (per /org-channel-cloud-hq-experience): newer endpoints, wired podium input, control panel UI to current standards.",
+    ],
+    cortneyAction:
+      "Use NYC as the 'clean control' baseline when measuring SEA / SFO / IRV regressions. NYC-1227 is also the clean-sibling room for the NYC-1250 memory-leak diff.",
+  },
+  {
+    name: "#av_networking",
+    purpose: "AV team × Network team operational coordination.",
+    watchValue: "High",
+    whatItIs:
+      "Joint channel with Zillow Networking. Service Express vendor coordination. UPS failures. Switch issues. Cortney is ALREADY active in this channel.",
+    keyPeople: [
+      "Danny Guerrero (Networking)",
+      "Jon Ross (Networking lead)",
+      "Matt Cornick",
+      "Cortney Eison (active)",
+    ],
+    findings: [
+      "Cortney is the SFO floor presence for networking: helped diagnose UPS failure on sfo-zit-u07-002 (NEMA twist-lock 30A plug).",
+      "Service Express (SE) is the network gear vendor. Legacy UPS NOT covered → had to file a new SE ticket for a similar replacement.",
+      "Switch hostnames follow a pattern: ny1-12b-avi-001.net.zillowgroup.net, sfo-zit-u07-002, etc.",
+      "Matt's standing offer: 'Let me know about the timing of the replacement. I can most likely meet the vendor there if that would be helpful.'",
+    ],
+    cortneyAction:
+      "Stay active here — Cortney already has trust with Danny + Jon. Adjacent network knowledge is a multiplier on the AV role.",
+  },
+  {
+    name: "#founders-suite-av-support",
+    purpose: "Olympic boardroom + Founder's Suite AV escalations.",
+    watchValue: "High",
+    whatItIs:
+      "Highest-touch executive room. Direct channel with EAs (Kari Edwards, Teresa Ashcraft) and occupants (Julia Paulsen, Rich, Lloyd). Mark just completed a major Olympic upgrade (per #org-channel-cloud-hq-experience high-five).",
+    keyPeople: [
+      "Kari Edwards (EA)",
+      "Teresa Ashcraft (EA)",
+      "Julia Paulsen (Founder's Suite occupant)",
+      "Humberto Reyes (Exec Support / Zeus)",
+      "John Gifford III",
+      "Mark Hampson",
+      "Matt Cornick",
+    ],
+    findings: [
+      "Olympic AV upgrade COMPLETE (per Mark): newer switch, AV processor replaced (was EOL), intermittent table HDMI fixed, simplified iPad UI — all in Zoom app, no more switching between Q-Sys + Zoom.",
+      "John Gifford confirmed to Humberto: 'Controls will live within the Zoom app now for Olympic.'",
+      "Humberto recently reported: 'we are testing Olympic and the Q-SYS app is not showing any options.' — the post-upgrade Q-Sys app appears empty by design.",
+      "Open exec ask from Humberto: 'pressing the Share button does not turn the TV unless HDMI is connected.' Mark: 'I'll talk to Matt about this. Basically the display should be turning on when the Zoom Room is awake.'",
+      "Olympic short-jumper-cable culprit: 100Mbps only requires 4 pins to function, while 1Gbps uses all 8. Matt root-caused the intermittent table HDMI 1/2 encoder dropping to 100Mbps.",
+    ],
+    cortneyAction:
+      "Treat Olympic as Tier 0 — any issue here lands at Stacey AND on the org-channel-cloud-hq-experience high-five board. Don't touch Olympic without Matt's blessing.",
+  },
+  {
+    name: "#fs_zeus_ex-sup-team_and_av-team",
+    purpose: "AV team × Executive Support (Zeus) team — joint exec-AV-issues channel.",
+    watchValue: "High",
+    whatItIs:
+      "Where Exec Support flags Olympic / Founder's Suite issues. Humberto Reyes drives the exec-side reporting. John + Matt run point on remediation.",
+    keyPeople: ["Humberto Reyes (Zeus / Exec Support)", "Matt Cornick", "John Gifford III", "Mark Hampson"],
+    findings: [
+      "Olympic HDMI sharing was broken recently: 'Zoom Rooms was not detecting HDMI input from either encoder. Both Mac and PC test devices detected the encoders and began mirroring their displays however Zoom continued to behave as though HDMI was not connected.'",
+      "Root cause traced by Matt + John: the Mac Mini was running sluggish — '10+ seconds to start a meeting and sometimes spins when ending a meeting.' Swapped for spare M2 Mac Mini (8GB RAM).",
+      "Decoder flap on HDMI share (NOT wireless share): 'the decoder still would flap. This only occurred when we were using hdmi share with the encoders.'",
+    ],
+    cortneyAction:
+      "This is the Olympic Mac-Mini argument made for you in real time. When you make the Mac-vs-Windows memo, cite THIS exact thread as primary evidence.",
+  },
+  {
+    name: "#av-workplace",
+    purpose: "AV team × Workplace team (room ops, room calendars, password/asset mgmt).",
+    watchValue: "Medium",
+    whatItIs:
+      "Workplace coordinators (Ruri, Derek, Shelby, Carly) intersect with AV when rooms have day-of issues. Matt is the routine fixer.",
+    keyPeople: [
+      "Ruri Maharani Redis (Workplace)",
+      "Derek Chun (Workplace - backfilling)",
+      "Shelby Burse (Workplace)",
+      "Carly Veazey (EST)",
+      "Matt Cornick",
+      "Cortney Eison (active)",
+    ],
+    findings: [
+      "Workplace team does NOT have a standard shared-password store. Matt asked. Most use Keeper for personal, Google for work, or just memorize. That's an audit gap.",
+      "'Companion Zoom Rooms disconnected' alert is a known Zoom bug — Matt: 'it will be fixed in the next minor update soon.' Don't chase phantom alerts.",
+      "Carly Veazey works on getting Zall Hall into the All Hands space.",
+    ],
+    cortneyAction:
+      "Map every onsite room ticket through this channel before it hits #av-team. Workplace usually flags the room issue before the daily bot does.",
+  },
+  {
+    name: "#av-comms-zall-hall-group",
+    purpose: "Zall Hall (Zillow all-hands) production coordination — AV + Comms team.",
+    watchValue: "High",
+    whatItIs:
+      "Where Matt produces live Zall Hall events. Brittany Bendeck (HR/Comms) requests attendee lists + recordings. Camille Chotzen + Zach Stratton run the production side.",
+    keyPeople: [
+      "Brittany Bendeck (HR / Comms)",
+      "Camille Chotzen (Production)",
+      "Zach Stratton (Production)",
+      "Matt Cornick (AV producer)",
+    ],
+    findings: [
+      "Security: NO dial-in, NO meeting-ID/password joining. Authenticated Zillow only + general access link OR presenter-specific email links. Cite this when HR asks why call-in isn't an option.",
+      "Matt produces Zall Hall while juggling SFO network outages. Recent Zall Hall: 'SFO had a network outage that I had to assist with shortly before I finished setting up for Zall Hall... involved bypassing a hardware failure.' The video upload didn't finish; placeholder went up first.",
+      "Matt does post-Zall-Hall attendee list + recording sharing for HR.",
+    ],
+    cortneyAction:
+      "Offer to be the backup AV producer for the NEXT Zall Hall. Matt cannot keep doing this solo + handling SFO network outages simultaneously. This is a high-visibility offer.",
+  },
+  {
+    name: "#zall-alerts",
+    purpose: "Zillow IT-wide alerts (not AV-specific) — Slack outages, infra issues.",
+    watchValue: "Low",
+    whatItIs:
+      "Ryan Shepardson posts Slack / Zoom platform-level incidents. NOT AV-team-authored.",
+    keyPeople: ["Ryan Shepardson (ZGIM)"],
+    findings: [
+      "Cross-reference here when AV alerts spike — sometimes the underlying cause is a platform-level Slack or Zoom incident, not your room.",
+    ],
+    cortneyAction: "Subscribe. Don't post here unless ZGIM asks.",
+  },
+  {
+    name: "#sea_zretreat-office-support",
+    purpose: "Seattle zRetreat / off-site visitor support — Gatherings team.",
+    watchValue: "Medium",
+    whatItIs:
+      "Reese Byrne and Workplace team support zRetreats with food, room setup, slides. Cortney is in here too.",
+    keyPeople: [
+      "Reese Byrne (Gatherings)",
+      "Michelle Rollery (Gatherings)",
+      "Stephanie Joyce",
+      "Lauren Jernigan",
+      "Ruri Maharani Redis",
+    ],
+    findings: [
+      "Active zRetreats: Legal & Compliance, Dapper, Rentals Advisory Board.",
+      "Rentals PEMD zRetreat went Zoom-enabled for the first time ever — Michelle Rollery publicly credited the AV team for making every breakout Zoom-enabled.",
+      "Shelley Hamlett executed two zRetreats in Las Vegas (the SF 10th-floor closure forced an off-site move).",
+    ],
+    cortneyAction:
+      "Visibility lever — zRetreat AV support is direct Stacey-adjacent work. Show up to one in person if you can.",
+  },
+  {
+    name: "#olympic_zoom_webhooks",
+    purpose: "Patrick's room-specific webhooks channel — Olympic events only.",
+    watchValue: "Medium",
+    whatItIs:
+      "Patrick set this up as the 'monitor only the Olympic room' channel since Olympic is exec-critical. Reference: 'my webhooks channel that specifically monitors the Olympic room.'",
+    keyPeople: ["Patrick Gilligan (gone)", "AV Slack Bot"],
+    findings: [
+      "Lower priority post-upgrade. Olympic's iPad UI now lives entirely in the Zoom app — the channel's signal value has dropped.",
+      "But the WEBHOOK SOURCE is still firing. Audit whether the destination is still useful.",
+    ],
+    cortneyAction:
+      "Audit + decide: keep, archive, or merge into #av-alerts. Closes a Patrick-era one-off.",
+  },
+  {
+    name: "#org-channel-cloud-hq-experience",
+    purpose: "Org-wide channel — Steve Bennett's Cloud HQ Experience org. AV is a sub-team.",
+    watchValue: "High",
+    whatItIs:
+      "Where Friday High Fives, Org All Hands recaps, and Q1/Q2 virtual-event recaps live. Steve Bennett is the AV team's org head (Stacey reports to him).",
+    keyPeople: [
+      "Steve Bennett (Org head — AV team's exec sponsor)",
+      "Stacey Newman",
+      "Mark Hampson",
+      "Michelle Rollery (Gatherings)",
+      "Shelby Burse (Workplace)",
+      "Shelley Hamlett",
+    ],
+    findings: [
+      "Matt got a public Friday High-Five from Mark for the Olympic upgrade: 'one of our most visible and important rooms' — done 'down an engineer, AND while handling the Google Migration.'",
+      "Adali got a public Friday High-Five for Irvine commissioning during active construction.",
+      "Org tracks: Zall Hall, Zall Q&A, NASDAQ broadcast, Mgr+, Dir+. NASDAQ broadcast is an AV-supported event you didn't know about.",
+      "Mark's NYC All Hands upgrade announcement landed here — that's where exec visibility for Patrick's BirdDog→NV-style work happens.",
+      "Steve Bennett occasionally moves Org All Hands to async + sends a deck instead. AV team status appears as one of the slides.",
+    ],
+    cortneyAction:
+      "Read every Friday High-Five Mark sends. Then make sure YOUR closed wins are the next one. The High-Five email is the FTE-conversion preview.",
+  },
+];
+
+// =========================================================================
+// CONTACTS — every person mentioned across the AV channels with role + how
+// they intersect Cortney's work. Use this as a phone book.
+// =========================================================================
+
+export interface Contact {
+  name: string;
+  role: string;
+  team: string;
+  intersects: string;
+  channels: string[];
+}
+
+export const CONTACTS: Contact[] = [
+  // ---------- AV team ----------
+  {
+    name: "Stacey Newman",
+    role: "Director — AV team manager",
+    team: "AV / Cloud HQ Experience",
+    intersects: "Your manager. Owns FTE conversion + India BOMs + 'operational excellence' goal.",
+    channels: ["#av-team", "#org-channel-cloud-hq-experience"],
+  },
+  {
+    name: "Mark Hampson",
+    role: "Manager / PM / Vendor / Budget owner",
+    team: "AV",
+    intersects: "Your peer-manager. Owns BOMs, POs, Mac vs Windows escalation, Founder's Suite project.",
+    channels: ["#av-team", "#av-alerts", "#founders-suite-av-support", "#fs_zeus_ex-sup-team_and_av-team", "#irvine-av", "#org-channel-cloud-hq-experience"],
+  },
+  {
+    name: "Matt Cornick",
+    role: "Senior IC — AV engineer / live-event production",
+    team: "AV",
+    intersects:
+      "Your closest peer. Carries monitoring fallout alone post-Patrick + produces Zall Hall + Olympic + does in-room work. Theater/stagehand background.",
+    channels: ["#av-team", "#av-alerts", "#av-workplace", "#av-comms-zall-hall-group", "#founders-suite-av-support", "#fs_zeus_ex-sup-team_and_av-team", "#av_networking"],
+  },
+  {
+    name: "Patrick Gilligan",
+    role: "Predecessor — gone",
+    team: "AV (former)",
+    intersects: "Authored the daily bot, Splunk dashboards, Lambdas. The stack you're inheriting.",
+    channels: ["(deactivated)"],
+  },
+  {
+    name: "John Gifford III",
+    role: "Onsite tech / floor support (SEA + roving)",
+    team: "AV",
+    intersects:
+      "Does the actual room walks in SEA. Slide-deck + AV support for offsites. Roves to NYC. Touches Olympic.",
+    channels: ["#av-team", "#sea-av", "#nyc-av", "#founders-suite-av-support", "#fs_zeus_ex-sup-team_and_av-team", "#av-workplace"],
+  },
+  // ---------- Onsite / regional ----------
+  {
+    name: "Adali Talavera",
+    role: "Onsite IRV contact",
+    team: "AV / Workplace IRV",
+    intersects:
+      "IRV floor presence — packages, vendor coordination, commissioning. Public Friday High-Five for Irvine commissioning during active construction.",
+    channels: ["#irvine-av", "#av-team", "#org-channel-cloud-hq-experience"],
+  },
+  {
+    name: "Grace Oh",
+    role: "Onsite NYC contact",
+    team: "AV / Workplace NYC",
+    intersects: "NYC room availability + day-of checks.",
+    channels: ["#nyc-av"],
+  },
+  {
+    name: "Steve Bennett",
+    role: "Org head — Cloud HQ Experience",
+    team: "Org (above Stacey)",
+    intersects:
+      "AV team's exec sponsor. Runs Org All Hands. NASDAQ broadcast / Mgr+ / Dir+ all roll up to him. Stacey reports to him.",
+    channels: ["#av-team", "#org-channel-cloud-hq-experience"],
+  },
+  // ---------- Workplace + Gatherings ----------
+  {
+    name: "Shelby Burse",
+    role: "Workplace / Gatherings",
+    team: "Cloud HQ Experience",
+    intersects: "Workplace coordination. Public Friday High-Five author.",
+    channels: ["#org-channel-cloud-hq-experience", "#av-workplace"],
+  },
+  {
+    name: "Michelle Rollery",
+    role: "Gatherings — zRetreat producer",
+    team: "Cloud HQ Experience",
+    intersects: "Runs zRetreat coordination. Publicly credits AV team for Zoom-enabling breakouts.",
+    channels: ["#org-channel-cloud-hq-experience", "#sea_zretreat-office-support"],
+  },
+  {
+    name: "Reese Byrne",
+    role: "Gatherings coordinator (zRetreats)",
+    team: "Cloud HQ Experience",
+    intersects: "zRetreat planning + on-site support.",
+    channels: ["#sea_zretreat-office-support"],
+  },
+  {
+    name: "Derek Chun",
+    role: "Workplace coordinator (being backfilled)",
+    team: "Workplace",
+    intersects: "His role was recently posted — backfill in progress.",
+    channels: ["#av-workplace", "#sea_zretreat-office-support"],
+  },
+  {
+    name: "Ruri Maharani Redis",
+    role: "Workplace coordinator",
+    team: "Workplace",
+    intersects: "Day-of room support in SEA.",
+    channels: ["#av-workplace", "#sea_zretreat-office-support"],
+  },
+  {
+    name: "Carly Veazey (EST)",
+    role: "Workplace / All Hands coordinator",
+    team: "Workplace",
+    intersects: "Working with John on getting Zall Hall into the All Hands space.",
+    channels: ["#av-workplace"],
+  },
+  {
+    name: "Shelley Hamlett",
+    role: "Gatherings / zRetreat producer",
+    team: "Cloud HQ Experience",
+    intersects: "Executed two Las Vegas zRetreats during SF 10th-floor closure.",
+    channels: ["#org-channel-cloud-hq-experience"],
+  },
+  // ---------- Comms / HR / Production ----------
+  {
+    name: "Brittany Bendeck",
+    role: "HR / Comms — Zall Hall liaison",
+    team: "Comms",
+    intersects:
+      "Requests attendee lists + recordings post-Zall-Hall. Asks Matt about dial-in security questions.",
+    channels: ["#av-comms-zall-hall-group"],
+  },
+  {
+    name: "Camille Chotzen",
+    role: "Production",
+    team: "Comms",
+    intersects: "Zall Hall live-production lead.",
+    channels: ["#av-comms-zall-hall-group"],
+  },
+  {
+    name: "Zach Stratton",
+    role: "Production",
+    team: "Comms",
+    intersects: "Zall Hall PSA slides / production.",
+    channels: ["#av-comms-zall-hall-group"],
+  },
+  {
+    name: "Ryan Shepardson",
+    role: "ZGIM (Zillow Group Incident Management)",
+    team: "IT",
+    intersects: "Posts Slack/Zoom platform-level incident updates.",
+    channels: ["#zall-alerts"],
+  },
+  // ---------- Exec Support (Zeus) + EAs + occupants ----------
+  {
+    name: "Humberto Reyes",
+    role: "Executive Support (Zeus team) — Olympic / Founder's Suite",
+    team: "Zeus / Exec Support",
+    intersects:
+      "Flags Olympic AV issues to AV team. Reports test results. Key escalation source for exec-room issues.",
+    channels: ["#founders-suite-av-support", "#fs_zeus_ex-sup-team_and_av-team"],
+  },
+  {
+    name: "Kari Edwards",
+    role: "Executive Assistant",
+    team: "Exec Support",
+    intersects: "Schedules Founder's Suite usage.",
+    channels: ["#founders-suite-av-support"],
+  },
+  {
+    name: "Teresa Ashcraft",
+    role: "Executive Assistant",
+    team: "Exec Support",
+    intersects: "Schedules Founder's Suite usage.",
+    channels: ["#founders-suite-av-support"],
+  },
+  {
+    name: "Julia Paulsen",
+    role: "Founder's Suite occupant",
+    team: "Exec / Legal",
+    intersects: "Coordinates around AV upgrade days in FS.",
+    channels: ["#founders-suite-av-support"],
+  },
+  // ---------- Networking + IT ----------
+  {
+    name: "Danny Guerrero",
+    role: "Networking — Service Express vendor liaison",
+    team: "Networking",
+    intersects:
+      "Active partner with Cortney on UPS replacements (sfo-zit-u07-002). Asks for pictures of plugs + model numbers.",
+    channels: ["#av_networking"],
+  },
+  {
+    name: "Jon Ross",
+    role: "Networking lead",
+    team: "Networking",
+    intersects:
+      "Owns Service Express contract questions. Status driver on UPS / switch replacements.",
+    channels: ["#av_networking"],
+  },
+  {
+    name: "Andrew Spokes",
+    role: "Zillow IT — macOS / Jamf",
+    team: "IT",
+    intersects:
+      "Controls macOS rollout cadence (Sequoia push). Mark mentioned an exception path with him for the Mac-vs-Windows pilot.",
+    channels: ["(via Mark)"],
+  },
+];
+
+// =========================================================================
+// NEW URGENT FINDINGS — pulled out of the channel comb as candidate
+// quick-wins or P0 / P1 tickets. Surface on the dashboard so Cortney
+// doesn't have to dig.
+// =========================================================================
+
+export interface NewFinding {
+  id: string;
+  title: string;
+  severity: "P0" | "P1" | "P2" | "P3";
+  source: string;
+  description: string;
+  cortneyAction: string;
+}
+
+export const NEW_FINDINGS_FROM_CHANNELS: NewFinding[] = [
+  {
+    id: "nf-bot-iam",
+    title: "Verify the AV Slack Bot Lambda is NOT under Patrick's IAM identity",
+    severity: "P0",
+    source: "#av-alerts — bot is still posting daily after Patrick's deactivation, but IAM origin unconfirmed",
+    description:
+      "The daily AV bot (Reflect + Splunk + Zoom + Domotz digest poster) survived Patrick's offboarding. Either someone re-keyed it or it's running on borrowed time. Confirm Lambda execution role TODAY.",
+    cortneyAction:
+      "Open AWS Lambda console. Find the function backing the daily AV update. Read its execution role. If it's a Patrick-user-tied role, re-key immediately. WAVE-CT-001 covers this.",
+  },
+  {
+    id: "nf-irv-1110",
+    title: "IRV-1110 ZHL persistently offline — stale-alert pattern",
+    severity: "P1",
+    source: "#irvine-av — every daily bot post shows IRV-1110 ZHL Offline",
+    description:
+      "The Irvine Zoom Hot Lab (1110 ZHL) has been red in the daily digest for many consecutive days. Either the room is decommissioned (alert is noise) or it actually needs fixing. Either way, the bot is teaching the team to ignore alerts — which is exactly the noise-vs-signal failure Patrick was fighting.",
+    cortneyAction:
+      "Confirm with Adali whether IRV-1110 ZHL is in service. If yes → fix or replace. If no → remove from the bot's monitoring set. Day-1 win.",
+  },
+  {
+    id: "nf-olympic-share-button",
+    title: "Olympic: 'Share Content' button doesn't wake the display unless HDMI is connected",
+    severity: "P1",
+    source: "#fs_zeus_ex-sup-team_and_av-team — Humberto Reyes, exec request",
+    description:
+      "Lloyd (exec) tried to share content wirelessly without joining a Zoom meeting. The TV doesn't turn on for wireless share — only for HDMI. Open exec ask. Mark: 'I'll talk to Matt about this.'",
+    cortneyAction:
+      "Q-Sys logic change to wake the display on Share Content action even without an active Zoom meeting. Coordinate with Matt before touching Olympic.",
+  },
+  {
+    id: "nf-zall-hall-backup",
+    title: "Offer to be backup AV producer for next Zall Hall",
+    severity: "P2",
+    source: "#av-comms-zall-hall-group — Matt produced last Zall Hall while bypassing SFO network failure",
+    description:
+      "Matt cannot keep producing live Zall Hall events solo while simultaneously bypassing hardware failures elsewhere. Last event: video upload didn't finish because Matt was triaging SFO networking. The fact that Brittany got a placeholder video on a live Zillow all-hands is a near-miss.",
+    cortneyAction:
+      "Shadow next Zall Hall. Volunteer as backup producer. High-visibility (Brittany, Camille, Zach all see you) + relieves Matt + earns Friday High-Five eligibility.",
+  },
+  {
+    id: "nf-nasdaq",
+    title: "NASDAQ broadcast support — undocumented event you didn't know about",
+    severity: "P2",
+    source: "#org-channel-cloud-hq-experience — Steve Bennett's org-all-hands recap deck",
+    description:
+      "AV team supports NASDAQ broadcast (likely Zillow earnings days?). Q1 recap listed Zall Hall, Zall Q&A, NASDAQ broadcast, Mgr+, Dir+. Not previously surfaced in #av-team. Ask Stacey for the runbook on NASDAQ broadcast support.",
+    cortneyAction: "Ask Stacey: 'I noticed NASDAQ broadcast in the Q1 recap — is there a runbook I should claim?'",
+  },
+  {
+    id: "nf-workplace-password",
+    title: "Workplace team has no shared-password manager (audit gap)",
+    severity: "P3",
+    source: "#av-workplace — Matt asked, team has no standard",
+    description:
+      "AV team and Workplace team don't share a password manager. Q-Sys Core credentials, vendor portals, shared service accounts — these live in individual people's heads or notepads. Risk: when someone leaves, credentials walk with them (same blast-radius pattern as Patrick).",
+    cortneyAction:
+      "Propose Zillow-IT-approved password manager (Keeper or Zillow's standard) for AV team shared service credentials. Closes a foundation-lift gap.",
+  },
+];
+
+// =========================================================================
 // JIRA — Cortney's local plan of every Jira ticket he intends to create
 // (or has already created) on the WAVE board. Each ticket is linked back
 // to its source: an issue on this site, a Slack permalink, a QW# win,

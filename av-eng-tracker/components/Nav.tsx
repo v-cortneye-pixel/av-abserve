@@ -4,6 +4,7 @@ const NAV_ITEMS = [
   { href: "/", label: "Dashboard" },
   { href: "/playbook", label: "Playbook (FTE)" },
   { href: "/jira", label: "Jira" },
+  { href: "/channels", label: "Channels & Contacts" },
   { href: "/sites", label: "Sites" },
   { href: "/tracker", label: "Tracker" },
   { href: "/questions", label: "Questions" },
