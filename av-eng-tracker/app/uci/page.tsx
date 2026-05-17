@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { UCI_ISSUES, UCI_THESIS } from "@/lib/data";
+import { UCI_ISSUES, UCI_THESIS, UCI_TOOLKIT, type UciToolkitItem } from "@/lib/data";
 import QuoteCard from "@/components/QuoteCard";
 
 const SEV_STYLE: Record<string, string> = {
@@ -42,6 +42,107 @@ export default function UciPage() {
             <span aria-hidden>↗</span>
           </a>
         </div>
+      </section>
+
+      {/* Development toolkit */}
+      <section>
+        <h2 className="z-h2 mb-2">UCI development toolkit (Patrick&apos;s stack)</h2>
+        <p className="mb-5 max-w-3xl text-sm text-zillow-slate">
+          Everything Patrick used to build the SEA-3647 single-page UCI with AI assistance, plus
+          the path forward as Q-Sys 10.x opens to HTML/JS. Tools grouped by layer.
+        </p>
+
+        {(["AI / Editor", "Q-Sys core", "Knowledge", "Source control", "Future (10.x)"] as UciToolkitItem["category"][]).map(
+          (cat) => {
+            const items = UCI_TOOLKIT.filter((t) => t.category === cat);
+            if (items.length === 0) return null;
+            return (
+              <div key={cat} className="mb-6">
+                <h3 className="z-h3">{cat}</h3>
+                <div className="mt-3 grid gap-3 md:grid-cols-2">
+                  {items.map((tool) => (
+                    <article key={tool.name} className="z-card">
+                      <div className="flex flex-wrap items-baseline justify-between gap-2">
+                        <h4 className="text-base font-bold text-zillow-ink">{tool.name}</h4>
+                        {tool.url && (
+                          <a
+                            href={tool.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="z-link inline-flex items-center gap-1 text-xs"
+                          >
+                            Open ↗
+                          </a>
+                        )}
+                      </div>
+                      <p className="mt-2 text-sm leading-relaxed text-zillow-slate">
+                        {tool.what}
+                      </p>
+                      <div className="mt-3 rounded-md bg-zillow-gray-light px-3 py-2 text-xs">
+                        <span className="font-semibold text-zillow-ink">Zillow status: </span>
+                        <span className="text-zillow-slate">{tool.zillowStatus}</span>
+                      </div>
+                      {tool.patrickReference && (
+                        <div className="mt-3 rounded-md border-l-4 border-zillow-blue bg-zillow-blue-light px-3 py-2">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="font-semibold text-zillow-ink">
+                              Patrick — {tool.patrickReference.when}
+                            </span>
+                            <a
+                              href={tool.patrickReference.permalink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="z-link"
+                            >
+                              View in Slack ↗
+                            </a>
+                          </div>
+                          <p className="mt-1 text-xs italic leading-relaxed text-zillow-ink">
+                            &ldquo;{tool.patrickReference.quote}&rdquo;
+                          </p>
+                        </div>
+                      )}
+                    </article>
+                  ))}
+                </div>
+              </div>
+            );
+          },
+        )}
+      </section>
+
+      {/* Workflow */}
+      <section className="z-card bg-zillow-gray-light">
+        <h2 className="z-h3">Patrick&apos;s actual workflow</h2>
+        <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-zillow-ink">
+          <li>Open <strong>Cursor</strong> against the cloned regional Q-Sys repo</li>
+          <li>
+            <code className="rounded bg-white px-1.5 py-0.5 font-mono text-xs">@</code>-reference
+            the Q-Sys help PDFs into Cursor context
+          </li>
+          <li>Describe behavior in plain English (e.g. &ldquo;when <code className="rounded bg-white px-1.5 py-0.5 font-mono text-xs">meeting.started</code> fires, route source X to destination Y&rdquo;)</li>
+          <li>AI generates Lua → paste into the Q-Sys Designer Lua block</li>
+          <li>Test against the Sandbox Core (or a dev Core, or a real room in a low-traffic window)</li>
+          <li>Commit to GitLab → bot posts to #av-team automatically</li>
+          <li>Update Jira ticket reference</li>
+        </ol>
+      </section>
+
+      {/* Week 1 order of operations */}
+      <section className="z-card border-l-4 border-zillow-blue bg-zillow-blue-light">
+        <div className="z-eyebrow">Week 1 order of operations</div>
+        <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-zillow-ink">
+          <li>Install <strong>Cursor</strong> on your laptop (free tier or Zillow license)</li>
+          <li>Get access to the <strong>Q-Sys Designer AWS VM</strong> (Matt or Mark)</li>
+          <li>Clone all 4 regional Q-Sys repos from GitLab</li>
+          <li>Get added to the <strong>Q-Sys Discord</strong> (via Scott at QSC, or Mark/Matt&apos;s invite)</li>
+          <li>
+            Download <code className="rounded bg-white px-1.5 py-0.5 font-mono text-xs">help.qsys.com</code>{" "}
+            content as PDFs into a <code className="rounded bg-white px-1.5 py-0.5 font-mono text-xs">/docs</code> folder
+          </li>
+          <li>Open the SEA-3647 single-page UCI in Designer. Ask Cursor to walk you through it.</li>
+          <li>Start with <Link href="/quick-wins" className="z-link">QW21 — Max Concurrent Session audit</Link> as your first AI-assisted Q-Sys script</li>
+        </ol>
       </section>
 
       {/* Summary table */}

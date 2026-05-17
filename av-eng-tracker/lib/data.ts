@@ -2255,6 +2255,219 @@ export const UCI_THESIS: { who: string; when: string; permalink: string; text: s
     "We need bulletproof, simple rooms, that are comfortable and inviting to use, and heavily monitored to make sure they are always working as they should. If there is no operator, there should be no touch panel — would have been better to just have had one camera, vs a touch panel that people don't even know to use. Neither should there be anything along the lines of system mutes, video routing, display control.",
 };
 
+export interface UciToolkitItem {
+  name: string;
+  category: "AI / Editor" | "Q-Sys core" | "Knowledge" | "Source control" | "Future (10.x)";
+  what: string;
+  zillowStatus: string;
+  url?: string;
+  patrickReference?: { permalink: string; quote: string; when: string };
+}
+
+export const UCI_TOOLKIT: UciToolkitItem[] = [
+  {
+    name: "Cursor (AI code editor)",
+    category: "AI / Editor",
+    what:
+      "AI-first IDE. Lets you @-reference docs into context and generate Lua / TypeScript / Apple Script. Patrick's primary tool.",
+    zillowStatus:
+      "Patrick used it extensively. Confirm whether Zillow has a team license; otherwise free tier works for individual use.",
+    url: "https://cursor.com",
+    patrickReference: {
+      permalink:
+        "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1743535494415339?thread_ts=1743535494.415339&cid=C04GF3S3KQF",
+      when: "Apr 1, 2025",
+      quote:
+        "I just brought my Elgato stream light of the garage. I used Cursor AI to write an Apple script that detects whether im in a meeting every 5 seconds and toggles my light accordingly. What a time to be alive. I wrote 0 code and was done in 10 minutes, after debugging.",
+    },
+  },
+  {
+    name: "Internal Zillow AI coding tool",
+    category: "AI / Editor",
+    what:
+      "Some Zillow-blessed AI coding tool Patrick used to pull all AV switch configs and back them up in <20 minutes.",
+    zillowStatus:
+      "Patrick referenced 'one of Zillow's newer AI coding tools.' Specific tool not named in #av-team — ask Mark which one.",
+    patrickReference: {
+      permalink:
+        "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1736812165080269?thread_ts=1736803286.261809&cid=C04GF3S3KQF",
+      when: "Jan 13, 2025",
+      quote:
+        "I just used one of Zillow's newer AI coding tools to write an app that pulls all of our AV switch configs and backs them up to files. It took me <20 minutes. Completely insane.",
+    },
+  },
+  {
+    name: "Claude / Claude Code",
+    category: "AI / Editor",
+    what:
+      "AI assistant; strong at converting natural language → Lua + Q-Sys Named Control API patterns. Good fallback when Cursor context fills up.",
+    zillowStatus: "Use the same way as Cursor: feed Q-Sys help files as context.",
+    url: "https://claude.ai",
+  },
+  {
+    name: "NotebookLM",
+    category: "AI / Editor",
+    what:
+      "Google's notebook AI. Ingest Q-Sys docs, internal AV docs, and ask 'how does our system handle X?' Mark used it to turn AV docs into a podcast.",
+    zillowStatus: "Free with a Google account.",
+    url: "https://notebooklm.google.com",
+    patrickReference: {
+      permalink:
+        "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1740761801061229?thread_ts=1740761801.061229&cid=C04GF3S3KQF",
+      when: "Feb 28, 2025",
+      quote:
+        "Check this out. Michael ran our room scheduler project docs through notebookLM and it created a podcast about the project.",
+    },
+  },
+  {
+    name: "Q-Sys Designer",
+    category: "Q-Sys core",
+    what:
+      "QSC's authoring environment for Q-Sys files. UCI visual builder, Lua scripts, plugin host, push-to-Core deploy.",
+    zillowStatus:
+      "Already installed on the team's Windows VM on AWS (~$250/mo). 70GB drive. Get Matt to add you. Free download for individual machines from QSC.",
+    url: "https://www.qsys.com/products-solutions/q-sys/software/q-sys-designer-software/",
+  },
+  {
+    name: "Q-Sys Designer Asset Library",
+    category: "Q-Sys core",
+    what:
+      "Plugin marketplace inside Designer. NOTE: Mark's check confirmed that Patrick's projector-control plugin is NOT in the public library — meaning some Zillow plugins came from QSC Communities or were hand-rolled.",
+    zillowStatus: "Audit which plugins are community vs hand-rolled. Document in handoff.",
+  },
+  {
+    name: "Q-Sys Help Portal",
+    category: "Knowledge",
+    what:
+      "Canonical Lua + Q-Sys API + scripting reference. Download as PDF and feed to AI as context.",
+    zillowStatus: "Free, public. Patrick referenced 10.1 docs directly in #av-team.",
+    url: "https://help.qsys.com",
+    patrickReference: {
+      permalink:
+        "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1770660521609409",
+      when: "Feb 9, 2026",
+      quote:
+        "Q-Sys 10.1 help — Control: Resolved performance issues with Zoom app UCI responsiveness on Poly TC8 and Logi Tap IP devices, where certain firmware and Zoom Rooms versions cause significant sluggishness.",
+    },
+  },
+  {
+    name: "Q-Sys Community Forum",
+    category: "Knowledge",
+    what:
+      "Plugin examples, code snippets, scripts. Mark explicitly suspected Patrick's projector-control plugin came from here.",
+    zillowStatus: "Public, free signup.",
+    url: "https://qsc.com/communities",
+  },
+  {
+    name: "Q-Sys Discord",
+    category: "Knowledge",
+    what:
+      "Faster than the community forum for tricky issues. Patrick was active here and called it 'the speediest help there is.'",
+    zillowStatus:
+      "Get added via Scott at QSC or via Mark. Patrick had access tied to his ASE certification.",
+  },
+  {
+    name: "Q-Sys ASE Level 1 / 2 / 3 trainings",
+    category: "Knowledge",
+    what:
+      "QSC's official free certification program. Foundational understanding of designer, scripting, and platform.",
+    zillowStatus:
+      "Free online. Patrick had Level 2/3. Worth scheduling Level 1 in your first 30 days.",
+    url: "https://training.qsc.com",
+  },
+  {
+    name: "QSC Beta Builds (SharePoint)",
+    category: "Knowledge",
+    what:
+      "Patrick had access to Q-Sys beta firmware including 10.2 that fixed the 'max concurrent session' bug.",
+    zillowStatus:
+      "Acuity-hosted SharePoint. Get the share invite from Scott at QSC. Tied to ASE level / beta program.",
+    patrickReference: {
+      permalink:
+        "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1769787997205509?thread_ts=1769787997.205509&cid=C04GF3S3KQF",
+      when: "Jan 30, 2026",
+      quote:
+        "Beta version of Q-Sys 10.2, that deals with the 'maximum users' issue.",
+    },
+  },
+  {
+    name: "Zillow GitLab — regional Q-Sys repos",
+    category: "Source control",
+    what:
+      "Patrick's commits auto-posted to #av-team via the GitLab bot. Four regional repos.",
+    zillowStatus:
+      "Listed in /handoff page. Get contributor access from Mark. Clone all four locally for Cursor context.",
+    url: "https://gitlab.zgtools.net/core-tech/unified-communications/av",
+  },
+  {
+    name: "Q-Sys Reflect Manager",
+    category: "Q-Sys core",
+    what:
+      "Cloud monitoring + remote management for Q-Sys cores. Counts as a session against the max concurrent session limit.",
+    zillowStatus: "Patrick used this heavily. Get added.",
+    url: "https://reflect.qsc.com",
+  },
+  {
+    name: "Splunk dashboards (av-observe)",
+    category: "Source control",
+    what:
+      "Where Patrick built the Core memory + script error + IP schedule dashboards. Tied to the daily alerts bot.",
+    zillowStatus: "Already in the existing av-observe-main repo at workspace root.",
+    patrickReference: {
+      permalink:
+        "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1750867568819919?thread_ts=1750867568.819919&cid=C04GF3S3KQF",
+      when: "Jun 25, 2025",
+      quote:
+        "This new dashboard I made is super helpful for examining script memory, or that error that causes us to have to reboot the Q-Sys cores ('Critical Value' errors).",
+    },
+  },
+  {
+    name: "Q-Sys UCI REST API (`/api-uci/v0/ucis/...`)",
+    category: "Future (10.x)",
+    what:
+      "Patrick demoed pointing a Crestron touch panel and a browser at this URL to render the Q-Sys UCI as a web page. Foundation for the HTML/JS future.",
+    zillowStatus:
+      "Already works in your Q-Sys cores today. Try one: `https://irv-802-qdsp-01.zillow.local/api-uci/v0/ucis/<id>` (on VPN).",
+    patrickReference: {
+      permalink:
+        "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1758044619414969?thread_ts=1758044619.414969&cid=C04GF3S3KQF",
+      when: "Sep 16, 2025",
+      quote:
+        "What if we give the web version of the touch panels to each site lead. That way, they can take a look at things from their desk, without even having to get up?",
+    },
+  },
+  {
+    name: "HTML / JS / TypeScript / React",
+    category: "Future (10.x)",
+    what:
+      "Q-Sys 10.x is opening UCI authoring to standard web tooling. AI assistants are far better at modern web stacks than Lua. This is the long-term path.",
+    zillowStatus:
+      "Q-Sys' direction per Patrick. Your existing web skills directly apply once QSC ships the API.",
+    patrickReference: {
+      permalink:
+        "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1744734270335469?thread_ts=1744734002.228549&cid=C04GF3S3KQF",
+      when: "Apr 15, 2025",
+      quote:
+        "They are trying to set it up so you can use more open source tools, like html and JavaScript, which is great because touch panels are their weakest link.",
+    },
+  },
+  {
+    name: "Crestron TPs in URL-mode (Patrick's experiment)",
+    category: "Future (10.x)",
+    what:
+      "Old Crestron touch panels have a signage URL mode. Patrick ran a web app on a Raspberry Pi and pointed a Crestron TP at it to control Q-Sys via browser.",
+    zillowStatus:
+      "Proof of concept. Worth replicating if any old Crestron hardware is in storage.",
+    patrickReference: {
+      permalink:
+        "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1773429111587919?thread_ts=1773429111.587919&cid=C04GF3S3KQF",
+      when: "Mar 13, 2026",
+      quote:
+        "Fun project from the last few nights. These old Crestron TPs have a signage mode, and you can point them at a URL. I have a web app running on my raspberry PI, which I pointed the TP to the url. Controlling Q-Sys from Crestron (or the browser)!",
+    },
+  },
+];
+
 export const UCI_ISSUES: UciIssue[] = [
   {
     id: "uci-cto-incident",
