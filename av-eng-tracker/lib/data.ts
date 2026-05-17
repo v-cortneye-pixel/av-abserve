@@ -940,62 +940,367 @@ export const ISSUES: Issue[] = [
   },
 ];
 
-export const QUICK_WINS = [
+export type WinTier = "Quick" | "Medium" | "Project";
+export type WinTopic =
+  | "Process"
+  | "Audio"
+  | "HDMI"
+  | "UCI"
+  | "Hardware"
+  | "Zoom"
+  | "Tooling"
+  | "Architecture"
+  | "Documentation"
+  | "Vendor";
+
+export interface QuickWin {
+  id: string;
+  title: string;
+  tier: WinTier;
+  topic: WinTopic;
+  effort: "Low" | "Medium" | "High";
+  visibility: "Low" | "Medium" | "High";
+  estimatedTime: string;
+  owner: string;
+  notes: string;
+}
+
+export const QUICK_WINS: QuickWin[] = [
+  // Quick wins — ≤ 4 hours
   {
     id: "qw1",
     title: "USB-C Adapter Standard SKU",
+    tier: "Quick",
+    topic: "HDMI",
     effort: "Low",
     visibility: "High",
+    estimatedTime: "2–4 hours lab + procurement ask",
+    owner: "Cortney",
     notes: "Test 3 part numbers in lab, lock in one, ship to every site. Mark loves it.",
   },
   {
     id: "qw2",
     title: "NV-21 SN/MAC Tracking Runbook in Jira",
+    tier: "Quick",
+    topic: "Process",
     effort: "Low",
     visibility: "Medium",
+    estimatedTime: "2 hours doc + review",
+    owner: "Cortney",
     notes: "Closes a process gap John already failed once. Mark loves it.",
   },
   {
     id: "qw3",
     title: "Take Over WAVE-16 with Zoom Support",
+    tier: "Quick",
+    topic: "Zoom",
     effort: "Low",
     visibility: "Medium",
+    estimatedTime: "30 min handoff + ongoing follow-up",
+    owner: "Cortney",
     notes: "Frees Matt. Demonstrates ownership of cross-vendor escalations.",
   },
   {
     id: "qw4",
-    title: "Document Zoom Whiteboard Companion Workaround",
+    title: "Reopen WAVE-16 with May 16 IRV-1250 / IRV-1110 ZHL evidence",
+    tier: "Quick",
+    topic: "Zoom",
     effort: "Low",
-    visibility: "Medium",
-    notes: "Add to internal runbook. List rooms in workaround state vs untouched.",
+    visibility: "High",
+    estimatedTime: "30 min ticket update",
+    owner: "Cortney",
+    notes: "Today's alerts bot output is the ammunition. Shows ticket-hygiene rigor.",
   },
   {
     id: "qw5",
-    title: "Spare Parts Inventory Doc",
+    title: "Document Zoom Whiteboard Companion Workaround",
+    tier: "Quick",
+    topic: "Zoom",
     effort: "Low",
-    visibility: "High",
-    notes: "NV-21, NV-32, PSUs, Phoenix blocks, capture cards, UE1s.",
+    visibility: "Medium",
+    estimatedTime: "1 hour runbook",
+    owner: "Cortney",
+    notes: "Add to internal runbook. List rooms in workaround state vs untouched.",
   },
   {
     id: "qw6",
-    title: "TCC2 Commissioning Pass — Start with SEA-3925",
-    effort: "Medium",
-    visibility: "High",
-    notes: "No CapEx. Recovers known-bad room. Plants flag as audio engineer.",
+    title: "Build a v6.6.10 'Stragglers' List from Zoom Admin",
+    tier: "Quick",
+    topic: "Zoom",
+    effort: "Low",
+    visibility: "Medium",
+    estimatedTime: "1 hour query + sheet",
+    owner: "Cortney",
+    notes: "Feeds WAVE-16. Demonstrates proactive monitoring habit.",
   },
   {
     id: "qw7",
-    title: "MXA920 vs TCC2 One-Pager for NYC-1204",
+    title: "Document NV-21 PSU + Phoenix Block Sourcing",
+    tier: "Quick",
+    topic: "Hardware",
     effort: "Low",
-    visibility: "High",
-    notes: "Closes Mark's 8-month-old unanswered question.",
+    visibility: "Medium",
+    estimatedTime: "1 hour doc",
+    owner: "Cortney",
+    notes: "Capture Phihong + Phoenix Contact part numbers + 90W PoE+ injector path from #av-team history.",
   },
   {
     id: "qw8",
-    title: "Single-Page UCI Rollout Plan",
+    title: "Spare Parts Inventory Doc",
+    tier: "Quick",
+    topic: "Hardware",
+    effort: "Low",
+    visibility: "High",
+    estimatedTime: "3 hours initial pass",
+    owner: "Cortney",
+    notes: "NV-21, NV-32, PSUs, Phoenix blocks, capture cards, UE1s. Living doc.",
+  },
+  {
+    id: "qw9",
+    title: "MXA920 vs TCC2 One-Pager for NYC-1204",
+    tier: "Quick",
+    topic: "Audio",
+    effort: "Low",
+    visibility: "High",
+    estimatedTime: "3 hours doc",
+    owner: "Cortney",
+    notes: "Closes Mark's 8-month-old unanswered question.",
+  },
+  {
+    id: "qw10",
+    title: "Document SEA-3829 Dev Space TCC2 + Neat Reference Design",
+    tier: "Quick",
+    topic: "Architecture",
+    effort: "Low",
+    visibility: "Medium",
+    estimatedTime: "2 hours w/ onsite verification",
+    owner: "Cortney",
+    notes: "Only production Neat + ceiling-mic coexistence at Zillow. Frame as precedent for Friday G62 pitch.",
+  },
+  {
+    id: "qw11",
+    title: "Pull Zoom Dashboard Audio Metrics for SEA-3647",
+    tier: "Quick",
+    topic: "Audio",
+    effort: "Low",
+    visibility: "Medium",
+    estimatedTime: "1 hour data pull",
+    owner: "Cortney",
+    notes: "Last 30 days of calls. Quantifies the audio complaint Stacey raised May 15.",
+  },
+  {
+    id: "qw12",
+    title: "Audit Neat Bar Pro Fleet for Upside-Down Mounts",
+    tier: "Quick",
+    topic: "Hardware",
+    effort: "Low",
+    visibility: "Medium",
+    estimatedTime: "Half day onsite (paired with other site visits)",
+    owner: "Cortney",
+    notes: "Aug 2025 issue. Cosmetic but risks cable damage. Coordinate patch+paint with Workplace.",
+  },
+  {
+    id: "qw13",
+    title: "Tag the 'No Source Selected' UCI Quirk on IRV-802 in Jira",
+    tier: "Quick",
+    topic: "UCI",
+    effort: "Low",
+    visibility: "Low",
+    estimatedTime: "30 min ticket",
+    owner: "Cortney",
+    notes: "Matt + Mark wanted this redesigned in March. Make sure it doesn't get forgotten again.",
+  },
+
+  // Medium wins — 1–3 days
+  {
+    id: "qw14",
+    title: "TCC2 Commissioning Pass — SEA-3925 (HVAC room)",
+    tier: "Medium",
+    topic: "Audio",
     effort: "Medium",
     visibility: "High",
-    notes: "Inherits Patrick's most visible artifact.",
+    estimatedTime: "1 day onsite + writeup",
+    owner: "Cortney",
+    notes: "No CapEx. Recovers Matt's 'almost unusable' room. Plants flag as audio engineer.",
+  },
+  {
+    id: "qw15",
+    title: "Source-Side EDID Forcing Lab Test",
+    tier: "Medium",
+    topic: "HDMI",
+    effort: "Medium",
+    visibility: "High",
+    estimatedTime: "1–2 days, ~$300 hardware",
+    owner: "Cortney",
+    notes: "Option D from /hdmi page. May resolve 60%+ of HDMI share issues without a fleet swap.",
+  },
+  {
+    id: "qw16",
+    title: "Direct USB Capture Path Lab Test",
+    tier: "Medium",
+    topic: "HDMI",
+    effort: "Medium",
+    visibility: "High",
+    estimatedTime: "1–2 days lab",
+    owner: "Cortney",
+    notes: "Option B from /hdmi page. Bypass VSI / NV entirely for Tier 1/2 rooms.",
+  },
+  {
+    id: "qw17",
+    title: "AVIO Dante-USB Bidirectional Bridge Test (Neat + Q-Sys)",
+    tier: "Medium",
+    topic: "Audio",
+    effort: "Medium",
+    visibility: "Medium",
+    estimatedTime: "1–2 days lab",
+    owner: "Cortney",
+    notes: "Confirm Matt's Q-Sys → Neat one-way audio failure mode and whether AVIO solves it. Validates G62 pitch architecture.",
+  },
+  {
+    id: "qw18",
+    title: "Single-Page UCI Rollout — 3 Rooms After SEA-3647",
+    tier: "Medium",
+    topic: "UCI",
+    effort: "Medium",
+    visibility: "High",
+    estimatedTime: "2–3 days deploy + test",
+    owner: "Cortney",
+    notes: "Patrick deployed to 3647 March 2026. Continue to 3 more 'simpler rooms'. John already validated.",
+  },
+  {
+    id: "qw19",
+    title: "Patrick's Tooling Runbook (alerts bot + IP validator + UCIs)",
+    tier: "Medium",
+    topic: "Tooling",
+    effort: "Medium",
+    visibility: "High",
+    estimatedTime: "2–3 days docs + access",
+    owner: "Cortney",
+    notes: "Closes Patrick handoff gap. Earns Mark trust on operational continuity.",
+  },
+  {
+    id: "qw20",
+    title: "Add Scheduler Firmware Check to Daily Alerts Bot",
+    tier: "Medium",
+    topic: "Tooling",
+    effort: "Medium",
+    visibility: "Medium",
+    estimatedTime: "1 day code + deploy",
+    owner: "Cortney",
+    notes: "Feeds WAVE-16. Patrick's alerts bot extension.",
+  },
+  {
+    id: "qw21",
+    title: "Q-Sys Max Concurrent Session Audit Across All Cores",
+    tier: "Medium",
+    topic: "UCI",
+    effort: "Low",
+    visibility: "Medium",
+    estimatedTime: "1 day audit",
+    owner: "Cortney",
+    notes: "Matt found SEA-3647 + NYC-1202 set to 3. Audit and bump to 5 fleet-wide. Prevents UCI lockouts.",
+  },
+  {
+    id: "qw22",
+    title: "IRV-802 UCI Fix — Expose Projector/Screen Controls Properly",
+    tier: "Medium",
+    topic: "UCI",
+    effort: "Medium",
+    visibility: "High",
+    estimatedTime: "2 days Q-Sys Designer work",
+    owner: "Cortney",
+    notes: "Eliminate 'No source selected' hidden state Matt complained about Mar 31. Make controls discoverable.",
+  },
+  {
+    id: "qw23",
+    title: "World Cup Pop-Up Room Locking — 4 Sites",
+    tier: "Medium",
+    topic: "Process",
+    effort: "Medium",
+    visibility: "High",
+    estimatedTime: "3 days PM across sites",
+    owner: "Cortney",
+    notes: "IRV / SFO / DEN / MEX. Confirm streaming HDCP path. June 11 launch.",
+  },
+  {
+    id: "qw24",
+    title: "Memory Leak Audit on All Q-Sys Touch Panel Scripts",
+    tier: "Medium",
+    topic: "UCI",
+    effort: "Medium",
+    visibility: "Medium",
+    estimatedTime: "2–3 days code review",
+    owner: "Cortney",
+    notes: "Patrick fixed core scripts June 2025 but flagged TP scripts as untouched. Recursion via Timer.CallAfter still suspect.",
+  },
+
+  // Project wins — 1–2 weeks
+  {
+    id: "qw25",
+    title: "TCC2 Commissioning Sweep — SFO All Hands + SEA-3829",
+    tier: "Project",
+    topic: "Audio",
+    effort: "Medium",
+    visibility: "High",
+    estimatedTime: "1 week (3 sites + writeup)",
+    owner: "Cortney",
+    notes: "Extends QW14. Establishes audio engineering reputation across the fleet.",
+  },
+  {
+    id: "qw26",
+    title: "Tier 1/2/3 UCI Standards Strawman",
+    tier: "Project",
+    topic: "UCI",
+    effort: "High",
+    visibility: "High",
+    estimatedTime: "1–2 weeks doc + Q-Sys file template",
+    owner: "Cortney",
+    notes:
+      "Address Patrick's 'if no operator, no touch panel' thesis. Defines when a room gets a UCI vs raw Zoom controls.",
+  },
+  {
+    id: "qw27",
+    title: "Replace BirdDog P400 in SFO-735 (Pilot)",
+    tier: "Project",
+    topic: "Hardware",
+    effort: "Medium",
+    visibility: "High",
+    estimatedTime: "1 week procurement + 1 day install",
+    owner: "Cortney + Matt",
+    notes: "Panasonic AW-UE50 (white). Pilot before NYC-1250 rollout. /birddog page has full options.",
+  },
+  {
+    id: "qw28",
+    title: "VSI → Q-Sys NV Endpoint Migration Schedule",
+    tier: "Project",
+    topic: "HDMI",
+    effort: "High",
+    visibility: "High",
+    estimatedTime: "1 week pricing + scheduling, multi-month rollout",
+    owner: "Cortney",
+    notes: "Decision made Apr 17 by Matt + Mark. Lab tests (QW15/16) inform whether all rooms need it.",
+  },
+  {
+    id: "qw29",
+    title: "Mac Mini Operational-Cost Brief (ticket-hours/yr)",
+    tier: "Project",
+    topic: "Architecture",
+    effort: "Medium",
+    visibility: "High",
+    estimatedTime: "1 week data pull + writeup",
+    owner: "Cortney",
+    notes: "Backbone of the Tuesday G62 / Q-Sys Connect Windows-only debate. Don't pitch without this data.",
+  },
+  {
+    id: "qw30",
+    title: "India Buildout — Engineer of Record on One Room",
+    tier: "Project",
+    topic: "Architecture",
+    effort: "High",
+    visibility: "High",
+    estimatedTime: "Multi-week, paced w/ build",
+    owner: "Cortney",
+    notes: "First solo end-to-end project. Stacey's pet initiative. Strong career investment.",
   },
 ];
 
@@ -1924,6 +2229,391 @@ export const NV_SPARES: NvSparePart[] = [
     source: "Standard AV vendor",
     notes:
       "Field replacement for failed PSU on either NV-21 or NV-32. Mark used one to get Olympic back online Aug 20, 2025.",
+  },
+];
+
+// --- UCI / Q-Sys touch panel issues ---
+
+export interface UciIssue {
+  id: string;
+  title: string;
+  severity: "P0" | "P1" | "P2";
+  date: string;
+  rooms: string[];
+  description: string;
+  rootCause: string;
+  resolution: string;
+  evidence: Quote[];
+}
+
+export const UCI_THESIS: { who: string; when: string; permalink: string; text: string } = {
+  who: "Patrick Gilligan",
+  when: "Mar 4, 2025 13:17 PT (after the CTO incident at SEA-3611)",
+  permalink:
+    "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1741123050535009?thread_ts=1741123050.535009&cid=C04GF3S3KQF",
+  text:
+    "We need bulletproof, simple rooms, that are comfortable and inviting to use, and heavily monitored to make sure they are always working as they should. If there is no operator, there should be no touch panel — would have been better to just have had one camera, vs a touch panel that people don't even know to use. Neither should there be anything along the lines of system mutes, video routing, display control.",
+};
+
+export const UCI_ISSUES: UciIssue[] = [
+  {
+    id: "uci-cto-incident",
+    title: "SEA-3611 — CTO David Beitel reported in-room users couldn't hear far end",
+    severity: "P0",
+    date: "Mar 4, 2025",
+    rooms: ["SEA-3611"],
+    description:
+      "Zillow's CTO walked up to John asking 'who runs SEA-3611' — they had a meeting where in-room participants couldn't hear the remote side and nobody reported it. The touch panel was sitting on the splash page (default-muted state). Zoom Room Controls plugin couldn't connect.",
+    rootCause:
+      "Touch panel discoverability + default-mute behavior. Users didn't know to tap the panel to wake the system; the splash page didn't communicate that the room was muted.",
+    resolution:
+      "Patrick fixed the ZRC connection that day and used the incident as the founding rationale for the single-page UCI redesign (deployed to SEA-3647 a year later).",
+    evidence: [
+      {
+        who: "Patrick Gilligan",
+        when: "Mar 4, 2025 13:17 PT",
+        text: "David Beitel comes up to John, asks 'who runs SEA-3611': they had a meeting and in-room users couldn't hear the far end, and nobody reported it. Even though that room has a touch panel (mainly to handle 4x routable cameras). I log into the system, and its still on the splash page, meaning things are defaulted to muted.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1741123050535009?thread_ts=1741123050.535009&cid=C04GF3S3KQF",
+      },
+      {
+        who: "John Gifford III",
+        when: "Mar 4, 2025 13:51 PT",
+        text: "Answering his original question, I told him that we try to have the rooms as close to hands off as possible. Short explanation on the difficulty in that room in regards to having to use two separate apps and how we are currently working on getting the process more simple.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1741125661113659?thread_ts=1741123050.535009&cid=C04GF3S3KQF",
+      },
+      {
+        who: "Stacey Newman",
+        when: "Mar 4, 2025 14:18 PT",
+        text: "and how was he at the end? Was he understanding? Any follow up needed by us? ... he's always an advocate for us so I don't want to lose him as a supporter.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1741127091138949?thread_ts=1741123050.535009&cid=C04GF3S3KQF",
+      },
+    ],
+  },
+  {
+    id: "uci-tp-build-pain",
+    title: "Q-Sys touch panel build process is a known pain point",
+    severity: "P1",
+    date: "Mar 13, 2026",
+    rooms: ["Fleet-wide"],
+    description:
+      "Patrick explicitly called building Q-Sys touch panels 'a huge pain' and 'one of the least modern parts of the stack.' Touch panels are why he built the single-page UCI (web-based, Zoom-app-rendered) and why he prototyped Crestron + Raspberry Pi for an HTML-based alternative.",
+    rootCause:
+      "Q-Sys Designer's touch-panel authoring tools haven't kept pace with modern web UI development. Every TP layout requires manual block-based scripting. No reusable component library. QSC's roadmap is to open this up to HTML/JS but not delivered yet.",
+    resolution:
+      "Q-Sys 10.x will support more open-source tools (HTML/JS). Patrick built the single-page UCI on SEA-3647 as the interim standard. Custom Q-Sys plugins (the source of the projector controls Mark couldn't find) need to be documented and migrated.",
+    evidence: [
+      {
+        who: "Patrick Gilligan",
+        when: "Mar 13, 2026 12:33 PT",
+        text: "further context: building Q-Sys touch panels is a huge pain, takes forever, and one of the least modern parts of the stack.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1773430412723649?thread_ts=1773429111.587919&cid=C04GF3S3KQF",
+      },
+      {
+        who: "Patrick Gilligan",
+        when: "Apr 15, 2025 09:24 PT",
+        text: "They are trying to set it up so you can use more open source tools, like html and JavaScript, which is great because touch panels are their weakest link.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1744734270335469?thread_ts=1744734002.228549&cid=C04GF3S3KQF",
+      },
+    ],
+  },
+  {
+    id: "uci-single-page-rollout",
+    title: "Single-page UCI deployed to SEA-3647 — Patrick's interim standard",
+    severity: "P1",
+    date: "Mar 3, 2026 (deployed)",
+    rooms: ["SEA-3647 (deployed)", "All Tier 1/2 rooms (pending)"],
+    description:
+      "Patrick deployed a new single-page UCI to SEA-3647 because 'what was there is so bad.' No audio controls (nobody used them), simple screen control, dropdown for projector, optional routing. Coded with AI assistance. Tested by Derek + John on Neat Pads — works. Fleet rollout never scheduled.",
+    rootCause:
+      "Multi-page UCIs were Patrick's attempt at being comprehensive, but in practice nobody used the audio controls. The 'On/Off + a little extra' pattern matches actual usage. Was John's original idea.",
+    resolution:
+      "Continue Patrick's work — define which rooms get the single-page UCI vs full UCI vs no UCI at all (Patrick's thesis). Targets: simpler rooms first, then evaluate.",
+    evidence: [
+      {
+        who: "Patrick Gilligan",
+        when: "Mar 3, 2026 15:22 PT",
+        text: "Another thing I've been working on, and already deployed to SEA-3647 because what was there is so bad. A single page UCI with: no audio controls (nobody seems to use them), simple screen control, dropdown when there is a projector, routing if needed. Much simpler design, to deal with the limitations of the Zoom UI. A lot of it was coded with AI (much faster).",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1772580151958489?thread_ts=1772580151.958489&cid=C04GF3S3KQF",
+      },
+      {
+        who: "Patrick Gilligan",
+        when: "Mar 3, 2026 15:27 PT",
+        text: "He asked if we could make the UI just one page for those simpler rooms, which I think was a good idea on his part. Really, I want 'On' and 'Off' to do pretty much everything, with a little extra exposure for edge cases.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1772580435206409?thread_ts=1772580151.958489&cid=C04GF3S3KQF",
+      },
+      {
+        who: "Patrick Gilligan",
+        when: "Mar 3, 2026 15:25 PT",
+        text: "I can't test Neat Pads at home. Derek tried it, with no specific feedback other than that it works. John is going to test for me. Also, v 10.1.0 or 10.1.1 were supposed to have better 'Android' performance, haven't gotten a chance to test that.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1772580372974659?thread_ts=1772580151.958489&cid=C04GF3S3KQF",
+      },
+    ],
+  },
+  {
+    id: "uci-irv-802-hidden-controls",
+    title: "IRV-802 — projector + screen controls hidden behind 'No source selected'",
+    severity: "P1",
+    date: "Mar 31 – Apr 2, 2026",
+    rooms: ["IRV-802"],
+    description:
+      "During a zRetreat, Matt needed to manually roll up the screens and turn off projectors but couldn't find the controls. Patrick's UCI exposed them only when no source was selected on the routing page — invisible to anyone who hadn't been shown.",
+    rootCause:
+      "Conditional UI logic that's not discoverable. Patrick's words: 'It would have made sense to not have the No source selected qualifier and then also include the controls under the cog as a tab.'",
+    resolution:
+      "Mark proposed a UI redesign roadmap session April 1, 2026. Never happened. Cortney to own. Make controls discoverable via a settings tab.",
+    evidence: [
+      {
+        who: "Matt Cornick",
+        when: "Mar 31, 2026 08:12 PT",
+        text: "I also found out that I think Patrick removed projector and screen controls from the UI so I had to roll the screens up and turn projectors off manually from QDS.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1774969974154039?thread_ts=1774969974.154039&cid=C04GF3S3KQF",
+      },
+      {
+        who: "Mark Hampson",
+        when: "Mar 31, 2026 08:50 PT",
+        text: "Looking at the file now, it should be redone. Correct me if I'm wrong but cant this just be a simple Zoom Room? Do they really need manual routing and all that? Also, do you know where this plugin comes from? Did Patrick write it or get it from his Q-Sys community? It's not on the Q-Sys Library.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1775136629767749?thread_ts=1774969974.154039&cid=C04GF3S3KQF",
+      },
+      {
+        who: "Matt Cornick",
+        when: "Apr 2, 2026 08:54 PT",
+        text: "Patrick showed me how to get the projector/screen controls. It works, and I remember him doing it, I haven't touched this UCI much since he's updated it. On the routing page, if you have no source selected and select a destination, it brings up the controls dynamically dependent on what destination you select. It would have made sense to not have the 'No source selected' qualifier and then also include the controls under the cog as a tab.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1775145243494969?thread_ts=1774969974.154039&cid=C04GF3S3KQF",
+      },
+    ],
+  },
+  {
+    id: "uci-max-concurrent-sessions",
+    title: "Q-Sys 'Max Concurrent Session Limit Reached' warning",
+    severity: "P2",
+    date: "Jan 21, 2026",
+    rooms: ["SEA-3647", "NYC-1202", "Fleet-wide (suspected)"],
+    description:
+      "Matt encountered the warning multiple times. Default Core setting was 3. Reflect, QDSP user logs, AND active UCI sessions all count toward the limit. Symptom: UCIs lock out users, scripts disconnect.",
+    rootCause:
+      "Default Q-Sys Core session cap of 3. Inadequate for rooms with multiple monitoring/dashboard sessions plus end-user UCI access.",
+    resolution:
+      "Bump to 5 per Core. Fixed in Q-Sys 10.2 beta. Matt: 'I've only found this setting on SEA-3647 and NYC-1202 so far.' Fleet audit needed.",
+    evidence: [
+      {
+        who: "Matt Cornick",
+        when: "Jan 21, 2026 15:26 PT",
+        text: "Q-Sys 'max concurrent session limit has been reached.' I've encountered this warning a couple of times now and decided to look into it. Looks like there's a setting that can be changed. I found it set to 3 so I'm increasing it to 5. I've only found this setting on SEA-3647 and NYC-1202 so far which are the two I've had this warning with. I'm not totally sure what it's related to but I do see QDSP user logs in frequently so maybe it's has something to do with scripts/alerting. I believe Reflect counts as a session as well and maybe a UCI?",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1769038018079579?thread_ts=1769038018.079579&cid=C04GF3S3KQF",
+      },
+      {
+        who: "Patrick Gilligan",
+        when: "Jan 30, 2026 07:46 PT",
+        text: "Beta version of Q-Sys 10.2, that deals with the 'maximum users' issue.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1769787997205509?thread_ts=1769787997.205509&cid=C04GF3S3KQF",
+      },
+    ],
+  },
+  {
+    id: "uci-memory-leaks",
+    title: "Touch panel script memory leaks (Q-Sys Core 'Critical Value' errors)",
+    severity: "P1",
+    date: "Jun 17–25, 2025",
+    rooms: ["SEA-3619", "SEA-3611", "SEA-3925", "IRV-1249/1250/851", "SFO-735", "SFO-726"],
+    description:
+      "Patrick traced Core memory leaks to recursion patterns in touch panel scripts using Timer.CallAfter loops. Cores had to be rebooted when memory crossed a threshold. He fixed the 'Main' script across major rooms but TP-specific scripts were untouched at the time.",
+    rootCause:
+      "QSC documented that 'a few coding methods are known to leak system memory.' Recursive Timer.CallAfter loops were the primary culprit in custom TP scripts.",
+    resolution:
+      "Patrick refactored Main scripts. Splunk dashboard built to monitor memory. After update to SEA-3619, memory went down vs prior day. NYC update intentionally deferred. Fleet sweep of TP scripts may still be open.",
+    evidence: [
+      {
+        who: "Patrick Gilligan",
+        when: "Jun 25, 2025 09:06 PT",
+        text: "I learned the other day from someone at Q-sys that there are a few coding methods that have been known to leak system memory. While I removed those methods in the 'Main' script, which lives in SEA-3611, 3925, 3619, IRV-1250, 1249, 851, SFO-735, 726.....I hadn't thought of the touch panel scripts, for the larger rooms. I can see now its the systems with touch panels that are the only ones leaking memory.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1750867568819919?thread_ts=1750867568.819919&cid=C04GF3S3KQF",
+      },
+      {
+        who: "Patrick Gilligan",
+        when: "Jun 17, 2025 07:44 PT",
+        text: "I read somewhere that you can't do recursion like this, where you use a timer to loop itself. This is how I was getting that status data for the touch panel, which I only added in phase 2.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1750171462169739?thread_ts=1750110637.761679&cid=C04GF3S3KQF",
+      },
+      {
+        who: "Patrick Gilligan",
+        when: "Jun 24, 2025 08:33 PT",
+        text: "I was trying to clear the errors out, that John had reported on yesterday. I pushed a 1-line update (which I do all the time), and it started bugging out... I removed ALL code from the QSC touch panel for today's session, until I have time to investigate it. So in short, that touch panel doesnt work today. Never seen an update do this.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1750779187890609?thread_ts=1750697603.606309&cid=C04GF3S3KQF",
+      },
+    ],
+  },
+  {
+    id: "uci-ipad-vs-tp-discrepancy",
+    title: "iPad UCI vs Q-Sys TP behavioral inconsistency",
+    severity: "P2",
+    date: "Jul 22–31, 2025",
+    rooms: ["SEA-3647", "SEA-3611", "SEA-3619"],
+    description:
+      "Multiple incidents where the routing page or mute controls worked on the Q-Sys TP but failed on the iPad UCI app — or the reverse. Re-installing the Q-Sys iOS app sometimes fixed it.",
+    rootCause:
+      "iPad rendering of UCI uses the Q-Sys iOS app which has its own rendering pipeline. Different from the Q-Sys touch panel embedded renderer. Bugs surface inconsistently.",
+    resolution:
+      "John reinstalled app on the affected iPad. Patrick noted Q-Sys 10.1 release notes specifically called out 'performance issues with Zoom app UCI responsiveness on Poly TC8 and Logi Tap IP devices, where certain firmware and Zoom Rooms versions cause significant sluggishness.'",
+    evidence: [
+      {
+        who: "John Gifford III",
+        when: "Jul 22, 2025 16:29 PT",
+        text: "the routing page is acting up on the iPad UCI. Works on the qsys tp.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1753226980381079?thread_ts=1753226980.381079&cid=C04GF3S3KQF",
+      },
+      {
+        who: "John Gifford III",
+        when: "Jul 22, 2025 17:16 PT",
+        text: "Just finished a tech check for in the morning. It was still acting funny. Wouldn't let me mute/unmute zones just now. The qsys tp still worked like a champ.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1753230355317839?thread_ts=1753226980.381079&cid=C04GF3S3KQF",
+      },
+      {
+        who: "Patrick Gilligan",
+        when: "Feb 9, 2026 10:08 PT",
+        text: "Q-Sys 10.1 — Control: Resolved performance issues with Zoom app UCI responsiveness on Poly TC8 and Logi Tap IP devices, where certain firmware and Zoom Rooms versions cause significant sluggishness, with performance varying across devices.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1770660521609409",
+      },
+    ],
+  },
+  {
+    id: "uci-zrc-plugin-offline",
+    title: "Zoom Room Controls Plugin goes offline — requires Zoom-side 'kick' to recover",
+    severity: "P2",
+    date: "Mar 16, 2026",
+    rooms: ["NYC-1202"],
+    description:
+      "The Zoom Room Controls Plugin (which lets `meeting.started` and `operation.time.ended` events turn the room on/off) goes offline after Q-Sys reboots. Recovery requires editing the Zoom Room's profile in Zoom Admin and saving — anything to 'kick' it.",
+    rootCause:
+      "Plugin authentication state appears to need refreshing after Core reboots. Not automated yet.",
+    resolution:
+      "Patrick: 'These are just two small things I haven't been able to automate a fix for, since they happen so rarely.' Candidate for an automated check + remediation script.",
+    evidence: [
+      {
+        who: "Patrick Gilligan",
+        when: "Mar 16, 2026 06:45 PT",
+        text: "NYC-1202 - rebooted the Q-Sys and 3 items were still offline after: 2x Christie Projector (not really needed because we use serial, but nice to have a web page). 1x Zoom Room Controls Plugin, that lets a meeting.started or operation.time.ended turn the room on/off.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1773668715745849?thread_ts=1773668715.745849&cid=C04GF3S3KQF",
+      },
+      {
+        who: "Patrick Gilligan",
+        when: "Mar 16, 2026 06:50 PT",
+        text: "For the ZRC Plugin, I had to go to the Zoom Room's settings page and edit the Zoom Room profile, with something insignificant, and save it. Or cut, save it, and paste it back. Anything to give it a kick.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1773669029249559?thread_ts=1773668715.745849&cid=C04GF3S3KQF",
+      },
+    ],
+  },
+  {
+    id: "uci-reip-disconnect",
+    title: "iPad UCI loses connection after room re-IP",
+    severity: "P2",
+    date: "Jan 13, 2025",
+    rooms: ["SEA-3611", "Any room where DHCP reassigns"],
+    description:
+      "After a Core re-IPs, the Q-Sys iOS app on the controller iPad doesn't auto-rediscover — the UCI vanishes from the iPad's room list. Manual IP entry required.",
+    rootCause:
+      "iOS app doesn't dynamically resolve cores by DNS name. Static IP entry on each iPad. Patrick's IP/switch validator helps but doesn't auto-update iPad configs.",
+    resolution:
+      "Reserved IPs for every Core (covered by Patrick's daily IP/switch validator). When breaks happen: punch in the new IP manually on the iPad.",
+    evidence: [
+      {
+        who: "John Gifford III",
+        when: "Jan 13, 2025 13:21 PT",
+        text: "did the uci change in 3611 this week? Just went to change the cameras for the group and it looks different from last week.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1736803286261809",
+      },
+      {
+        who: "Patrick Gilligan",
+        when: "Jan 13, 2025 13:22 PT",
+        text: "I actually think that this system re-IP'd, and we need to punch in a new IP to the iPad. That was my bad for forgetting to flag that.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1736803353173669?thread_ts=1736803286.261809&cid=C04GF3S3KQF",
+      },
+    ],
+  },
+  {
+    id: "uci-two-tps-confusing",
+    title: "Two touch panels per room confuses users (NYC-1250)",
+    severity: "P2",
+    date: "Feb 19, 2024",
+    rooms: ["NYC-1250"],
+    description:
+      "Some rooms had both a Q-Sys touch panel AND an iPad running the Zoom Rooms app. Users couldn't tell which to use; the Q-Sys panel didn't have the Zoom app. Stacey flagged this as a UX problem.",
+    rootCause:
+      "Legacy install pattern from before Q-Sys could run the Zoom UCI directly. Two devices doing overlapping jobs.",
+    resolution:
+      "Consolidate to one device per room where possible. iPad-only is the new pattern for most rooms.",
+    evidence: [
+      {
+        who: "Stacey Newman",
+        when: "Feb 19, 2024 13:45 PT",
+        text: "Can we remove one it's kind of confusing as a user and the iPad does both.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1708379141890159",
+      },
+    ],
+  },
+  {
+    id: "uci-qsys-connect-windows-only",
+    title: "Q-Sys Connect for Zoom Rooms — Windows-only certification (strategic)",
+    severity: "P1",
+    date: "May 7–14, 2026",
+    rooms: ["Fleet strategic"],
+    description:
+      "QSC announced Q-Sys Connect as a Zoom Rooms 'attached controller' — but only certified for Windows. Mac Mini (Zillow's standard) is not supported. This is the same vendor-direction signal driving the Friday G62 / Mac Mini debate.",
+    rootCause: "QSC strategic direction. Microsoft Teams Rooms ecosystem alignment.",
+    resolution:
+      "Decision pending. Three paths: lobby IT for Windows AV appliance exception, wait for QSC Mac support, or accept Q-Sys touch panel features won't progress on Mac Mini fleet. Tuesday May 19 meeting w/ Matt should address.",
+    evidence: [
+      {
+        who: "Cortney Eison",
+        when: "May 14, 2026 22:36 PT",
+        text: "'Q-SYS Connect software is now certified as a Zoom Rooms attached controller for Windows.' I would imagine that would mean that zoom rooms be run on a NUC for example rather than a Mac.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1778823386718649",
+        sourceUrl:
+          "https://blogs.qsc.com/systems/2026/05/07/q-sys-connect-unlocks-new-flexibility-for-zoom-rooms/",
+        sourceLabel: "QSC blog post",
+      },
+      {
+        who: "Mark Hampson",
+        when: "May 15, 2026 06:26 PT",
+        text: "It's such a bummer we need to use windows for this. Every room deployment we've rolled out is a mac mini. We have a specific mac os AV Zoom Room config that gets pushed out to them and is managed by our CE team... it may be a tough sell.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1778851565920959?thread_ts=1778823120.439739&cid=C04GF3S3KQF",
+      },
+      {
+        who: "Cortney Eison",
+        when: "May 14, 2026 22:36 PT",
+        text: "Here's the TP, Q-SYS TSC-101-G3 touchscreen. Maybe we can leverage Scott at QSYS to get us a loaner for a bit so I can put it through its paces or maybe we can buy one for the lab.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1778823386718649",
+        sourceUrl:
+          "https://www.qsys.com/products-solutions/q-sys/control-io-controllers/q-sys-touch-screen-controllers/tsc-101-g3/",
+        sourceLabel: "Q-SYS TSC-101-G3",
+      },
+    ],
   },
 ];
 
