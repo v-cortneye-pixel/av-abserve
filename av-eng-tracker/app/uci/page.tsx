@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { UCI_ISSUES, UCI_THESIS, UCI_TOOLKIT, type UciToolkitItem } from "@/lib/data";
+import {
+  CORTNEY_COUNTER_THESIS,
+  HALF_STANDARDS,
+  UCI_ISSUES,
+  UCI_THESIS,
+  UCI_TOOLKIT,
+  type UciToolkitItem,
+} from "@/lib/data";
 import QuoteCard from "@/components/QuoteCard";
 
 const SEV_STYLE: Record<string, string> = {
@@ -23,24 +30,93 @@ export default function UciPage() {
         </p>
       </header>
 
-      {/* Patrick's thesis */}
-      <section className="z-card border-l-4 border-zillow-blue bg-zillow-blue-light">
-        <div className="z-eyebrow">Patrick&apos;s thesis (post CTO incident)</div>
-        <blockquote className="mt-3 border-l-4 border-zillow-blue pl-4 text-base italic leading-relaxed text-zillow-ink">
-          &ldquo;{UCI_THESIS.text}&rdquo;
-        </blockquote>
-        <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-zillow-slate">
-          <span className="font-semibold text-zillow-ink">{UCI_THESIS.who}</span>
-          <span className="font-mono">{UCI_THESIS.when}</span>
-          <a
-            href={UCI_THESIS.permalink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="z-link inline-flex items-center gap-1"
-          >
-            <span>View in Slack</span>
-            <span aria-hidden>↗</span>
-          </a>
+      {/* Thesis vs. counter-thesis */}
+      <section>
+        <div className="z-eyebrow mb-3">Patrick&apos;s thesis vs. Cortney&apos;s counter-thesis</div>
+        <div className="grid gap-4 md:grid-cols-2">
+          {/* Patrick */}
+          <div className="z-card border-l-4 border-zillow-blue bg-zillow-blue-light">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wider text-zillow-blue">
+                Patrick&apos;s thesis
+              </span>
+              <span className="font-mono text-[10px] text-zillow-slate">Mar 4, 2025</span>
+            </div>
+            <blockquote className="mt-3 border-l-4 border-zillow-blue pl-4 text-sm italic leading-relaxed text-zillow-ink">
+              &ldquo;{UCI_THESIS.text}&rdquo;
+            </blockquote>
+            <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-zillow-slate">
+              <span className="font-semibold text-zillow-ink">{UCI_THESIS.who}</span>
+              <a
+                href={UCI_THESIS.permalink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="z-link inline-flex items-center gap-1"
+              >
+                <span>View in Slack</span>
+                <span aria-hidden>↗</span>
+              </a>
+            </div>
+          </div>
+
+          {/* Cortney */}
+          <div className="z-card border-l-4 border-zillow-red bg-red-50">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-wider text-zillow-red">
+                Cortney&apos;s counter-thesis
+              </span>
+              <span className="font-mono text-[10px] text-zillow-slate">{CORTNEY_COUNTER_THESIS.when}</span>
+            </div>
+            <p className="mt-3 text-sm font-semibold leading-snug text-zillow-ink">
+              {CORTNEY_COUNTER_THESIS.headline}
+            </p>
+            <blockquote className="mt-2 border-l-4 border-zillow-red pl-4 text-sm italic leading-relaxed text-zillow-ink">
+              &ldquo;{CORTNEY_COUNTER_THESIS.text}&rdquo;
+            </blockquote>
+            <ul className="mt-3 space-y-2 pl-4 text-xs leading-relaxed text-zillow-ink">
+              {CORTNEY_COUNTER_THESIS.bullets.map((b, i) => (
+                <li key={i} className="list-disc">
+                  {b}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-3 text-xs font-semibold text-zillow-ink">
+              {CORTNEY_COUNTER_THESIS.who}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Half-standards Cortney is reopening */}
+      <section>
+        <h2 className="z-h2 mb-1">Patrick&apos;s half-standards Cortney is reopening</h2>
+        <p className="mb-5 max-w-3xl text-sm text-zillow-slate">
+          Patrick was a strong programmer but didn&apos;t come from an AV background. Several
+          of his architectural decisions were never debated by the team and never written down
+          as Zillow AV standards — they survived because nobody else could read the code. Below
+          is the list Cortney is putting back in front of Matt, Mark, and John.
+        </p>
+        <div className="overflow-x-auto rounded-xl border border-zillow-gray-border bg-white">
+          <table className="w-full text-sm">
+            <thead className="bg-zillow-gray-light text-left">
+              <tr>
+                <th className="px-4 py-3 font-semibold text-zillow-ink">Patrick&apos;s call</th>
+                <th className="px-4 py-3 font-semibold text-zillow-ink">Why he believed it</th>
+                <th className="px-4 py-3 font-semibold text-zillow-ink">Cortney&apos;s concern</th>
+                <th className="px-4 py-3 font-semibold text-zillow-ink">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zillow-gray-border">
+              {HALF_STANDARDS.map((h) => (
+                <tr key={h.id} id={h.id} className="align-top scroll-mt-24">
+                  <td className="px-4 py-3 font-semibold text-zillow-ink">{h.patrickPosition}</td>
+                  <td className="px-4 py-3 text-zillow-slate">{h.why}</td>
+                  <td className="px-4 py-3 text-zillow-ink">{h.cortneyConcern}</td>
+                  <td className="px-4 py-3 text-zillow-slate">{h.action}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </section>
 
@@ -233,40 +309,72 @@ export default function UciPage() {
       {/* Cortney's action plan */}
       <section className="z-card bg-zillow-gray-light">
         <h2 className="z-h3">Cortney&apos;s action plan for the UCI portfolio</h2>
+        <p className="mt-2 max-w-3xl text-sm text-zillow-slate">
+          Reframed against Patrick&apos;s half-standards. The panel stays. The CONTENT of
+          the panel is what we&apos;re tiering and fixing.
+        </p>
         <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm leading-relaxed text-zillow-ink">
           <li>
-            <strong>Inherit Patrick&apos;s single-page UCI source.</strong> Find it in GitLab, run
-            it locally, understand the Main script + config file pattern.
+            <strong>Stand up a local Q-Sys Designer environment on the new Windows laptop.</strong>{" "}
+            Procurement approved May 2026. Bypasses the shared AWS VM&apos;s 70GB HD and Matt-contention.
+            Makes Cortney the team&apos;s only currently-Windows-equipped engineer — and the
+            natural owner of Q-Sys Connect for Zoom Rooms testing (Windows-only).
           </li>
           <li>
-            <strong>Tier 1/2/3 UCI standards strawman.</strong> Honor Patrick&apos;s
-            &ldquo;no operator → no touch panel&rdquo; thesis. Define which rooms get raw Zoom
-            controls, which get the single-page UCI, which need full UCIs.
+            <strong>Inherit Patrick&apos;s single-page UCI source.</strong> Find it in GitLab, run
+            it locally, understand the Main script + config file pattern — so we can debate it
+            from inside the code, not from the outside.
+          </li>
+          <li>
+            <strong>Replace the &ldquo;no touch panel&rdquo; thesis with a tiered UCI standard.</strong>{" "}
+            Every conference room (huddle and up) keeps a touch panel. Tier 1 minimal (huddle:
+            join + leave + mute), Tier 2 default (single-page UCI Patrick built), Tier 3 strategic
+            (event / board / multi-display: tabbed UCI with source routing, display power, PTZ
+            presets behind a settings gate).
           </li>
           <li>
             <strong>Fix IRV-802 hidden controls.</strong> Eliminate the &ldquo;No source
-            selected&rdquo; gating. Expose projector + screen controls under a settings tab.
+            selected&rdquo; gating. Surface projector + screen controls on a visible settings tab.
+            This is the canonical example of Patrick&apos;s &ldquo;hide it&rdquo; pattern failing.
+          </li>
+          <li>
+            <strong>Re-add system mute / source route / display power on a gated settings tab.</strong>{" "}
+            Long-press or PIN entry. Recovery controls for in-room operators and Zoom reps.
+          </li>
+          <li>
+            <strong>Re-tune SEA-3611 and every CTO-incident-style room.</strong> Audit camera
+            presets, source labels, and Zoom Room name accuracy. The fix is tuning, not amputation.
           </li>
           <li>
             <strong>Memory-leak sweep on TP scripts.</strong> Patrick fixed Main scripts but flagged
-            TP scripts as untouched. Audit and refactor recursion.
+            TP scripts as untouched. Audit and refactor recursion across the fleet.
           </li>
           <li>
             <strong>Max-concurrent-sessions audit fleet-wide.</strong> Matt only checked 2 cores.
-            Bump default to 5 everywhere; track in Q-Sys 10.2 upgrade plan.
+            Bump default to 5 everywhere; track in the Q-Sys 10.2 upgrade plan.
           </li>
           <li>
-            <strong>Automate the ZRC Plugin &ldquo;kick&rdquo;.</strong> NYC-1202 manual fix is a
-            scripting opportunity.
+            <strong>Automate the ZRC Plugin &ldquo;kick.&rdquo;</strong> NYC-1202 manual fix is a
+            scripting opportunity, not a documented procedure.
           </li>
           <li>
-            <strong>Lab-test the Q-Sys TSC-101-G3 + Q-Sys Connect on Windows.</strong> Decide
-            architecturally whether to lobby IT for Windows AV appliance exception.
+            <strong>Lab-test Q-Sys TSC-101-G3 + Q-Sys Connect on Windows on the new laptop.</strong>{" "}
+            Build the case for a Windows AV appliance exception (NUC / G62 / Q-Sys NV-Edge) to
+            put in front of IT — Patrick never escalated this conflict.
           </li>
           <li>
-            <strong>Document the custom Q-Sys plugins.</strong> Mark didn&apos;t recognize the
-            projector-control plugin. Catalog source (community vs Patrick-authored) and license/support
-            implications.
+            <strong>Inventory Patrick&apos;s monitoring stack and write runbooks.</strong> Splunk
+            dashboards, Lambda probes, Slack-API alerts. One-pager per monitor: what it watches,
+            where it alerts, how to silence, owner. Promote to team-owned, not Patrick-owned.
+          </li>
+          <li>
+            <strong>Document custom Q-Sys plugins.</strong> Mark didn&apos;t recognize the
+            projector-control plugin. Catalog source (community vs Patrick-authored), license,
+            and support contact.
+          </li>
+          <li>
+            <strong>Code reviews on every Q-Sys MR going forward.</strong> Cursor + AI make the
+            Lua / plugin code legible to Mark and Matt. No more single-owner black boxes.
           </li>
         </ol>
       </section>

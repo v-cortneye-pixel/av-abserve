@@ -2255,6 +2255,115 @@ export const UCI_THESIS: { who: string; when: string; permalink: string; text: s
     "We need bulletproof, simple rooms, that are comfortable and inviting to use, and heavily monitored to make sure they are always working as they should. If there is no operator, there should be no touch panel — would have been better to just have had one camera, vs a touch panel that people don't even know to use. Neither should there be anything along the lines of system mutes, video routing, display control.",
 };
 
+// Cortney's counter-thesis. Patrick was a strong programmer but didn't come from an AV
+// background; several of his architectural calls were "half standards" — useful, but with
+// real holes nobody could question because nobody else owned the code. This section captures
+// Cortney's pushback as the new Systems Engineer.
+export const CORTNEY_COUNTER_THESIS: {
+  who: string;
+  when: string;
+  headline: string;
+  text: string;
+  bullets: string[];
+} = {
+  who: "Cortney (Systems Engineer — Patrick's replacement)",
+  when: "May 17, 2026",
+  headline:
+    "Patrick's \"no touch panel\" thesis is a programmer's answer, not an AV engineer's answer.",
+  text:
+    "Taking a touch panel away from rooms is silly — what are they, BYOD rooms or what? Patrick was a strong programmer, but he didn't come from an AV background. Several of his standards are half-standards: useful, but with holes — and because he owned the code, nobody else could question them. I'm here to put them in front of the team and fix the ones that don't survive contact with how rooms actually get used.",
+  bullets: [
+    "A room without a touch panel IS a BYOD room. Either commit to BYOD or commit to a panel — don't ship a half-room where the user walks in, can't find the source, and the CTO has to flag down John.",
+    "The CTO incident at SEA-3611 wasn't \"too many controls\" — it was an UNTUNED control (a camera preset that didn't exist). Patrick's takeaway was \"remove the panel.\" The AV answer is \"tune the panel.\"",
+    "Patrick's own behavior contradicts the thesis: he still built a simplified single-page UCI for SEA-3647. So the real question is never \"panel vs. no panel\" — it's \"what's on the panel and is it tuned.\" Tier the CONTENT of the UCI, not the existence of it.",
+    "Removing system mutes, video routing, and display control means an in-room operator (or a Zoom rep) can't take over a stuck meeting. That's a regression, not a simplification.",
+    "Patrick's \"heavily monitored to make sure they are always working\" half kept the program afloat — but the monitoring lived in Splunk/Lambda scripts only he could read. Half standard: the system worked while he was here; nobody else could troubleshoot it.",
+  ],
+};
+
+// Concrete list of Patrick decisions Cortney is reopening. Each one is a "half standard" —
+// a call that was defensible inside Patrick's head, but never debated by the team and
+// never written down as a real Zillow AV standard.
+export interface HalfStandard {
+  id: string;
+  patrickPosition: string;
+  why: string; // Why Patrick believed it
+  cortneyConcern: string;
+  action: string;
+}
+
+export const HALF_STANDARDS: HalfStandard[] = [
+  {
+    id: "no-touch-panel",
+    patrickPosition: "If there is no operator, there should be no touch panel.",
+    why: "Patrick was reacting to the CTO incident — users got confused by a UCI that had broken/hidden controls.",
+    cortneyConcern:
+      "A room with no touch panel is a BYOD room. We don't have BYOD as a standard. Removing the panel doesn't fix the panel — it just hides Zillow's failure to tune it.",
+    action:
+      "Keep the touch panel on every conference room (huddle and up). Tier the UCI CONTENT instead — Tier 1 minimal, Tier 2 default, Tier 3 strategic. Re-tune SEA-3611 + every room that had its panel \"hidden.\"",
+  },
+  {
+    id: "remove-system-mutes-and-routing",
+    patrickPosition:
+      "Touch panels should not have system mutes, video routing, or display control.",
+    why: "Patrick wanted users to never be able to break the room. He optimized for the bottom 20% of users.",
+    cortneyConcern:
+      "When a meeting is going sideways, the operator (or a Zoom rep) needs to mute, re-route, or kill a display. Stripping those controls strips our recovery options. The right answer is gated access (operator/settings tab), not removal.",
+    action:
+      "Bring back system mute, source-route, and display power on a settings tab behind a long-press / PIN. Standard pattern in every Crestron / Q-Sys deployment outside Zillow.",
+  },
+  {
+    id: "single-page-uci-only",
+    patrickPosition:
+      "Single-page UCI is the future — no tabs, no navigation, just a Zoom rectangle and a content rectangle.",
+    why: "It's elegant from a programmer's perspective and it tested well at SEA-3647.",
+    cortneyConcern:
+      "Single-page works for a uniform Tier 2 room. It does NOT work in a multi-display room (IRV-802 had projector + screen + Zoom display — all hidden). It does NOT scale to event spaces (NYC-1204) with multiple sources.",
+    action:
+      "Single-page UCI = Tier 2 default. Multi-source / multi-display rooms get a tabbed UCI with a clear visible affordance. Stop calling \"hide it\" a design pattern.",
+  },
+  {
+    id: "monitoring-in-patricks-head",
+    patrickPosition:
+      "Rooms should be heavily monitored so they're always working as they should.",
+    why: "Patrick built Splunk dashboards, Lambda probes, and Slack-API alerts. He was the on-call human.",
+    cortneyConcern:
+      "All the monitoring lived in Patrick's GitLab projects with no runbook. When he leaves, half of it goes dark or auto-fails silently. That's not a standard — that's tribal knowledge.",
+    action:
+      "Inventory every Patrick-authored monitor. Write a one-page runbook per monitor: what it watches, where it alerts, how to silence it, who owns it. Promote to team-owned, not Patrick-owned.",
+  },
+  {
+    id: "mac-mini-as-the-host",
+    patrickPosition:
+      "Mac Mini is the Zoom Rooms host — Zillow standard, end of discussion.",
+    why: "Apple ecosystem alignment with the rest of Zillow IT and historical inertia from before Patrick arrived.",
+    cortneyConcern:
+      "Q-Sys Connect for Zoom Rooms is Windows-only. Half the Q-Sys ecosystem we want to lean on is Windows-first. The Mac Mini standard is incompatible with our own roadmap. Patrick punted on this — never escalated it as an architectural conflict.",
+    action:
+      "Bring Mac Mini vs. Q-Sys roadmap conflict to Matt + IT as a formal decision. Pilot a Windows AV appliance exception (NUC / Q-Sys NV-Edge / G62) in one room and measure.",
+  },
+  {
+    id: "patrick-as-the-only-coder",
+    patrickPosition:
+      "Patrick wrote and owned all the Lua, all the plugins, all the AWS Lambda alerts.",
+    why: "Nobody else on the team wrote code. Patrick was the path of least resistance.",
+    cortneyConcern:
+      "If one engineer is the only person who can read or change a control system, that system isn't a standard — it's a black box. Mark/Matt have stated they can't troubleshoot the custom plugins or the projector-control plugin.",
+    action:
+      "Use Cursor + AI tools to make the code legible to Mark and Matt. Code reviews on every Q-Sys MR. Document custom plugins (source: community vs Patrick-authored, license, support contact).",
+  },
+  {
+    id: "no-in-room-camera-control",
+    patrickPosition:
+      "Users shouldn't control cameras — auto-frame / speaker-tracking should handle it.",
+    why: "Reduces support load. Most rooms are Neat Bar Pro which auto-frames anyway.",
+    cortneyConcern:
+      "Event spaces, board rooms, and any room with a presenter need PTZ presets that humans can pick. \"One camera vs a touch panel\" works in a 4-person huddle, not in a 30-person all-hands.",
+    action:
+      "Keep auto-frame as the default. Add PTZ preset row to Tier 3 (event / board) UCIs. Document which rooms are which tier.",
+  },
+];
+
 export interface UciToolkitItem {
   name: string;
   category: "AI / Editor" | "Q-Sys core" | "Knowledge" | "Source control" | "Future (10.x)";
@@ -2320,13 +2429,35 @@ export const UCI_TOOLKIT: UciToolkitItem[] = [
     },
   },
   {
-    name: "Q-Sys Designer",
+    name: "Q-Sys Designer (LOCAL Windows install — Cortney's new path)",
     category: "Q-Sys core",
     what:
       "QSC's authoring environment for Q-Sys files. UCI visual builder, Lua scripts, plugin host, push-to-Core deploy.",
     zillowStatus:
-      "Already installed on the team's Windows VM on AWS (~$250/mo). 70GB drive. Get Matt to add you. Free download for individual machines from QSC.",
+      "Cortney is getting a dedicated Windows laptop (procurement approved May 2026) — installing Q-Sys Designer LOCALLY. This bypasses the shared AWS VM's contention and HD limits, and positions Cortney as the team's only currently-Windows-equipped engineer (relevant for Q-Sys Connect for Zoom Rooms testing, which is Windows-only). Keep the AWS VM ServiceNow request alive as a backup access path.",
     url: "https://www.qsys.com/products-solutions/q-sys/software/q-sys-designer-software/",
+    patrickReference: {
+      permalink:
+        "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1769789035479339?thread_ts=1769787997.205509&cid=C04GF3S3KQF",
+      when: "Jan 30, 2026 — why a local install is a meaningful upgrade",
+      quote:
+        "I need to close out designer 10.1 please. I am going to delete it. This VM is out of HD space. We only have 70gigs on this VM, and AWS charges us like $250 a month for it, so didn't want to ask for more yet. [Matt's reply: 'Oops...it was minimized. Closed now.']",
+    },
+  },
+  {
+    name: "Shared AWS Windows VM (Matt + Patrick's old setup — backup)",
+    category: "Q-Sys core",
+    what:
+      "The original Q-Sys workstation. 70GB shared drive, ~$250/mo. Matt and Patrick had concurrent Designer sessions on it. TeamViewer pre-installed so QSC support can remote in.",
+    zillowStatus:
+      "Matt opened a ServiceNow ticket for Cortney's access May 7, 2026. Worth keeping access alive as a fallback — Matt still uses it, and QSC remote support comes in through it via TeamViewer.",
+    patrickReference: {
+      permalink:
+        "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1710459608885999?thread_ts=1710452125.555549&cid=C04GF3S3KQF",
+      when: "Mar 14, 2024",
+      quote:
+        "for future ref, the VM has TeamViewer on it....Q-Sys has remoted in several times.",
+    },
   },
   {
     name: "Q-Sys Designer Asset Library",
