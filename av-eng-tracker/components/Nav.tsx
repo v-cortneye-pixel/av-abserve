@@ -27,29 +27,31 @@ export default function Nav() {
           </div>
           <div className="leading-tight">
             <div className="text-sm font-semibold text-zillow-ink">AV Engineering</div>
-            <div className="text-xs text-zillow-slate">Cortney's Tracker</div>
+            <div className="text-xs text-zillow-slate">Cortney&apos;s Tracker</div>
           </div>
         </Link>
-        <ul className="hidden items-center gap-1 md:flex">
-          {NAV_ITEMS.map((item) => (
-            <li key={item.href}>
-              <Link
-                href={item.href}
-                className="rounded-lg px-3 py-2 text-sm font-medium text-zillow-slate transition-colors hover:bg-zillow-gray-light hover:text-zillow-ink"
-              >
-                {item.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <details className="md:hidden">
-          <summary className="cursor-pointer rounded-lg p-2 text-zillow-ink">☰</summary>
-          <ul className="absolute right-4 top-16 z-50 w-56 rounded-xl border border-zillow-gray-border bg-white p-2 shadow-lg">
+
+        <details className="group relative">
+          <summary
+            aria-label="Open menu"
+            className="flex cursor-pointer list-none items-center gap-2 rounded-lg border border-zillow-gray-border bg-white px-3 py-2 text-sm font-semibold text-zillow-ink shadow-sm transition-colors hover:bg-zillow-gray-light"
+          >
+            <span
+              aria-hidden
+              className="flex h-4 w-5 flex-col justify-between"
+            >
+              <span className="block h-0.5 w-full rounded bg-zillow-ink" />
+              <span className="block h-0.5 w-full rounded bg-zillow-ink" />
+              <span className="block h-0.5 w-full rounded bg-zillow-ink" />
+            </span>
+            <span>Menu</span>
+          </summary>
+          <ul className="absolute right-0 top-12 z-50 max-h-[80vh] w-64 overflow-y-auto rounded-xl border border-zillow-gray-border bg-white p-2 shadow-xl">
             {NAV_ITEMS.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="block rounded-lg px-3 py-2 text-sm font-medium text-zillow-slate hover:bg-zillow-gray-light hover:text-zillow-ink"
+                  className="block rounded-lg px-3 py-2 text-sm font-medium text-zillow-slate transition-colors hover:bg-zillow-gray-light hover:text-zillow-ink"
                 >
                   {item.label}
                 </Link>
