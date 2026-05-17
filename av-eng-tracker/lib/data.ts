@@ -6245,149 +6245,784 @@ export const STACEY_CARDS: StaceyCard[] = [
   },
 ];
 
+export interface ScriptedTalkingPoint {
+  title: string;
+  verbatim: string; // EXACT words to say
+  rationale: string; // why this works
+  branches?: { ifSheSays: string; thenYouSay: string }[];
+}
+
+export interface ScriptedQuestion {
+  question: string; // EXACT question, in quotes
+  whyAsk: string;
+  likelyAnswers: { ifSheSays: string; thenYouSay: string }[];
+}
+
 export interface OneOnOneMeeting {
   weekNumber: number;
   type: "1:1" | "Team meeting";
   theme: string;
+  duration?: string;
   cards: string[]; // StaceyCard ids you intend to play
-  agendaScript: string[];
-  questionsToAsk: string[];
-  whatToBring: string[]; // artifacts to have open in tabs
+  opening?: { verbatim: string; rationale: string };
+  talkingPoints?: ScriptedTalkingPoint[];
+  questionsToAsk: ScriptedQuestion[] | string[]; // legacy support
+  closing?: { verbatim: string; rationale: string };
+  whatToBring: string[];
   whatNotToBring: string[];
+  successSignals?: { sheDoes: string; meaning: string }[];
+  redFlags?: { sheDoes: string; pivot: string }[];
+  // legacy fallback for weeks we haven't scripted in detail yet
+  agendaScript?: string[];
 }
 
 export const ONE_ON_ONE_PLAN: OneOnOneMeeting[] = [
+  // ============================ WEEK 1 — 1:1 ============================
   {
     weekNumber: 1,
     type: "1:1",
-    theme: "Onboarding mode. Listen 70%. No pitches.",
+    theme: "Onboarding. Listen 70%. No pitches. No opinions on Patrick's stack.",
+    duration: "30 minutes typical",
     cards: ["card-recap", "card-india-baseline", "card-friday-email-format"],
-    agendaScript: [
-      "Open with reading recap — you've grounded yourself in the team's cadence.",
-      "Share the 3 Bangalore BOM questions; ask Stacey for context.",
-      "Ask Stacey to shape the Friday wins/challenges email format.",
-      "End by asking ONE big-picture question (e.g., 'what would success in the first 90 days look like to you?').",
+    opening: {
+      verbatim:
+        "\"Hey Stacey — thanks for the time. I've been spending the week reading #av-team back to January, reading the daily bot output, and getting a feel for the cadence. Wanted to ground myself before I start adding noise. Mind if I share what I'm taking in and a couple questions?\"",
+      rationale:
+        "Sets the tone: you did homework, you're not here to pitch. 'A couple questions' lowers the bar — you're not coming with answers.",
+    },
+    talkingPoints: [
+      {
+        title: "1. Reading recap (30 seconds — keep it short)",
+        verbatim:
+          "\"I've read every #av-team thread back to January, plus the daily bot output in #av-alerts and the site-specific channels. The thing that stood out most is the operational-excellence push you mentioned at the start of the year — feels like the through-line connecting Matt's monitoring work, the runbook gap, and the Bangalore buildout.\"",
+        rationale:
+          "Uses her phrase 'operational excellence' verbatim. Names her annual goal back to her. She'll feel heard.",
+      },
+      {
+        title: "2. Bangalore BOMs — show you took it seriously",
+        verbatim:
+          "\"Mark shared the Bangalore BOMs. I read through them — wrote down three questions and one small spec suggestion. Wanted to come back to you with substantive feedback before going wide. Want me to walk through them?\"",
+        rationale:
+          "She'll say yes. The fact that you're checking with her first = signal you understand Bangalore is HER initiative, not just paperwork. Steve gave her a public High-Five for Bangalore on May 15.",
+        branches: [
+          {
+            ifSheSays: "\"Yes go ahead\"",
+            thenYouSay:
+              "Walk through the three questions calmly. Frame each as a clarification, not a critique. Example: 'On page 3, the audio spec calls for X — wanted to confirm whether that's intentional given Y constraint or whether it's worth revisiting.' Let HER decide which deserve attention.",
+          },
+          {
+            ifSheSays: "\"Send them to me in writing\"",
+            thenYouSay:
+              "\"Will do — I'll send them tonight. I'll also CC Mark since he routed the BOMs.\" That's a yes-and. Don't take it as a brush-off — sometimes she's just protecting her cognitive load.",
+          },
+        ],
+      },
+      {
+        title: "3. Friday email format (collaborative ask)",
+        verbatim:
+          "\"I want to send a Friday wins/challenges email — three lines: what closed with a link, what's in flight with a target date, what's blocked. Want to make sure that format lands the way you'd read it.\"",
+        rationale:
+          "Asking her to shape your scoreboard = she gets to feel ownership. Patrick's career-limiter was 'Eventually I will…' — your format prevents that by making every line a closed deliverable.",
+        branches: [
+          {
+            ifSheSays: "\"Looks good\"",
+            thenYouSay:
+              "\"Great — I'll send the first one this Friday by 4. Let me know if you want anything cut or expanded.\"",
+          },
+          {
+            ifSheSays: "\"Add X section\"",
+            thenYouSay:
+              "\"Done — I'll work it in.\" Don't push back. Whatever she suggests, do.",
+          },
+        ],
+      },
     ],
     questionsToAsk: [
-      "What would success in the first 90 days look like to you?",
-      "Anything you'd like me to keep especially quiet about in #av-team for now?",
+      {
+        question:
+          "\"What would success in the first 90 days look like to you?\"",
+        whyAsk:
+          "Frames a clear deliverable target. She'll tell you exactly what to aim for. Note her words — these become your card-deck keywords.",
+        likelyAnswers: [
+          {
+            ifSheSays: "Operational excellence / runbook / dependable systems",
+            thenYouSay:
+              "\"That tracks — I'll anchor my Friday email to that phrase. The Lambda runbook is the first thing I'm targeting.\"",
+          },
+          {
+            ifSheSays: "Get integrated with Matt + Mark",
+            thenYouSay:
+              "\"Already pairing with Matt on the AV-alert re-key. Mark sent me the Bangalore BOMs — first sync with him on those this week.\"",
+          },
+          {
+            ifSheSays: "Don't break anything",
+            thenYouSay:
+              "\"Heard. I'll keep my first 30 days to closing what's already open — no new architecture proposals until I've shipped a few closures.\"",
+          },
+        ],
+      },
+      {
+        question:
+          "\"Anything you'd like me to keep especially quiet about in #av-team while I get my footing?\"",
+        whyAsk:
+          "Signals discretion. She might warn you off a sensitive topic (Patrick personal stuff, Mark vendor politics, an upcoming reorg). Worth its weight in gold.",
+        likelyAnswers: [
+          {
+            ifSheSays: "Anything Patrick-related",
+            thenYouSay:
+              "\"Got it. I won't reference Patrick's decisions or absence in any public channel.\"",
+          },
+          {
+            ifSheSays: "Nothing specific",
+            thenYouSay:
+              "\"Will do — I'll DM you first if I'm unsure on anything sensitive.\"",
+          },
+        ],
+      },
+      {
+        question:
+          "\"Is there anyone outside the AV team I should be introducing myself to this month?\"",
+        whyAsk:
+          "Lets her tee up the relationship map. Likely names: Steve Bennett, Adali (IRV), Humberto (Zeus), Brittany (Comms), Carly (Workplace).",
+        likelyAnswers: [
+          {
+            ifSheSays: "Steve Bennett",
+            thenYouSay:
+              "\"I'll wait for the right moment — happy to be introduced through you when there's a natural reason.\"",
+          },
+          {
+            ifSheSays: "Names an onsite contact (Adali / John / Humberto)",
+            thenYouSay:
+              "\"Already in those channels. I'll send a friendly intro DM this week.\"",
+          },
+        ],
+      },
     ],
-    whatToBring: ["Printed Bangalore BOM with margin questions", "Friday email draft template"],
+    closing: {
+      verbatim:
+        "\"Thanks Stacey — this was helpful. I'll send the Friday email this Friday, and the Bangalore questions over tonight. Any other framing I should know about before Monday standup?\"",
+      rationale:
+        "Confirms two commitments verbally. Leaves the door open for her to add anything. Asking 'before Monday standup' shows you're already thinking about the team-meeting setting.",
+    },
+    whatToBring: [
+      "Printed copy of the Bangalore BOMs with your three margin questions written in",
+      "Draft of the Friday wins/challenges email — empty template ready to fill",
+      "Notebook — handwrite the names she mentions",
+    ],
     whatNotToBring: [
       "Any opinion on Patrick's stack",
-      "Any architectural critique",
-      "Detailed Q-Sys / Lua content",
+      "Any architectural critique of UCIs, Mac Mini, BirdDog, or NV",
+      "Q-Sys / Lua technical detail",
+      "Anything that starts with 'we should…' or 'I think we need…'",
+    ],
+    successSignals: [
+      {
+        sheDoes: "Uses your name when she replies",
+        meaning: "She's relaxed and engaged. Good.",
+      },
+      {
+        sheDoes: "Brings up Bangalore unprompted later in the conversation",
+        meaning:
+          "You hit the right nerve. Bangalore IS the personally-invested project.",
+      },
+      {
+        sheDoes: "Says 'great' or 'love that' on the Friday email format",
+        meaning: "Co-authorship locked in. She'll skim it now.",
+      },
+    ],
+    redFlags: [
+      {
+        sheDoes: "Asks you to slow down on Bangalore",
+        pivot:
+          "Say: 'Totally understood — I'll just absorb the BOMs and follow Mark's lead on the spec.' Don't push.",
+      },
+      {
+        sheDoes: "Looks distracted / checks phone repeatedly",
+        pivot:
+          "Wrap early. Say: 'I can see your calendar is heavy — let me let you go and I'll send these in writing.' Earns goodwill.",
+      },
     ],
   },
+
+  // ============================ WEEK 1 — Team meeting ============================
   {
     weekNumber: 1,
     type: "Team meeting",
-    theme: "Listen. Introduce yourself by the work, not the resume.",
+    theme: "Introduce yourself by the WORK, not the resume. 30 seconds max.",
+    duration: "Speak briefly, listen the rest",
     cards: [],
-    agendaScript: [
-      "When Stacey calls on you: 30 seconds max. 'Spent the week reading #av-team back to January and the daily bot output. Want to start by helping Matt close the AV-alert re-keying he's been carrying — pairing on it this week.' That's it.",
-      "Reply to Matt + Mark with 'good catch' / 'agreed' / 'yes' where appropriate. Don't add depth.",
-      "Take a note when anyone names a person you don't recognize. Look them up after.",
+    opening: {
+      verbatim:
+        "(When Stacey calls on you) \"Hey team. Spent this week reading #av-team back to January, the daily bot output, and the site channels — getting grounded. First thing I'm picking up: pairing with Matt on closing out the AV-alert Lambda re-keying he's been carrying. Beyond that I'm listening this week.\"",
+      rationale:
+        "30 seconds. Names Matt explicitly. Picks ONE concrete starting point. Says 'listening' so nobody is afraid you're going to come in hot with opinions.",
+    },
+    talkingPoints: [
+      {
+        title: "Reply behavior during the meeting",
+        verbatim:
+          "When Matt, Mark, or John speak: respond with one of these only — \"Good catch.\" / \"Agreed.\" / \"Makes sense.\" / \"I'll learn this with you.\"",
+        rationale:
+          "You're a new variable in their team dynamic. Minimum noise = maximum credibility.",
+      },
+      {
+        title: "If someone asks you a technical question",
+        verbatim:
+          "\"My instinct is X, but I'd want to look at it with Matt before I commit. Can we follow up after standup?\"",
+        rationale:
+          "Defers to Matt's judgment publicly. He notices. Stacey notices. You don't lose anything.",
+      },
     ],
     questionsToAsk: [],
-    whatToBring: ["Notebook"],
-    whatNotToBring: ["Slides", "Strong opinions"],
+    whatToBring: ["Notebook (write down every name you don't recognize)"],
+    whatNotToBring: [
+      "Slides, demos, or anything you've built",
+      "Any disagreement with Patrick's past decisions",
+      "Any timeline promise",
+    ],
+    successSignals: [
+      {
+        sheDoes: "Stacey says 'welcome' or moves on quickly after your intro",
+        meaning: "You hit the right length. Brief and grounded.",
+      },
+      {
+        sheDoes: "Matt or Mark welcomes you or makes a joke",
+        meaning: "Team is opening up. Don't try to match their humor yet.",
+      },
+    ],
+    redFlags: [
+      {
+        sheDoes: "Asks a leading question like 'what changes are you planning?'",
+        pivot:
+          "\"Honestly, none this week — I want to close what's already in flight before proposing anything new.\" That's a perfect answer.",
+      },
+    ],
   },
+  // ============================ WEEK 2 — 1:1 ============================
   {
     weekNumber: 2,
     type: "1:1",
-    theme: "First closed wins. Credit Matt. Anchor to her phrase.",
+    theme: "First closed wins. Credit Matt every time. Anchor to her phrase.",
+    duration: "30 minutes typical",
     cards: ["card-bot-iam-rekey", "card-notification-audit"],
-    agendaScript: [
-      "Lead: 'In service of operational excellence, closed two things this week with Matt.'",
-      "AV-alert bot re-keyed — frame as 'Matt was carrying this; we paired on it.'",
-      "Notification routing audit — share the one-pager link.",
-      "Mention you'll send the first Friday wins email Friday EOD.",
+    opening: {
+      verbatim:
+        "\"Hey Stacey — wanted to walk you through two things Matt and I closed this week, both in service of operational excellence + dependable systems.\"",
+      rationale:
+        "Echoes her exact phrase. Names Matt FIRST in 'Matt and I.' Sets a 'walking you through closed work' frame, not a status report.",
+    },
+    talkingPoints: [
+      {
+        title: "1. AV-alert Lambda re-keyed (WAVE-CT-001 / QW31)",
+        verbatim:
+          "\"Matt flagged on day 1 that the AV-alert bot had failed the morning Patrick was deactivated. We sat down together this week — I drove the AWS console, Matt watched and signed off. The Lambda's now under a team-owned service identity instead of Patrick's. Same alerts, same channel, but offboarding-proof now. Matt's planning to mention it in his Monday standup.\"",
+        rationale:
+          "Credits Matt's catch FIRST. Says 'Matt watched and signed off' — frames Matt as the authority, you as the hands. Notes Matt's owning the public mention — you're not stealing his Monday update.",
+        branches: [
+          {
+            ifSheSays: "\"Great\" or \"thank you\"",
+            thenYouSay:
+              "\"It was Matt's win to flag — happy to help close it.\" Always defer credit.",
+          },
+          {
+            ifSheSays: "\"How much longer is this going to be a worry?\"",
+            thenYouSay:
+              "\"The bot's the high-value one and that's done. I'm auditing the rest of Patrick's Lambdas this week — same pattern, smaller scope. Should be fully done by Friday.\"",
+          },
+        ],
+      },
+      {
+        title: "2. Notification routing audit (WAVE-CT-002 / QW32)",
+        verbatim:
+          "\"Tucked inside the Mar 13 thread between Patrick and Matt, there was a moment where Patrick realized Matt wasn't getting GitLab pipeline-failure emails because his role was Member, not Owner. I audited that across every notification surface — GitLab, AWS SNS, Splunk, Domotz email list. Posted a one-pager in #av-team with the before/after. Everyone's now subscribed to what they should be subscribed to.\"",
+        rationale:
+          "Cites Patrick + Matt's own moment. You're not 'finding their mistake' — you're 'finishing a thread they started.' That framing is everything.",
+      },
+      {
+        title: "3. Setup for Friday email",
+        verbatim:
+          "\"Sending my first Friday wins/challenges email this Friday by 4. Will use the three-line format we walked through last week. WAVE-CT-001 and WAVE-CT-002 are the closures on it.\"",
+        rationale:
+          "Reminds her of the format SHE shaped. She'll be looking for the email Friday.",
+      },
     ],
-    questionsToAsk: ["Anything you'd want me to push faster or slow down on?"],
-    whatToBring: ["The one-pager link", "Friday wins email draft"],
-    whatNotToBring: ["Anything Patrick-critical", "Architectural opinions"],
+    questionsToAsk: [
+      {
+        question:
+          "\"Anything from this past week's team meeting or any thread you'd want me to push faster on or slow down on?\"",
+        whyAsk:
+          "Gives her veto power. She'll tell you exactly what she wants you to NOT touch yet, which is gold.",
+        likelyAnswers: [
+          {
+            ifSheSays: "\"Slow down on X\"",
+            thenYouSay:
+              "\"Got it — I'll park X until you give the green light.\" Don't ask why. Just do it.",
+          },
+          {
+            ifSheSays: "\"Push faster on the runbook\"",
+            thenYouSay:
+              "\"Will do — I can ship the first Lambda one-pager by end of next week.\" Don't promise the FULL runbook yet.",
+          },
+        ],
+      },
+      {
+        question:
+          "\"Anything I should be doing differently in #av-team that I might not be picking up on?\"",
+        whyAsk:
+          "Asking for feedback on social fit. She'll tell you if you're talking too much, too little, or stepping on Matt or Mark.",
+        likelyAnswers: [
+          {
+            ifSheSays: "\"You're doing fine\"",
+            thenYouSay:
+              "\"Appreciate it — please flag anything as it comes up, even small things.\" Door stays open.",
+          },
+          {
+            ifSheSays: "Names a specific behavior to adjust",
+            thenYouSay:
+              "\"Heard. I'll adjust starting tomorrow.\" No defense. Just adjust.",
+          },
+        ],
+      },
+    ],
+    closing: {
+      verbatim:
+        "\"Thanks Stacey. Friday email coming Friday by 4. I'll DM you if I hit anything where I'm unsure of the right framing.\"",
+      rationale:
+        "Reaffirms the Friday commitment. The DM offer is a trust deposit — you're saying you won't post sensitive things publicly without checking.",
+    },
+    whatToBring: [
+      "Link to the GitLab/AWS notification-audit one-pager",
+      "Draft of your Friday wins/challenges email",
+      "Notebook",
+    ],
+    whatNotToBring: [
+      "Any opinion on Patrick's IAM setup",
+      "Any architectural item — the UCI / Mac / NV pages are weeks away",
+    ],
+    successSignals: [
+      {
+        sheDoes: "Says \"thanks for crediting Matt\"",
+        meaning: "She noticed. That's the relationship deposit you wanted.",
+      },
+      {
+        sheDoes: "Forwards your one-pager to anyone outside the AV team",
+        meaning: "Operational-excellence story is landing.",
+      },
+    ],
+    redFlags: [
+      {
+        sheDoes: "Asks for a status update on Patrick's full stack",
+        pivot:
+          "\"Two more weeks for a complete audit — I'd rather give you a full picture than a partial one. I'll send the working inventory now if you want it.\" Buys time without sounding defensive.",
+      },
+    ],
   },
+
+  // ============================ WEEK 2 — Team meeting ============================
   {
     weekNumber: 2,
     type: "Team meeting",
-    theme: "Public Matt-credit. Closed wins only.",
+    theme: "Cite the Jira IDs. Credit Matt verbatim. Closed wins only.",
+    duration: "Speak when the floor opens — 60 seconds max",
     cards: ["card-bot-iam-rekey", "card-notification-audit"],
-    agendaScript: [
-      "Cite WAVE-CT-001 + WAVE-CT-002 + QW31 + QW32 by ID.",
-      "Use 'Matt and I' for both.",
-      "Frame: 'operational-excellence pass — wanted to close out the day-1 alerts-down gap.'",
+    opening: {
+      verbatim:
+        "\"Quick from me — Matt and I closed WAVE-CT-001 and WAVE-CT-002 this week. The AV-alert Lambda is now under a service identity, and the notification routing across GitLab, AWS SNS, Splunk, and Domotz is audited and re-subscribed. Both were Matt's flags — happy to help close them out.\"",
+      rationale:
+        "Uses Jira IDs (Stacey notices QW#/WAVE-CT-### discipline). Says 'Matt and I' TWICE. Closes with 'happy to help close them out' — positions you as Matt's support, not his replacement.",
+    },
+    talkingPoints: [
+      {
+        title: "If Mark asks 'what's next?'",
+        verbatim:
+          "\"Starting the per-Lambda runbook this week. First one-pager by end of next week.\"",
+        rationale:
+          "Single concrete commitment. No 'eventually I will.'",
+      },
+      {
+        title: "If Matt jumps in with a related point",
+        verbatim:
+          "\"Yeah — and to Matt's point on [X], that's exactly the gap we hit when we were re-keying.\"",
+        rationale:
+          "Builds on Matt publicly. He likes feeling heard. So does Stacey.",
+      },
     ],
     questionsToAsk: [],
-    whatToBring: ["The Jira IDs in your notebook"],
-    whatNotToBring: ["Any open architectural item — those go in 1:1 only this week"],
+    whatToBring: [
+      "Jira IDs (WAVE-CT-001, WAVE-CT-002) written in your notebook",
+      "QW# IDs (QW31, QW32)",
+    ],
+    whatNotToBring: [
+      "The Bangalore questions (those went to Stacey in 1:1)",
+      "Any Patrick-stack opinion",
+      "The runbook draft (don't share until it's done)",
+    ],
+    successSignals: [
+      {
+        sheDoes: "Stacey nods or says \"good\"",
+        meaning: "Hit. Move on, don't elaborate.",
+      },
+      {
+        sheDoes: "Mark or Matt asks a follow-up question",
+        meaning:
+          "Engagement. Answer briefly, defer technical depth to a DM or 1:1.",
+      },
+    ],
+    redFlags: [],
   },
+  // ============================ WEEK 3 — 1:1 ============================
   {
     weekNumber: 3,
     type: "1:1",
-    theme: "First runbook ships. India momentum.",
+    theme:
+      "First runbook ships. Surface KCY quietly. Keep Bangalore momentum going.",
+    duration: "30 minutes typical",
     cards: [
       "card-first-lambda-runbook",
-      "card-kcy-discovery",
-      "card-india-followup",
       "card-irv-1110",
+      "card-india-followup",
+      "card-kcy-discovery",
     ],
-    agendaScript: [
-      "Lead: 'Operational-excellence runbook — first Lambda one-pager is up.'",
-      "Then KCY surface — 'found a 6th office combing the daily bot.' Light touch, no alarm.",
-      "Bangalore: 'followed up with Mark on BOM questions; drafted a spec note.'",
-      "IRV-1110 ZHL: 'cleared a stale alert that's been red for weeks.'",
+    opening: {
+      verbatim:
+        "\"Hey Stacey — quick update on three closures and one thing I want to surface to you only.\"",
+      rationale:
+        "Telegraphs structure. The 'to you only' is a discreet flag that you have something that's 1:1-sensitive, not team-meeting material.",
+    },
+    talkingPoints: [
+      {
+        title: "1. Operational-excellence runbook — first Lambda one-pager (WAVE-CT-090 / QW35)",
+        verbatim:
+          "\"First Lambda runbook is up — one page, plain English, links from #av-team. What triggers it, where logs go, how to silence, how to debug, who to escalate to. Scaling to the rest of the Lambdas from here. This is the runbook you mentioned wanting at year start.\"",
+        rationale:
+          "Echoes 'year start' deliberately. She remembers asking for it. The fact that you remembered = trust.",
+      },
+      {
+        title: "2. IRV-1110 ZHL cleanup (WAVE-CT)",
+        verbatim:
+          "\"The bot had been flagging IRV-1110 ZHL offline every morning for weeks — classic stale alert. Talked to Adali — [the room is decommissioned / actually needs a fix]. Cleared from monitoring / scheduled the fix.\"",
+        rationale:
+          "Names Adali explicitly. Frames as 'noise-vs-signal hygiene' — Patrick's discipline you're continuing, not contradicting.",
+      },
+      {
+        title: "3. Bangalore follow-up — spec note for Mark",
+        verbatim:
+          "\"Met with Mark on the three Bangalore questions. Drafted a spec note on [item]. Want your eyes on it before I send to Mark formally.\"",
+        rationale:
+          "Pre-clears with her on Bangalore. She'll either say 'looks fine, send it' or 'change X.' Either is a win.",
+        branches: [
+          {
+            ifSheSays: "\"Send to Mark, looks good\"",
+            thenYouSay:
+              "\"Will send tonight and CC you.\" Don't ask anything else on Bangalore this meeting.",
+          },
+          {
+            ifSheSays: "\"Hold off — let me think about it\"",
+            thenYouSay:
+              "\"Of course. I'll park it until you give the green light.\" Don't push.",
+          },
+        ],
+      },
+      {
+        title: "4. KCY surface — for-your-ears-only flag",
+        verbatim:
+          "\"Combing the daily bot output, I noticed KCY — Kansas City — shows up in the per-site stats. KCY-1 Whiteboard 001 and KCY-1207 Focus have been offline for a while. We don't have KCY on the per-site fleet map yet. Wanted to flag to you only before I do anything visible. Want me to add KCY to our internal site map and find an onsite contact?\"",
+        rationale:
+          "Light touch — 'wanted to flag' not 'we have a problem.' Asks for her direction. Doesn't surface this in team meeting yet because nobody owns KCY publicly.",
+        branches: [
+          {
+            ifSheSays: "\"Yes, please add it and find someone\"",
+            thenYouSay:
+              "\"Will do — I'll ask Shelby or Workplace who's onsite in Kansas City.\"",
+          },
+          {
+            ifSheSays: "\"Hold off — let me check on KCY status\"",
+            thenYouSay:
+              "\"Sounds good — I'll let you drive on this one. Just wanted you to know it was there.\"",
+          },
+        ],
+      },
     ],
     questionsToAsk: [
-      "Who would you suggest I reach out to in KCY for onsite eyes?",
-      "Any internal Bangalore stakeholder I should be syncing with before next week's Mark conversation?",
+      {
+        question:
+          "\"Who would you suggest I reach out to in KCY for onsite eyes?\"",
+        whyAsk:
+          "Gives her a chance to make a connection on your behalf — she likes being the relationship broker.",
+        likelyAnswers: [
+          {
+            ifSheSays: "Names someone (Workplace lead, Shelby, etc.)",
+            thenYouSay:
+              "\"Perfect — I'll DM them this week and copy you on the intro.\"",
+          },
+          {
+            ifSheSays: "\"I'm not sure — let me ask Shelby\"",
+            thenYouSay:
+              "\"Thanks — happy to wait for that intro before reaching out.\"",
+          },
+        ],
+      },
+      {
+        question:
+          "\"Anything I should mention to Mark about the Bangalore spec note when I send it, or keep it strictly factual?\"",
+        whyAsk:
+          "Lets her shape your interaction with Mark. She might want certain context, or want certain context withheld.",
+        likelyAnswers: [
+          {
+            ifSheSays: "\"Strictly factual\"",
+            thenYouSay:
+              "\"Got it — I'll keep it three bullets, no narrative.\"",
+          },
+          {
+            ifSheSays: "\"Mention you and I aligned on this\"",
+            thenYouSay:
+              "\"Will do — 'Stacey and I synced on this, sending for your review.'\"",
+          },
+        ],
+      },
     ],
-    whatToBring: ["Runbook link", "Bangalore spec-note draft"],
-    whatNotToBring: ["UCI strawman yet"],
+    closing: {
+      verbatim:
+        "\"Thanks Stacey. Friday email this Friday — closures + the runbook link. I'll DM you on KCY before posting anything anywhere.\"",
+      rationale:
+        "Re-confirms the KCY discretion. She'll appreciate that you remembered.",
+    },
+    whatToBring: [
+      "Direct link to the first Lambda runbook in GitLab",
+      "Adali's name written down with what they confirmed about IRV-1110",
+      "The Bangalore spec note (one page)",
+      "Sample of the daily bot output showing KCY in the per-site breakdown",
+    ],
+    whatNotToBring: [
+      "The UCI Tier 1/2/3 strawman — that's Week 5",
+      "Mac-vs-Windows memo — that's Week 6",
+      "Any unsolicited opinion on Mark's POs or vendor choices",
+    ],
+    successSignals: [
+      {
+        sheDoes: "Thanks you for flagging KCY 'to her only'",
+        meaning:
+          "Discretion has been deposited. She'll remember this when bigger sensitivities come up.",
+      },
+      {
+        sheDoes: "Asks for the runbook link to share with Steve",
+        meaning:
+          "Your operational-excellence story is making it up the chain.",
+      },
+    ],
+    redFlags: [
+      {
+        sheDoes: "Distracted by Bangalore / India complexities and brushes past your closures",
+        pivot:
+          "Switch to listening mode. \"Tell me what's on your plate around Bangalore — anything I can help carry?\" Reposition as helpful, not awaiting praise.",
+      },
+    ],
   },
+
+  // ============================ WEEK 3 — Team meeting ============================
   {
     weekNumber: 3,
     type: "Team meeting",
-    theme: "Runbook closure + IRV-1110 cleanup. Don't surface KCY here yet.",
+    theme: "Runbook + IRV-1110 cleanup. KCY stays in 1:1.",
+    duration: "60-90 seconds",
     cards: ["card-first-lambda-runbook", "card-irv-1110"],
-    agendaScript: [
-      "Mention the first Lambda runbook with link.",
-      "Mention IRV-1110 ZHL cleanup with Adali named explicitly.",
-      "Defer all Bangalore + KCY talk to 1:1.",
+    opening: {
+      verbatim:
+        "\"Two from me this week. First Lambda runbook is up — one page, plain English, linked in #av-team. And the IRV-1110 ZHL stale alert is cleared — Adali confirmed [status] and we either fixed it or pulled it from monitoring.\"",
+      rationale:
+        "Names Adali. Frames runbook as part of the broader 'operational excellence' theme without overselling.",
+    },
+    talkingPoints: [
+      {
+        title: "If anyone asks about the rest of Patrick's Lambdas",
+        verbatim:
+          "\"Working through them in order of blast-radius. Next two runbooks by end of next week.\"",
+        rationale:
+          "Concrete commitment. Single deadline.",
+      },
     ],
     questionsToAsk: [],
-    whatToBring: ["Runbook link", "Adali's shoutout language"],
-    whatNotToBring: ["KCY — needs Stacey-1:1 framing first"],
+    whatToBring: ["Runbook URL", "Adali's name"],
+    whatNotToBring: [
+      "KCY — Stacey wants to decide framing before it goes public",
+      "Bangalore — Stacey will set the cadence on team-meeting-level Bangalore updates",
+    ],
+    successSignals: [
+      {
+        sheDoes: "Mark or Matt says 'thanks' or 'nice'",
+        meaning: "Engagement. Closed wins are landing.",
+      },
+    ],
+    redFlags: [],
   },
+
+  // ============================ WEEK 4 — 1:1 ============================
   {
     weekNumber: 4,
     type: "1:1",
-    theme: "Velocity check + Olympic ask + NASDAQ question.",
+    theme: "Velocity check + Olympic exec fix + NASDAQ curiosity.",
+    duration: "30 minutes typical",
     cards: ["card-velocity-check", "card-olympic-share", "card-nasdaq-question"],
-    agendaScript: [
-      "Open with QW velocity — let her see the cadence.",
-      "Olympic share-button fix — closed with Matt's signoff.",
-      "End with the NASDAQ broadcast question. Curiosity, not concern.",
+    opening: {
+      verbatim:
+        "\"Hey Stacey — wanted to give you the receipts so far. Closed five things this month: QW31, QW32, QW34, QW35, QW42. Couple in flight. And one question for you on something I noticed.\"",
+      rationale:
+        "Leads with the QW IDs verbatim. She uses them in her own roll-ups. Telegraphs a question at the end so she's listening.",
+    },
+    talkingPoints: [
+      {
+        title: "1. Velocity recap with the QW IDs",
+        verbatim:
+          "\"Stable QW IDs so you can drop them straight into your wins/challenges roll-up if useful: QW31 — Lambda re-key with Matt. QW32 — notification routing audit. QW34 — IRV-1110 cleanup. QW35 — first Lambda runbook. QW42 — iPad low-battery webhook (Matt had asked for this for SFO-07).\"",
+        rationale:
+          "Five closures in 30 days. Each one cites a Matt or operational angle. Don't elaborate on each unless she asks.",
+      },
+      {
+        title: "2. Olympic share-button fix (WAVE-CT-030)",
+        verbatim:
+          "\"Closed the Humberto / Lloyd share-button ask from a few weeks ago. Q-Sys logic change drafted with Matt — he signed off and we deployed with him present. TV now wakes on Share Content action whether or not Zoom is in a meeting.\"",
+        rationale:
+          "Olympic is Tier 0 exec territory. 'Matt signed off' + 'deployed with him present' positions you as supporting Matt's authority, not bypassing it.",
+        branches: [
+          {
+            ifSheSays: "\"Did you loop in Humberto?\"",
+            thenYouSay:
+              "\"Yes — DM'd Humberto when it was deployed. He confirmed Lloyd is happy.\"",
+          },
+          {
+            ifSheSays: "\"How are you sure it didn't break anything else?\"",
+            thenYouSay:
+              "\"Matt and I tested both share modes — HDMI and wireless — across two meeting states. No regressions. Documented in the Q-Sys MR.\"",
+          },
+        ],
+      },
+      {
+        title: "3. NASDAQ broadcast — curious, not concerned",
+        verbatim:
+          "\"Combing the org channel, I saw Steve's Q1 recap mention NASDAQ broadcast support alongside Zall Hall and Mgr+. I hadn't heard about NASDAQ yet — is there a runbook I should be reading, or someone I should be shadowing?\"",
+        rationale:
+          "Curiosity, not concern. 'Is there a runbook' is your operational-excellence language — she'll hear it as discipline.",
+        branches: [
+          {
+            ifSheSays: "\"Yes, Matt owns it — ask him\"",
+            thenYouSay:
+              "\"Will do — I'll DM Matt before the next broadcast cycle and ask to shadow.\"",
+          },
+          {
+            ifSheSays: "\"There's no runbook\"",
+            thenYouSay:
+              "\"Got it — when the next NASDAQ broadcast comes up, want me to draft one as we go?\" Volunteers without overcommitting.",
+          },
+          {
+            ifSheSays: "Looks uncomfortable / changes subject",
+            thenYouSay:
+              "Drop it. Say: \"No rush — I'll just keep an eye on it.\" Don't push.",
+          },
+        ],
+      },
     ],
     questionsToAsk: [
-      "NASDAQ broadcast — runbook or shadow opportunity?",
-      "Is there a Q1 recap deck I should be reading?",
+      {
+        question:
+          "\"Is there a Q1 recap deck I should be reading to get the broader org context?\"",
+        whyAsk:
+          "Demonstrates curiosity about Steve's level. She likes employees who think one level up.",
+        likelyAnswers: [
+          {
+            ifSheSays: "Sends you the deck",
+            thenYouSay:
+              "\"Thanks — I'll read it before next 1:1.\" Read it.",
+          },
+          {
+            ifSheSays: "\"I'll send it later\"",
+            thenYouSay:
+              "\"No rush.\" Don't follow up unless a week passes.",
+          },
+        ],
+      },
+      {
+        question:
+          "\"Heading toward 30-day mark — anything you'd want me to start versus anything you'd want me to NOT start yet?\"",
+        whyAsk:
+          "Lets her veto things in advance. Especially good for items you suspect are politically sensitive (UCI standards, Mac-vs-Windows, BirdDog phase-out).",
+        likelyAnswers: [
+          {
+            ifSheSays: "\"Keep going as you are\"",
+            thenYouSay:
+              "\"Sounds good — I'll keep the cadence.\"",
+          },
+          {
+            ifSheSays: "Names a specific area she wants you to hold off on",
+            thenYouSay:
+              "\"Heard. I'll park it. Should I tell Matt or Mark I'm parking it, or just not bring it up?\" Lets her direct.",
+          },
+        ],
+      },
     ],
-    whatToBring: ["List of QW IDs closed", "Steve Bennett's Q1 recap permalink"],
-    whatNotToBring: ["UCI strawman — next week"],
+    closing: {
+      verbatim:
+        "\"Thanks Stacey. Five closures, runbook scaling, Olympic squared away. I'll send the Friday email Friday by 4. Anything I should change about the format now that we have four under our belt?\"",
+      rationale:
+        "Asks for feedback on the format — opens the door for her to iterate without you having to defend anything.",
+    },
+    whatToBring: [
+      "List of QW IDs closed this month",
+      "Steve Bennett's Q1 recap permalink (so she can copy it if she doesn't have it handy)",
+      "Olympic fix demo notes — what you tested, what you didn't break",
+    ],
+    whatNotToBring: [
+      "UCI Tier 1/2/3 strawman — Week 5 is the right meeting for that",
+      "Mac-vs-Windows memo — Week 6",
+      "Any 'I've earned X' framing",
+    ],
+    successSignals: [
+      {
+        sheDoes: "Asks for the QW IDs in writing",
+        meaning:
+          "She's about to use them in her own update. You just gave her ammo.",
+      },
+      {
+        sheDoes: "Volunteers Steve's deck or asks if you've met someone specific",
+        meaning:
+          "She's positioning you for visibility. Take whatever intro she offers.",
+      },
+    ],
+    redFlags: [
+      {
+        sheDoes: "Tells you to slow down on the velocity",
+        pivot:
+          "\"Got it — I'll dial back the pace and focus on depth on the existing items.\" No defense. She may be protecting you from looking like a contractor who's trying too hard.",
+      },
+    ],
   },
+
+  // ============================ WEEK 4 — Team meeting ============================
   {
     weekNumber: 4,
     type: "Team meeting",
-    theme: "Olympic closure. Don't surface NASDAQ here.",
+    theme: "Olympic closure. Don't surface NASDAQ in this room.",
+    duration: "60-90 seconds",
     cards: ["card-olympic-share"],
-    agendaScript: [
-      "Mention Olympic share-button fix with Matt as co-author.",
-      "Credit John Gifford if he's been involved.",
-    ],
+    opening: {
+      verbatim:
+        "\"One from me — WAVE-CT-030 closed. The Olympic Share Content button now wakes the display whether or not Zoom is in a meeting. Matt signed off and we deployed together. Humberto confirmed Lloyd is happy.\"",
+      rationale:
+        "Matt and Humberto and Lloyd all named. Olympic credibility built. No NASDAQ talk — that's 1:1 territory.",
+    },
+    talkingPoints: [],
     questionsToAsk: [],
-    whatToBring: ["WAVE-CT IDs"],
-    whatNotToBring: ["NASDAQ question — that's 1:1 only"],
+    whatToBring: ["WAVE-CT-030"],
+    whatNotToBring: [
+      "NASDAQ broadcast — until Stacey gives the green light",
+      "Bangalore — until you and Stacey decide team-meeting cadence",
+    ],
+    successSignals: [
+      {
+        sheDoes: "Mark or Matt acknowledges Olympic publicly",
+        meaning: "Olympic closure landed. Move on.",
+      },
+    ],
+    redFlags: [],
   },
   {
     weekNumber: 5,
