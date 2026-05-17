@@ -2,6 +2,7 @@ import Link from "next/link";
 
 const NAV_ITEMS = [
   { href: "/", label: "Dashboard" },
+  { href: "/triage", label: "Triage (P0 first)" },
   { href: "/playbook", label: "Playbook (FTE)" },
   { href: "/one-on-one", label: "1:1 Strategy (private)" },
   { href: "/jira", label: "Jira" },
