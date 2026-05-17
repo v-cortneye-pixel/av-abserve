@@ -1678,6 +1678,263 @@ export const NV_SPARES: NvSparePart[] = [
   },
 ];
 
+// --- BirdDog phase-out ---
+
+export interface BirdDogDeployment {
+  room: string;
+  site: string;
+  gear: string;
+  role: string;
+  knownProblems: string;
+  priority: "P0" | "P1" | "P2";
+}
+
+export const BIRDDOG_DEPLOYMENTS: BirdDogDeployment[] = [
+  {
+    room: "SFO-735 (All Hands)",
+    site: "SFO",
+    gear: "BirdDog P400 4K NDI PTZ cameras (white)",
+    role: "Primary cameras for All Hands events",
+    knownProblems:
+      "Two units have mechanical/fan noise (Apr 16, 2025). HDMI share fails after first share — Matt suspects NDI camera path as root cause (Dec 9, 2025).",
+    priority: "P0",
+  },
+  {
+    room: "NYC-1250 (NYC All Hands)",
+    site: "NYC",
+    gear: "BirdDog cameras + decoders (NDI for projector routing)",
+    role: "Camera capture + signal routing to dual projectors",
+    knownProblems:
+      "Right-side BirdDog decoder failed Jan 16, 2025 — switch sees MAC but no IP. Required replacement shipment. Recurring 'routing got stuck' incidents.",
+    priority: "P0",
+  },
+];
+
+export interface BirdDogQuote extends Quote {}
+
+export const BIRDDOG_SENTIMENT: BirdDogQuote[] = [
+  {
+    who: "Patrick Gilligan",
+    when: "Dec 9, 2025 16:01 PT",
+    text: "For the record Stacey, I like NDI. I strongly dislike BirdDog.",
+  },
+  {
+    who: "Patrick Gilligan",
+    when: "Nov 10, 2025",
+    text: "VSI is kinda trash. Better than BD, but not great.",
+  },
+  {
+    who: "Matt Cornick",
+    when: "Dec 9, 2025 13:24 PT",
+    text: "HDMI screen share [SFO-735]: I'm the point of Zoom support... I did not see this happen at home so I don't think it's a osTahoe issue. The only thing unique about this room are the NDI cams.",
+  },
+  {
+    who: "Matt Cornick",
+    when: "Apr 16, 2025 12:33 PT",
+    text: "Two of the Birddog P400 4k cams are noisy. I'm fine for the SFO All Hands but I don't know that I would want to put one of them in Olympic.",
+  },
+  {
+    who: "Mark Hampson",
+    when: "Apr 16, 2025",
+    text: "ugh. thats a non-starter... yeah no way. OK lets not use these.",
+  },
+  {
+    who: "Patrick Gilligan",
+    when: "Jan 16, 2025 11:48 PT",
+    text: "the BirdDog decoder for the right projector is busted. The switch sees the MAC address, but no IP... we have no way of knowing if we are getting signal or not, until its tried in person. Hopefully by Lu, and not an end user. I would hate for a 80 person meeting to happen, and only the 'house left' projector shows the content.",
+  },
+  {
+    who: "Patrick Gilligan",
+    when: "Feb 6, 2025 12:46 PT",
+    text: "I will be the first to admit…after 'Birddog-gate', it was miracle we hit FDoB.",
+  },
+  {
+    who: "Stacey Newman",
+    when: "May 7, 2025 11:11 PT",
+    text: "I wish the Urbens were better since we paid so much but like the BirdDog we should probably have a no urben emoji.",
+  },
+  {
+    who: "Matt Cornick",
+    when: "Apr 16, 2025 13:55 PT",
+    text: "Sticking to white and NDI (assuming we only have one network drop there) we're pretty limited. Panasonic AW-UE40. Aver PTZ310UV2 https://www.averusa.com/products/ptz-camera/ptz310uv2",
+  },
+];
+
+export interface CameraOption {
+  id: string;
+  vendor: string;
+  model: string;
+  resolution: string;
+  transport: string;
+  priceRange: string;
+  whiteFinish: boolean;
+  ndiNative: boolean;
+  qSysNative: boolean;
+  pros: string[];
+  cons: string[];
+  bestFor: string;
+  zillowFamiliarity: string;
+}
+
+export const CAMERA_OPTIONS: CameraOption[] = [
+  {
+    id: "panasonic-aw-ue50",
+    vendor: "Panasonic",
+    model: "AW-UE50 / AW-UE40 / AW-UE160",
+    resolution: "4K @ 60fps",
+    transport: "NDI|HX + SDI + HDMI + USB + IP",
+    priceRange: "$4,000 – $8,000",
+    whiteFinish: true,
+    ndiNative: true,
+    qSysNative: false,
+    pros: [
+      "Broadcast-grade build and optics — pro-PTZ market leader",
+      "White finish standard (matches All Hands aesthetic)",
+      "NDI|HX native, also full SDI + HDMI for fallback",
+      "Mature firmware, predictable upgrade cycle",
+      "Matt already flagged AW-UE40 as a candidate Apr 16, 2025",
+    ],
+    cons: ["Premium price — UE160 is ~$8k", "NDI|HX (compressed) not full bandwidth NDI"],
+    bestFor: "SFO-735 + NYC-1250 All Hands replacement for BirdDog P400",
+    zillowFamiliarity: "Matt has mentioned. No deployments yet.",
+  },
+  {
+    id: "aver-ptz310uv2",
+    vendor: "AVer",
+    model: "PTZ310UV2 / PTZ330",
+    resolution: "4K @ 30fps (PTZ310UV2) / 4K @ 60fps (PTZ330)",
+    transport: "NDI|HX + SDI + HDMI + USB + IP",
+    priceRange: "$1,800 – $3,500",
+    whiteFinish: true,
+    ndiNative: true,
+    qSysNative: false,
+    pros: [
+      "Strong price/performance — half the cost of Panasonic",
+      "Zillow already deploys AVer (UE1, CAM550)",
+      "White available, NDI|HX native, multi-transport",
+      "Matt suggested as a candidate Apr 16, 2025",
+    ],
+    cons: [
+      "Lower-tier build vs Panasonic",
+      "30fps cap on PTZ310UV2 (PTZ330 fixes this)",
+      "AVer firmware updates can be uneven",
+    ],
+    bestFor: "Cost-conscious All Hands or secondary cameras",
+    zillowFamiliarity:
+      "High — AVer is already in the fleet (UE1 in Olympic, CAM550 considered for SFO-735).",
+  },
+  {
+    id: "qsys-nc-series",
+    vendor: "QSC",
+    model: "NC-12x80 / NC-20x60",
+    resolution: "4K (12x or 20x zoom)",
+    transport: "Q-LAN / Q-Sys NV native",
+    priceRange: "$4,500 – $6,500",
+    whiteFinish: false,
+    ndiNative: false,
+    qSysNative: true,
+    pros: [
+      "Native Q-Sys ecosystem — single fabric for cameras + audio + control",
+      "ACPR (Automatic Camera Preset Recall) out of the box — Patrick wanted to play with this",
+      "Same Q-Sys Designer workflow as everything else in the rack",
+      "Aligns with the April 17 Q-Sys NV decision for HDMI share",
+    ],
+    cons: [
+      "No white finish (black only as of this writing)",
+      "Vendor lock-in to QSC ecosystem",
+      "Requires Q-Sys Core in every room (already true for All Hands)",
+    ],
+    bestFor: "Rooms with Q-Sys Core already deployed (which is all current All Hands)",
+    zillowFamiliarity:
+      "Q-Sys ecosystem is the team standard. Patrick explored ACPR Oct 2024 but had to write a parser for the older MXA910s.",
+  },
+  {
+    id: "sony-srg-x400",
+    vendor: "Sony",
+    model: "SRG-X400 / BRC-X400",
+    resolution: "4K @ 60fps",
+    transport: "NDI|HX + SDI + HDMI + IP",
+    priceRange: "$3,500 – $5,500",
+    whiteFinish: true,
+    ndiNative: true,
+    qSysNative: false,
+    pros: ["Excellent low-light performance", "Mature broadcast pedigree", "White finish available"],
+    cons: ["Less familiar to Zillow team", "No QSC integration advantage"],
+    bestFor: "Broadcast-quality replacement when Sony color science is desired",
+    zillowFamiliarity: "None yet. Would require new vendor relationship.",
+  },
+  {
+    id: "ptzoptics-move-se",
+    vendor: "PTZOptics",
+    model: "Move SE 4K",
+    resolution: "4K @ 60fps",
+    transport: "NDI|HX2 + SDI + HDMI + USB + IP",
+    priceRange: "$1,500 – $2,500",
+    whiteFinish: true,
+    ndiNative: true,
+    qSysNative: false,
+    pros: [
+      "Lowest cost option",
+      "NDI|HX2 native (newer compression)",
+      "Popular in EDU/HOW market — well-documented",
+    ],
+    cons: [
+      "Build quality below Panasonic / Sony tier",
+      "Limited enterprise support track record",
+    ],
+    bestFor: "Lab / dev space / secondary camera positions where cost matters more than tier",
+    zillowFamiliarity: "None. Would be a new vendor.",
+  },
+];
+
+export interface BirdDogPhaseStep {
+  phase: number;
+  name: string;
+  timing: string;
+  actions: string[];
+}
+
+export const BIRDDOG_PHASE_PLAN: BirdDogPhaseStep[] = [
+  {
+    phase: 1,
+    name: "Inventory & decision",
+    timing: "Days 1–14",
+    actions: [
+      "Confirm exact BD inventory at SFO-735 and NYC-1250 (SN, MAC, role)",
+      "Confirm Mark's 'Birddog Remediation' drawings from Jan 2025 — what was scoped?",
+      "Bring camera option matrix to Matt + Mark for selection",
+      "Decide: keep NDI as transport or move cameras to Q-Sys NV / QSC NC",
+      "Get 2026 AOP signal — is there budget for SFO-735 + NYC-1250 in 2026 or 2027?",
+    ],
+  },
+  {
+    phase: 2,
+    name: "Pilot one room",
+    timing: "Days 14–45",
+    actions: [
+      "Pick one room (recommend SFO-735 — closer to team for hands-on)",
+      "Order pilot cameras (2 units min for redundancy)",
+      "Schedule downtime window with Workplace/Gatherings",
+      "Swap cameras, validate ACPR / multi-cam workflow",
+      "Document install gotchas",
+      "Confirm BirdDog decoder is decommissioned and signal flows through Q-Sys NV",
+    ],
+  },
+  {
+    phase: 3,
+    name: "Roll out + remove BD",
+    timing: "Days 45–90",
+    actions: [
+      "Apply pilot lessons to NYC-1250 (or do both in parallel if pilot is clean)",
+      "Update room as-builts and IP schedule",
+      "Surplus / sell / donate the BirdDog gear (P400s + decoders)",
+      "Remove BirdDog from spare parts inventory",
+      "Update Q-Sys file templates to not reference BD plugins",
+      "Close the loop in WAVE sync — write up the migration as a wins/challenges item",
+    ],
+  },
+];
+
 export const TEAM = {
   Matt: {
     role: "Senior IC, Technical Gravity Well",
