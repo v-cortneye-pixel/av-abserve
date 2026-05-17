@@ -1826,27 +1826,84 @@ export const CAMERA_OPTIONS: CameraOption[] = [
   {
     id: "qsys-nc-series",
     vendor: "QSC",
-    model: "NC-12x80 / NC-20x60",
-    resolution: "4K (12x or 20x zoom)",
-    transport: "Q-LAN / Q-Sys NV native",
+    model: "NC-12x80 / NC-20x60 (Canon sensor line)",
+    resolution: "4K (12x or 20x optical zoom)",
+    transport: "Q-LAN / Q-Sys NV native (PoE+)",
     priceRange: "$4,500 – $6,500",
     whiteFinish: false,
     ndiNative: false,
     qSysNative: true,
     pros: [
+      "Canon image sensor — photography-grade optics in a conferencing PTZ",
       "Native Q-Sys ecosystem — single fabric for cameras + audio + control",
       "ACPR (Automatic Camera Preset Recall) out of the box — Patrick wanted to play with this",
       "Same Q-Sys Designer workflow as everything else in the rack",
       "Aligns with the April 17 Q-Sys NV decision for HDMI share",
+      "QSC bills it as their new conferencing flagship — strong forward-investment signal",
     ],
     cons: [
-      "No white finish (black only as of this writing)",
+      "Black finish (no white SKU — would need design exception or wrap)",
       "Vendor lock-in to QSC ecosystem",
       "Requires Q-Sys Core in every room (already true for All Hands)",
+      "Newer product — less third-party deployment data than Panasonic/Sony",
     ],
-    bestFor: "Rooms with Q-Sys Core already deployed (which is all current All Hands)",
+    bestFor:
+      "Tier 3 All Hands rooms where Q-Sys is already the backbone and ACPR + Canon optics matter more than white finish",
     zillowFamiliarity:
-      "Q-Sys ecosystem is the team standard. Patrick explored ACPR Oct 2024 but had to write a parser for the older MXA910s.",
+      "Q-Sys ecosystem is the team standard. Patrick explored ACPR Oct 2024 but had to write a parser for the older MXA910s. NC-series + 920 mics + Q-Sys NV would make ACPR work natively.",
+  },
+  {
+    id: "poly-e70",
+    vendor: "Poly (HP)",
+    model: "Studio E70",
+    resolution: "4K dual-sensor (electronic framing, ~35x effective zoom range)",
+    transport: "USB-C + IP (NDI|HX available) + LLN port for native G62 pairing",
+    priceRange: "$3,000 – $3,800",
+    whiteFinish: true,
+    ndiNative: true,
+    qSysNative: false,
+    pros: [
+      "Dual-sensor design — captures the whole room and a tight crop simultaneously",
+      "Cinematic AI framing — no mechanical PTZ to fail (and no moving fan noise)",
+      "White finish standard, low-profile mount",
+      "Native Poly Lens cloud management — Cortney already proposed for Tier 3 large spaces",
+      "Pairs natively with Poly G62 codec via LLN (Cat6) for daisy-chained large room scaling",
+    ],
+    cons: [
+      "Electronic framing only — no optical PTZ tracking like the P400 or NC-series",
+      "Best when paired with G62 codec; standalone deployment with Mac Mini works but loses Poly Lens integration",
+      "Newer Poly platform — service-pack cadence is faster than enterprise teams prefer",
+    ],
+    bestFor:
+      "45+ person spaces where 'pick up the whole room' matters more than tight subject framing. Cortney's original pitch for SFO-735/NYC-1250-class rooms.",
+    zillowFamiliarity:
+      "Cortney deployed similar at Airbnb. Mark + Matt have no Poly Studio deployments at Zillow yet.",
+  },
+  {
+    id: "poly-e60",
+    vendor: "Poly (HP)",
+    model: "Studio E60",
+    resolution: "4K @ 60fps, 12x optical zoom",
+    transport: "USB-C + IP (NDI|HX available) + LLN port",
+    priceRange: "$2,200 – $2,800",
+    whiteFinish: true,
+    ndiNative: true,
+    qSysNative: false,
+    pros: [
+      "True optical 12x PTZ — direct 1:1 functional replacement for BirdDog P400",
+      "White finish standard, slim profile",
+      "Poly Lens cloud dashboard (one-place fleet management)",
+      "USB-C + IP + NDI — most flexible single-cable deployment of the candidate cameras",
+      "Pairs with G62 if/when the team adopts that codec",
+    ],
+    cons: [
+      "12x zoom vs P400 21x — slightly less reach in very large rooms",
+      "Newer in market vs Panasonic/Sony — less independent track record",
+      "Poly enterprise support story uneven post HP acquisition",
+    ],
+    bestFor: "Direct P400 swap at SFO-735 and NYC-1250 with white-finish and NDI continuity",
+    zillowFamiliarity:
+      "None at Zillow. Cortney has Airbnb experience with the Poly Studio line.",
   },
   {
     id: "sony-srg-x400",
@@ -1884,6 +1941,93 @@ export const CAMERA_OPTIONS: CameraOption[] = [
     ],
     bestFor: "Lab / dev space / secondary camera positions where cost matters more than tier",
     zillowFamiliarity: "None. Would be a new vendor.",
+  },
+];
+
+export interface RoomKitOption {
+  id: string;
+  vendor: string;
+  model: string;
+  category: "Appliance codec" | "Native room kit" | "Hybrid";
+  description: string;
+  pros: string[];
+  cons: string[];
+  bestFor: string;
+  zillowStatus: string;
+}
+
+export const TIER3_ROOM_KIT_OPTIONS: RoomKitOption[] = [
+  {
+    id: "poly-g62",
+    vendor: "Poly (HP)",
+    model: "Studio G62 + E60/E70 cameras (Tier 3 kit)",
+    category: "Appliance codec",
+    description:
+      "Replaces Mac Mini + capture card + decoder with a single locked-down Android appliance codec. Runs Zoom Rooms, Microsoft Teams, or Google Meet natively (platform swap is a 2-click drop-down in Poly Lens cloud). G62 is the codec; Poly Studio E60/E70 cameras dock natively via the LLN port over standard Cat6.",
+    pros: [
+      "Locked appliance — no macOS updates, no Apple ID, no 9am-update-breaks-the-room class of failure",
+      "Multi-platform native: Zoom Rooms / Teams / Meet swap via Poly Lens cloud",
+      "Up to 4 USB cameras + IP cameras over LLN — scales beyond Mac Mini limits",
+      "Single cloud dashboard (Poly Lens) for fleet view",
+      "Eliminates the entire HDMI-share capture-card chain by ingesting content natively",
+      "Future-proof against Q-Sys Connect's Windows-only direction (May 14, 2026 QSC announcement)",
+    ],
+    cons: [
+      "Android-based — Matt's pushback: 'Mac Mini will outperform any Android based system. There are Zoom Room features that aren't even supported on any Android appliances.'",
+      "Zillow IT decommissioned all non-laptop PC appliances last year — Android appliance approval is unknown territory",
+      "Net-new vendor relationship and management surface",
+      "$3,500–$5,000 per unit (codec only; cameras additional)",
+    ],
+    bestFor:
+      "Tier 3 large/complex rooms (45+ person spaces) — Cortney's original pitch. Or any room where macOS update risk has been a repeat outage cause.",
+    zillowStatus:
+      "Pitched by Cortney May 14–15. Matt pushed back. Stacey reframed as 'Tier 3 large/complex room standard rather than replacing what you have.' Tuesday May 19 follow-up meeting scheduled.",
+  },
+  {
+    id: "qsys-native-tier3",
+    vendor: "QSC",
+    model: "Q-Sys NC cameras + NV endpoints + Core + Mac Mini ZR host",
+    category: "Native room kit",
+    description:
+      "The 'all-in on Q-Sys' path. NC-series Canon-sensor cameras for capture, NV-21/NV-32 for AV-over-IP routing, Q-Sys Core for DSP and control, Mac Mini as the Zoom Rooms host. Everything except the host lives in one Q-Sys Designer file.",
+    pros: [
+      "Single vendor, single Designer file, single support story",
+      "ACPR works out of the box",
+      "Aligns with April 17 Q-Sys NV decision and the team's standardization direction",
+      "Doesn't disturb the Mac Mini / Jamf / CE management workflow that's already in place",
+    ],
+    cons: [
+      "Still inherits Mac Mini operational tax (OS updates, Apple Intelligence popups, etc.)",
+      "Doesn't address the Q-Sys Connect Windows-only future direction",
+      "QSC NC cameras are black-only (Workplace/Design conversation needed)",
+    ],
+    bestFor:
+      "All Hands rooms staying on Mac Mini host but consolidating cameras + AVoIP under Q-Sys",
+    zillowStatus:
+      "Closest to the current standard. Lowest-risk path to retire BirdDog without re-opening the Mac Mini debate.",
+  },
+  {
+    id: "neat-tier3",
+    vendor: "Neat",
+    model: "Neat Center + Neat Bar Pro + Neat Pad",
+    category: "Native room kit",
+    description:
+      "Neat's purpose-built Zoom Rooms kit. Neat Center is a 360-degree table-mounted camera with AI framing; Neat Bar Pro adds a front camera + speakerbar. All managed in Neat's cloud dashboard. Native Zoom Rooms hardware — no Mac Mini.",
+    pros: [
+      "Zillow already standardizes on Neat for most zRetreat rooms — extension, not new vendor",
+      "Native Zoom Rooms (no Mac Mini, no Jamf, no macOS update risk)",
+      "Neat Center solves the 'pick up the whole room' problem electronically",
+      "Cleanest operational story — Stacey reportedly favors Neat",
+    ],
+    cons: [
+      "Locked to Zoom Rooms — no multi-platform flexibility (vs G62's swap-to-Teams/Meet)",
+      "Not ideal for very large rooms (SFO-735, NYC-1250 may be at upper limit)",
+      "Doesn't integrate with Q-Sys natively (DSP duplication if you want Q-Sys mics)",
+    ],
+    bestFor:
+      "Tier 2 rooms (15–30 person) and possibly the lower end of Tier 3. Already in the Zillow zRetreat spec.",
+    zillowStatus:
+      "Existing fleet standard for zRetreat rooms. Untested at SFO-735 / NYC-1250 scale.",
   },
 ];
 

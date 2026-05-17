@@ -4,6 +4,7 @@ import {
   BIRDDOG_PHASE_PLAN,
   BIRDDOG_SENTIMENT,
   CAMERA_OPTIONS,
+  TIER3_ROOM_KIT_OPTIONS,
 } from "@/lib/data";
 import QuoteCard from "@/components/QuoteCard";
 
@@ -27,26 +28,55 @@ export default function BirddogPage() {
         </p>
       </header>
 
-      {/* My recommendation */}
+      {/* Recommendation tiers */}
       <section className="z-card border-l-4 border-zillow-blue bg-zillow-blue-light">
-        <div className="z-eyebrow">Cortney&apos;s recommendation</div>
-        <h2 className="z-h3 mt-2">Panasonic AW-UE50 (white) for All Hands, AVer PTZ310UV2 elsewhere</h2>
-        <p className="mt-3 text-sm leading-relaxed text-zillow-ink">
-          <strong>SFO-735 and NYC-1250</strong> get <strong>Panasonic AW-UE50</strong> (or UE40 if budget tight)
-          — broadcast-grade build, white finish to match the room aesthetic, NDI|HX + SDI + HDMI for
-          fallback, and Matt already flagged it as a candidate back in April 2025. Pair with{" "}
-          <strong>Q-Sys NV-32 decoders</strong> for any signal routing (consistent with the April 17
-          decision to standardize on Q-Sys NV endpoints).
-        </p>
-        <p className="mt-3 text-sm leading-relaxed text-zillow-ink">
-          Any secondary or lab camera positions get <strong>AVer PTZ310UV2 / PTZ330</strong> — half the
-          cost, AVer is already in the fleet (UE1, CAM550), and white finish is available.
-        </p>
-        <p className="mt-3 text-sm leading-relaxed text-zillow-ink">
-          <strong>Bonus consideration:</strong> If we&apos;re willing to drop white finish, the{" "}
-          <strong>QSC NC-12x80 / NC-20x60</strong> option puts cameras inside the Q-Sys ecosystem
-          natively — ACPR works out of the box, no NDI dependency, single fabric for cameras + audio
-          + control. Worth proposing as a Tier 3 future direction even if not the immediate replacement.
+        <div className="z-eyebrow">Three paths to bring to the team</div>
+        <h2 className="z-h3 mt-2">Pick the scope that matches the Tuesday conversation</h2>
+
+        <div className="mt-4 grid gap-4 md:grid-cols-3">
+          <div className="rounded-lg bg-white p-4 ring-1 ring-zillow-gray-border">
+            <div className="text-xs font-semibold uppercase tracking-wide text-zillow-slate">
+              Conservative
+            </div>
+            <div className="mt-1 text-sm font-bold text-zillow-ink">
+              Camera-only swap
+            </div>
+            <p className="mt-2 text-xs leading-relaxed text-zillow-slate">
+              Replace BD P400s with <strong>Panasonic AW-UE50</strong> (white, NDI|HX, broadcast-grade).
+              Matt already named this April 2025. Pair with Q-Sys NV-32 for any routing. Lowest disruption.
+            </p>
+          </div>
+          <div className="rounded-lg bg-white p-4 ring-1 ring-zillow-gray-border">
+            <div className="text-xs font-semibold uppercase tracking-wide text-zillow-blue">
+              Mid (lean into Q-Sys)
+            </div>
+            <div className="mt-1 text-sm font-bold text-zillow-ink">
+              QSC NC + NV native
+            </div>
+            <p className="mt-2 text-xs leading-relaxed text-zillow-slate">
+              <strong>QSC NC-12x80 / NC-20x60</strong> Canon-sensor PTZ — native Q-Sys, ACPR out of the box,
+              one Designer file. Loses white finish. Best fit for the April 17 NV decision.
+            </p>
+          </div>
+          <div className="rounded-lg bg-white p-4 ring-1 ring-zillow-gray-border">
+            <div className="text-xs font-semibold uppercase tracking-wide text-zillow-orange">
+              Tier 3 / strategic
+            </div>
+            <div className="mt-1 text-sm font-bold text-zillow-ink">
+              Poly G62 + E60/E70 kit
+            </div>
+            <p className="mt-2 text-xs leading-relaxed text-zillow-slate">
+              Full appliance codec replaces Mac Mini + cameras + capture chain. Multi-platform.
+              Future-proofs against Q-Sys Connect Windows-only. The pitch from Friday — see Tuesday meeting.
+            </p>
+          </div>
+        </div>
+
+        <p className="mt-4 text-xs leading-relaxed text-zillow-ink">
+          <strong>My read:</strong> for week-2 credibility, lead with the Conservative path so we
+          actually retire BD. Use Tuesday with Matt to keep the Tier 3 G62 pitch alive as a lab pilot
+          — not a fleet swap. The Mid path lives in between and is the cleanest pure-engineering answer
+          if Workplace can stomach the loss of white finish on cameras.
         </p>
       </section>
 
@@ -171,9 +201,74 @@ export default function BirddogPage() {
         </div>
       </section>
 
+      {/* Tier 3 room kit options */}
+      <section>
+        <h2 className="z-h2 mb-2">Tier 3 / strategic — full room kit alternatives</h2>
+        <p className="mb-4 max-w-3xl text-sm text-zillow-slate">
+          Different category than the cameras above — these replace more than the camera. Useful
+          framing for the Mac Mini architectural debate and Stacey&apos;s &ldquo;Tier 3 large/complex
+          room standard&rdquo; framing from the May 15 thread.
+        </p>
+        <div className="space-y-4">
+          {TIER3_ROOM_KIT_OPTIONS.map((opt, idx) => (
+            <article key={opt.id} className="z-card">
+              <header className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-zillow-orange text-xs font-bold text-white">
+                      T{idx + 1}
+                    </span>
+                    <h3 className="z-h3">
+                      {opt.vendor} — {opt.model}
+                    </h3>
+                  </div>
+                  <div className="mt-1 text-xs text-zillow-slate">{opt.category}</div>
+                </div>
+              </header>
+
+              <p className="mt-3 text-sm leading-relaxed text-zillow-slate">{opt.description}</p>
+
+              <div className="mt-4 grid gap-4 md:grid-cols-2">
+                <div>
+                  <div className="text-xs font-semibold uppercase tracking-wide text-zillow-green">
+                    Pros
+                  </div>
+                  <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-zillow-ink">
+                    {opt.pros.map((p) => (
+                      <li key={p}>{p}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <div className="text-xs font-semibold uppercase tracking-wide text-zillow-red">
+                    Cons
+                  </div>
+                  <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-zillow-ink">
+                    {opt.cons.map((c) => (
+                      <li key={c}>{c}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div className="mt-4 grid gap-2 text-xs">
+                <div>
+                  <span className="font-semibold text-zillow-ink">Best for: </span>
+                  <span className="text-zillow-slate">{opt.bestFor}</span>
+                </div>
+                <div>
+                  <span className="font-semibold text-zillow-ink">Zillow status: </span>
+                  <span className="text-zillow-slate">{opt.zillowStatus}</span>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
       {/* Comparison matrix */}
       <section>
-        <h2 className="z-h2 mb-4">At-a-glance comparison</h2>
+        <h2 className="z-h2 mb-4">Camera at-a-glance comparison</h2>
         <div className="overflow-x-auto rounded-xl border border-zillow-gray-border bg-white">
           <table className="w-full text-sm">
             <thead className="bg-zillow-gray-light text-left">
