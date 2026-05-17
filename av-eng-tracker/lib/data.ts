@@ -5842,6 +5842,1151 @@ export const ACCESS_TILES = [
 ];
 
 // =========================================================================
+// JIRA — Cortney's local plan of every Jira ticket he intends to create
+// (or has already created) on the WAVE board. Each ticket is linked back
+// to its source: an issue on this site, a Slack permalink, a QW# win,
+// or an internal page (e.g., /splunk, /playbook).
+// =========================================================================
+
+export type JiraStatus = "Backlog" | "Ready" | "In Progress" | "In Review" | "Done";
+export type JiraEstimate = "XS" | "S" | "M" | "L" | "XL";
+
+export interface JiraSourceLink {
+  kind: "Site issue" | "Slack" | "Quick Win" | "Site page" | "Google Doc" | "GitLab" | "Vendor" | "Splunk dashboard";
+  label: string;
+  href: string;
+}
+
+export interface JiraTask {
+  id: string; // local id like WAVE-CT-001 (proposed Jira ID until you mint a real one)
+  projectId: string;
+  title: string;
+  description: string;
+  status: JiraStatus;
+  priority: "P0" | "P1" | "P2" | "P3";
+  estimate: JiraEstimate;
+  assignee?: string;
+  acceptanceCriteria: string[];
+  sources: JiraSourceLink[];
+}
+
+export interface JiraProject {
+  id: string;
+  code: string; // short tag for the project
+  name: string;
+  description: string;
+  owner: string;
+  // who Cortney is unblocking / impressing with this epic
+  stakeholders: ("Stacey" | "Matt" | "Mark" | "John" | "Zillow IT")[];
+  fteSignal?: string;
+}
+
+export const JIRA_PROJECTS: JiraProject[] = [
+  {
+    id: "patrick-stack",
+    code: "WAVE-PSI",
+    name: "Patrick Stack Inheritance",
+    description:
+      "Reclaim every Patrick-authored Lambda, cron, dashboard, and Google Doc under team ownership. The foundation lift — nothing else lands cleanly until this is done.",
+    owner: "Cortney",
+    stakeholders: ["Matt", "Stacey"],
+    fteSignal:
+      "Closing this epic IS the operational-excellence runbook Stacey asked for and Patrick never shipped.",
+  },
+  {
+    id: "splunk-pipeline",
+    code: "WAVE-SPL",
+    name: "Splunk Pipeline Health",
+    description:
+      "HEC token audit, dashboard inventory, alert rule cleanup, Zoom Webhook migration decision. The team's eyes.",
+    owner: "Cortney",
+    stakeholders: ["Matt", "Mark"],
+  },
+  {
+    id: "hdmi-validation",
+    code: "WAVE-HDMI",
+    name: "HDMI Validation Before NV Capex",
+    description:
+      "Lab-test source-side EDID forcing + direct USB capture before signing the Q-Sys NV PO. Two weeks, ~$500 in test gear, real data instead of vibes.",
+    owner: "Cortney",
+    stakeholders: ["Matt", "Mark"],
+    fteSignal: "Demonstrates capex hygiene — Mark and Stacey both register that.",
+  },
+  {
+    id: "uci-standards",
+    code: "WAVE-UCI",
+    name: "UCI Tier 1/2/3 Standards",
+    description:
+      "Replace Patrick's 'no touch panel' thesis with a tiered standard. Fix IRV-802. Re-add gated system controls. Document plugin provenance.",
+    owner: "Cortney",
+    stakeholders: ["Matt", "Mark"],
+  },
+  {
+    id: "mac-windows",
+    code: "WAVE-OS",
+    name: "Mac Mini vs Windows Architecture Decision",
+    description:
+      "Force the decision Patrick punted on for 4 years. One-page memo to Matt + Mark + Stacey, one-room pilot, measurable success criteria.",
+    owner: "Cortney",
+    stakeholders: ["Matt", "Mark", "Stacey", "Zillow IT"],
+    fteSignal: "FTE-level architectural move. Whichever way it goes, you forced it.",
+  },
+  {
+    id: "memory-leak",
+    code: "WAVE-MEM",
+    name: "Q-Sys Memory Leak Refactor",
+    description:
+      "TP script sweep across 8 rooms. Solve the NYC-1250 mystery. Rebuild SFO All Hands. Document the 5 Lua patterns that leak.",
+    owner: "Cortney",
+    stakeholders: ["Matt"],
+    fteSignal: "Closing NYC-1250 is the dragon-slain trump card for FTE.",
+  },
+  {
+    id: "india-buildout",
+    code: "WAVE-IND",
+    name: "India Buildout — Engineer of Record",
+    description:
+      "Stacey + Mark already routed the BOMs to you. Be the engineer of record on at least one room. First solo end-to-end ownership.",
+    owner: "Cortney",
+    stakeholders: ["Stacey", "Mark"],
+    fteSignal:
+      "Stacey's pet initiative this year. Showing up here moves you from 'monitoring contractor' to 'buildout engineer.'",
+  },
+  {
+    id: "world-cup",
+    code: "WAVE-WC",
+    name: "World Cup Pop-Up Rooms",
+    description:
+      "Multi-site pop-up watch parties. Hard deadline June 11. High-visibility, high-stakes — PM-able by Cortney with maximum Stacey/Mark exposure.",
+    owner: "Cortney (PM)",
+    stakeholders: ["Stacey", "Mark", "John"],
+  },
+  {
+    id: "matt-qol",
+    code: "WAVE-QOL",
+    name: "Matt Quality-of-Life Wins",
+    description:
+      "Items Matt has been carrying alone or has explicitly asked for. Closing these wins Matt as your advocate without making him feel replaced.",
+    owner: "Cortney",
+    stakeholders: ["Matt"],
+    fteSignal:
+      "Matt's 'thank god Cortney is on this' moments in his 1:1s with Stacey.",
+  },
+  {
+    id: "process-docs",
+    code: "WAVE-DOC",
+    name: "Process & Documentation Foundation",
+    description:
+      "Lua style guide, RCA template, runbook-per-Lambda, Jira ticket templates, Friday wins discipline. Stop the 'tribal knowledge' pattern Patrick modeled.",
+    owner: "Cortney",
+    stakeholders: ["Stacey", "Matt", "Mark"],
+  },
+  {
+    id: "site-specific",
+    code: "WAVE-SITE",
+    name: "Site-Specific Backlog",
+    description:
+      "Per-office open items that don't fit cleanly under another epic. NYC-1204 mic spec, IRV-1250 commissioning, etc.",
+    owner: "Cortney",
+    stakeholders: ["Mark", "Matt"],
+  },
+];
+
+const SLACK_MAR13 =
+  "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1773425550031039?thread_ts=1773342215.611929&cid=C04GF3S3KQF";
+
+export const JIRA_TASKS: JiraTask[] = [
+  // ============ PATRICK STACK INHERITANCE ============
+  {
+    id: "WAVE-CT-001",
+    projectId: "patrick-stack",
+    title: "Re-key every Patrick-authored Lambda under a service principal",
+    description:
+      "Patrick's Lambdas ran under his IAM user principal. When his account was deactivated, execution roles lost their trust policies and AV alerting silently failed on day 1. Move each function to a service principal (team-owned IAM role) so the next offboarding can't kill alerting again.",
+    status: "Ready",
+    priority: "P0",
+    estimate: "M",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Inventory every Patrick-owned Lambda in AWS",
+      "Create AV-team service IAM role with required permissions",
+      "Migrate each function's execution role + trust policy",
+      "Verify each function runs on schedule under new identity",
+      "Update CloudWatch alarm recipients to team distro",
+    ],
+    sources: [
+      { kind: "Quick Win", label: "QW31 — Re-key Lambdas with Matt", href: "/quick-wins" },
+      { kind: "Site page", label: "/splunk — full pipeline", href: "/splunk" },
+      { kind: "Slack", label: "Matt day-1 quote", href: SLACK_MAR13 },
+    ],
+  },
+  {
+    id: "WAVE-CT-002",
+    projectId: "patrick-stack",
+    title: "Audit notification recipients across GitLab, AWS SNS, Splunk, Domotz",
+    description:
+      "Patrick discovered Matt was a GitLab 'Member' not 'Owner' so he wasn't getting pipeline-failure emails. Same trap likely exists across AWS SNS topics, Splunk alert recipients, Domotz email list. Audit + before/after table.",
+    status: "Ready",
+    priority: "P0",
+    estimate: "S",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "GitLab: confirm every team member is 'Owner' on AV repos",
+      "AWS SNS: enumerate topics + subscribers, add team distro",
+      "Splunk: pull alert rule recipients, add team distro",
+      "Domotz: email list audit",
+      "One-pager 'AV notification routing audit' shared in #av-team",
+    ],
+    sources: [
+      { kind: "Quick Win", label: "QW32 — Notification trap audit", href: "/quick-wins" },
+      { kind: "Slack", label: "Mar 13 'Member vs Owner' moment", href: SLACK_MAR13 },
+      { kind: "Site page", label: "/patrick-audit — foundation gaps", href: "/patrick-audit" },
+    ],
+  },
+  {
+    id: "WAVE-CT-003",
+    projectId: "patrick-stack",
+    title: "Claim Patrick's Google Docs (IRV RCA, handoff doc, podium QR target)",
+    description:
+      "Patrick left 4+ Google Docs referenced in #av-team. Claim ownership, review for accuracy, decide adopt vs replace per doc. IRV RCA becomes the team's standard RCA template.",
+    status: "Backlog",
+    priority: "P1",
+    estimate: "S",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Each doc has Cortney listed as owner",
+      "Each doc has a 'last reviewed' header with today's date",
+      "IRV RCA format adopted as the team RCA template (linked from /splunk)",
+      "Podium QR target doc confirmed current or updated",
+    ],
+    sources: [
+      { kind: "Google Doc", label: "IRV RCA doc", href: "https://docs.google.com/document/d/1DLhhQMdnv-dENGATLbzBWYi33mXc35bm6kPOyWg9ntA/edit" },
+      { kind: "Google Doc", label: "Patrick handoff doc", href: "https://docs.google.com/document/d/1LxQvEdRCjbbALY6pb4Kqcr4-L7_EMIlJskAKjCL7XdI/edit" },
+      { kind: "Site page", label: "/splunk — Patrick docs to claim", href: "/splunk" },
+    ],
+  },
+  {
+    id: "WAVE-CT-004",
+    projectId: "patrick-stack",
+    title: "Walk every Patrick GitLab repo and confirm CI/CD lives without him",
+    description:
+      "Patrick's GitLab projects (av-devices-updater, q-sys-slack-updater, q-sys_webhooks, ric-36-qsc-sandbox) had push bots and scheduled jobs that may have been tied to his identity or notifications. Audit each repo.",
+    status: "Backlog",
+    priority: "P1",
+    estimate: "M",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Each repo has a README explaining what it does",
+      "Each scheduled job confirmed running",
+      "Maintainer / owner field updated on each repo",
+      "#av-team push notifications confirmed routing correctly",
+    ],
+    sources: [
+      { kind: "GitLab", label: "av-ops-tools", href: "https://gitlab.zgtools.net/core-tech/unified-communications/av/av-ops-tools/" },
+      { kind: "Site page", label: "/patrick-audit — portfolio", href: "/patrick-audit" },
+    ],
+  },
+  {
+    id: "WAVE-CT-005",
+    projectId: "patrick-stack",
+    title: "Inventory the IP/switch validator and verify cron still runs",
+    description:
+      "Patrick wrote an automation that logs into Juniper switches, returns devices as JSON, and validates against the IP doc. If cron ran under Patrick's identity, it may be dark.",
+    status: "Backlog",
+    priority: "P1",
+    estimate: "M",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Find the validator repo (GitLab or CodeCommit)",
+      "Confirm cron host + schedule",
+      "Run end-to-end manually",
+      "Document inputs, outputs, dependencies",
+      "Add a runbook for alert response",
+    ],
+    sources: [
+      { kind: "Site issue", label: "ip-drift", href: "/issues/ip-drift" },
+      { kind: "Quick Win", label: "QW related", href: "/quick-wins" },
+    ],
+  },
+
+  // ============ SPLUNK PIPELINE ============
+  {
+    id: "WAVE-CT-010",
+    projectId: "splunk-pipeline",
+    title: "Audit Splunk HEC tokens — find anything tied to Patrick's identity",
+    description:
+      "If any HEC token was created under Patrick's account, the corresponding panel may be dark right now and nobody knows. Inventory every HEC token, dashboard, and alert rule + re-key as needed.",
+    status: "Ready",
+    priority: "P0",
+    estimate: "S",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Enumerate every HEC token in zgav app",
+      "Identify token owner per token",
+      "Re-key any Patrick-owned tokens under team service identity",
+      "Confirm each dashboard panel is still receiving events",
+    ],
+    sources: [
+      { kind: "Site page", label: "/splunk — pipeline", href: "/splunk" },
+      { kind: "Splunk dashboard", label: "zgav_non-prod", href: "https://zillowgroup.splunkcloud.com/en-US/app/zgav/zgav_non-prod" },
+    ],
+  },
+  {
+    id: "WAVE-CT-011",
+    projectId: "splunk-pipeline",
+    title: "Decide: finish or kill the Zoom Webhooks → Splunk migration",
+    description:
+      "Patrick's stalled mid-flight project. 'Dashboarding is actually a lot harder than I thought.' Don't let it rot — pick a path and write the decision in a one-pager.",
+    status: "Backlog",
+    priority: "P1",
+    estimate: "L",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Audit current state of Zoom Webhook ingest into Splunk",
+      "Estimate work to finish vs kill",
+      "Decision memo to Mark + Matt",
+      "Either ship dashboard or archive code + delete tokens",
+    ],
+    sources: [
+      { kind: "Site page", label: "/splunk — inherited work", href: "/splunk" },
+    ],
+  },
+  {
+    id: "WAVE-CT-012",
+    projectId: "splunk-pipeline",
+    title: "Implement Patrick's promised 'same webhook repeatedly → alert' Splunk rule",
+    description:
+      "Patrick: 'In time, I will set up Splunk to send an alert to the newer alerts channel, when its received the same webhook over and over, and the device is still offline.' Never landed. Build the Splunk alert rule.",
+    status: "Backlog",
+    priority: "P1",
+    estimate: "M",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Splunk alert rule fires on N+ duplicate webhooks within Y minutes",
+      "Re-poll confirms device still offline before alert",
+      "Routes to #av-alerts (not noisier channel)",
+      "Documented in runbook",
+    ],
+    sources: [
+      { kind: "Site page", label: "/splunk — re-poll pattern", href: "/splunk" },
+    ],
+  },
+  {
+    id: "WAVE-CT-013",
+    projectId: "splunk-pipeline",
+    title: "Migrate Domotz alerts INTO Splunk (kill noisy Slack channel)",
+    description:
+      "Patrick's stated end goal: noisy Domotz Slack channel should die; events route through Splunk first, escalate to Slack only when a human reaction is expected.",
+    status: "Backlog",
+    priority: "P2",
+    estimate: "M",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Domotz API integration in Lambda",
+      "Events POST to Splunk via HEC",
+      "Splunk alert rule routes meaningful events to #av-alerts",
+      "Old Slack channel archived after 30 days clean",
+    ],
+    sources: [
+      { kind: "Site page", label: "/splunk — inherited work", href: "/splunk" },
+    ],
+  },
+  {
+    id: "WAVE-CT-014",
+    projectId: "splunk-pipeline",
+    title: "Add Splunk panel for Neat Bar Pro / Center fleet health",
+    description:
+      "Currently no first-class view on the Neat fleet. Gap noted in /issues. Build the panel as a 'first dashboard I shipped' deliverable.",
+    status: "Backlog",
+    priority: "P2",
+    estimate: "M",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Neat API integration if available, else Zoom Device API for paired Neat rooms",
+      "Panel shows: online/offline, firmware version, last meeting end time",
+      "Linked from zgav main dashboard",
+    ],
+    sources: [
+      { kind: "Site issue", label: "neat-install-quality", href: "/issues/neat-install-quality" },
+      { kind: "Site issue", label: "neat-mic-coverage", href: "/issues/neat-mic-coverage" },
+    ],
+  },
+
+  // ============ HDMI VALIDATION ============
+  {
+    id: "WAVE-CT-020",
+    projectId: "hdmi-validation",
+    title: "Bench-test Option D: source-side EDID forcing (Lightware EDID Lock)",
+    description:
+      "Plug Lightware EDID Lock between source and encoder on a flaky VSI room. Pre-program known-good EDID profile. Measure failure rate vs baseline.",
+    status: "Backlog",
+    priority: "P1",
+    estimate: "M",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "2× Lightware units ordered (~$200 total)",
+      "Baseline data collected on flaky room (5 reboots, 3 laptop swaps, 2 resolution changes)",
+      "Same matrix re-run with Lightware inserted",
+      "Pass/fail criteria pre-defined and documented",
+      "Findings memo to Matt + Mark",
+    ],
+    sources: [
+      { kind: "Quick Win", label: "QW33 — EDID + USB lab", href: "/quick-wins" },
+      { kind: "Site page", label: "/hdmi#lab-proposal", href: "/hdmi#lab-proposal" },
+      { kind: "Vendor", label: "Lightware EDID Manager", href: "https://lightware.com/edid-manager" },
+    ],
+  },
+  {
+    id: "WAVE-CT-021",
+    projectId: "hdmi-validation",
+    title: "Bench-test Option B: direct USB capture (Inogeni/Magewell)",
+    description:
+      "Convert HDMI → USB on the source side, feed Zoom natively bypassing the AV switch. Test on Mac Mini and Windows. Diagnostic gold even if NV is still purchased.",
+    status: "Backlog",
+    priority: "P1",
+    estimate: "M",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "2× Inogeni Share2 OR Magewell ordered",
+      "1-hour Zoom session test, Mac + Windows hosts",
+      "Audio drift / resolution flicker logged",
+      "Findings memo with cost-to-deploy if scaled",
+    ],
+    sources: [
+      { kind: "Quick Win", label: "QW33 — EDID + USB lab", href: "/quick-wins" },
+      { kind: "Site page", label: "/hdmi#lab-proposal", href: "/hdmi#lab-proposal" },
+      { kind: "Vendor", label: "Inogeni Share2", href: "https://inogeni.com/product/share2/" },
+    ],
+  },
+  {
+    id: "WAVE-CT-022",
+    projectId: "hdmi-validation",
+    title: "Get Q-Sys NV-21 + NV-32 pricing from QSC (Scott)",
+    description:
+      "Without real quotes you can't size the capex argument. Email Scott at QSC, get pricing for 5 rooms, 20 rooms, fleet-wide.",
+    status: "Backlog",
+    priority: "P1",
+    estimate: "XS",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "QSC quote for NV-21 + NV-32 at 3 volume tiers",
+      "Shipping + tax included",
+      "Quote shared with Mark",
+    ],
+    sources: [
+      { kind: "Site issue", label: "hdmi-share — Step 0", href: "/issues/hdmi-share" },
+    ],
+  },
+  {
+    id: "WAVE-CT-023",
+    projectId: "hdmi-validation",
+    title: "USB-C → HDMI adapter standardization (one SKU fleet-wide)",
+    description:
+      "Test 3 candidate USB-C adapters. Lock in one part number. Bulk order for every site. Closes a BYO-laptop pain point Mark loves and threads neatly into the HDMI capex argument.",
+    status: "Backlog",
+    priority: "P2",
+    estimate: "S",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "3 candidate adapters scored on EDID stability + audio passthrough + hot-plug",
+      "Winner SKU locked in runbook",
+      "Bulk order placed by Mark",
+      "Kits shipped to SEA, SFO, IRV, NYC, DEN, MEX",
+    ],
+    sources: [
+      { kind: "Site issue", label: "usb-c-adapters", href: "/issues/usb-c-adapters" },
+      { kind: "Quick Win", label: "QW1 — USB-C standard SKU", href: "/quick-wins" },
+    ],
+  },
+
+  // ============ UCI STANDARDS ============
+  {
+    id: "WAVE-CT-030",
+    projectId: "uci-standards",
+    title: "Fix IRV-802 hidden projector + screen controls",
+    description:
+      "Re-add projector + screen controls under a visible settings tab. Eliminate the 'No source selected' gating. Demo to Matt + Mark together — Matt explains to John himself.",
+    status: "Backlog",
+    priority: "P1",
+    estimate: "M",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Designer file updated in GitLab",
+      "Controls exposed under a settings tab (long-press or PIN if Mark wants gating)",
+      "Demoed to Matt + Mark on site or screenshare",
+      "Pushed to IRV-802 Core",
+      "Matt confirms it solves the manual-roll-screens-up workaround",
+    ],
+    sources: [
+      { kind: "Quick Win", label: "QW34 — IRV-802 fix", href: "/quick-wins" },
+      { kind: "Site issue", label: "irv-802-projector", href: "/issues/irv-802-projector" },
+      { kind: "Site page", label: "/sites/irvine", href: "/sites/irvine" },
+    ],
+  },
+  {
+    id: "WAVE-CT-031",
+    projectId: "uci-standards",
+    title: "Draft Tier 1/2/3 UCI standards strawman",
+    description:
+      "Replace Patrick's 'no touch panel' thesis with a tiered content standard. Tier 1 minimal (huddle), Tier 2 default (single-page), Tier 3 strategic (event/board, tabbed with settings gate).",
+    status: "Backlog",
+    priority: "P1",
+    estimate: "L",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "3-page standards doc covering each tier with examples",
+      "Reviewed by Matt + Mark",
+      "Posted in /uci page on this site",
+      "First Tier 1 pilot proposed in a low-traffic room",
+    ],
+    sources: [
+      { kind: "Site page", label: "/uci — Cortney counter-thesis", href: "/uci" },
+      { kind: "Site issue", label: "ui-standardization", href: "/issues/ui-standardization" },
+    ],
+  },
+  {
+    id: "WAVE-CT-032",
+    projectId: "uci-standards",
+    title: "Document plugin provenance for every custom Q-Sys plugin",
+    description:
+      "Walk each plugin in Designer. Tag the source (community vs Patrick-authored) in the metadata header. License + support contact + version. Closes Mark's open IRV-802 question.",
+    status: "Backlog",
+    priority: "P2",
+    estimate: "M",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Inventory of every custom plugin in the fleet",
+      "Metadata header with source, license, support contact per plugin",
+      "Public list in /uci",
+      "Mark's IRV-802 plugin question answered",
+    ],
+    sources: [
+      { kind: "Site page", label: "/uci — plugin provenance", href: "/uci" },
+      { kind: "Slack", label: "Mark's IRV-802 thread", href: SLACK_MAR13 },
+    ],
+  },
+  {
+    id: "WAVE-CT-033",
+    projectId: "uci-standards",
+    title: "Re-add system mute / source-route / display-power on gated tab",
+    description:
+      "Patrick stripped these controls fleet-wide. Add them back behind a long-press or PIN so the meeting user can't accidentally trigger them but Matt or a Zoom rep can recover a stuck room.",
+    status: "Backlog",
+    priority: "P1",
+    estimate: "L",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Settings tab with gated long-press or PIN",
+      "Implemented in Tier 2 UCI template",
+      "Rolled out to 3 pilot rooms",
+      "Documented in runbook",
+    ],
+    sources: [
+      { kind: "Site page", label: "/uci — half-standards reopened", href: "/uci" },
+    ],
+  },
+
+  // ============ MAC vs WINDOWS ============
+  {
+    id: "WAVE-CT-040",
+    projectId: "mac-windows",
+    title: "Mac Mini vs Q-Sys-Connect-Windows decision memo",
+    description:
+      "Patrick's 4-year punt. One-page memo: status quo cost, Q-Sys Connect Windows-only roadmap conflict, proposed one-room Windows appliance pilot, success criteria, decision needed by date.",
+    status: "Backlog",
+    priority: "P1",
+    estimate: "M",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "One-page memo drafted",
+      "Reviewed with Matt",
+      "Sent to Matt + Mark + Stacey + Andrew Spokes (IT)",
+      "Decision recorded in writing",
+    ],
+    sources: [
+      { kind: "Quick Win", label: "QW38 — Mac vs Windows memo", href: "/quick-wins" },
+      { kind: "Site page", label: "/mac-mini", href: "/mac-mini" },
+      { kind: "Site page", label: "/playbook#mac-vs-windows-memo", href: "/playbook#mac-vs-windows-memo" },
+    ],
+  },
+  {
+    id: "WAVE-CT-041",
+    projectId: "mac-windows",
+    title: "Identify Tier 3 candidate room for Windows appliance pilot",
+    description:
+      "Pick one event-tier room (zRetreat, Founder's Suite, or NYC-1204) for a Windows AV appliance pilot if the memo lands.",
+    status: "Backlog",
+    priority: "P2",
+    estimate: "S",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Room selected with rationale documented",
+      "Pre-pilot baseline metrics captured",
+      "Mark + Matt approval on room selection",
+    ],
+    sources: [
+      { kind: "Site page", label: "/sites/zretreat", href: "/sites/zretreat" },
+    ],
+  },
+  {
+    id: "WAVE-CT-042",
+    projectId: "mac-windows",
+    title: "Q-Sys Connect for Zoom Rooms — lab smoke test on new Windows laptop",
+    description:
+      "Use Cortney's new Windows laptop to install Q-Sys Connect and run a smoke test. Confirm pairing flow, touch panel behavior, Designer push-to-Core compatibility.",
+    status: "Backlog",
+    priority: "P2",
+    estimate: "M",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Q-Sys Connect installed",
+      "Smoke test results documented",
+      "Compatibility findings shared with Matt",
+    ],
+    sources: [
+      { kind: "Site page", label: "/uci — toolkit", href: "/uci" },
+      { kind: "Vendor", label: "Q-Sys Connect for ZR", href: "https://www.qsys.com/products-solutions/q-sys/peripherals/q-sys-connect/" },
+    ],
+  },
+
+  // ============ MEMORY LEAK ============
+  {
+    id: "WAVE-CT-050",
+    projectId: "memory-leak",
+    title: "Confirm Splunk memory-examination dashboard is alive",
+    description:
+      "Patrick built a Splunk panel that tracks Lua script memory + Critical Value errors per Core. If HEC token was tied to his identity, the dashboard is dark. P0 to verify.",
+    status: "Ready",
+    priority: "P0",
+    estimate: "XS",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Dashboard opens",
+      "Receiving fresh events (< 1 hour)",
+      "HEC token under team identity, not Patrick's",
+    ],
+    sources: [
+      { kind: "Site page", label: "/splunk#memory-leak", href: "/splunk#memory-leak" },
+      { kind: "Splunk dashboard", label: "zgav_non-prod", href: "https://zillowgroup.splunkcloud.com/en-US/app/zgav/zgav_non-prod" },
+    ],
+  },
+  {
+    id: "WAVE-CT-051",
+    projectId: "memory-leak",
+    title: "TP-script memory-leak sweep — 8 rooms Patrick left untouched",
+    description:
+      "Patrick fixed Main scripts in SEA-3611/3619/3925, IRV-1249/1250/851, SFO-735/726 but explicitly never touched TP scripts. Same Lua patterns, different file.",
+    status: "Backlog",
+    priority: "P1",
+    estimate: "L",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "8 rooms surveyed for TP script Lua patterns",
+      "5 bad patterns refactored where present",
+      "Splunk memory dashboard shows flat memory curve post-fix on each room",
+      "Q-Sys Lua style guide updated with patterns",
+    ],
+    sources: [
+      { kind: "Quick Win", label: "QW40 — TP-script sweep", href: "/quick-wins" },
+      { kind: "Site page", label: "/splunk#memory-leak", href: "/splunk#memory-leak" },
+    ],
+  },
+  {
+    id: "WAVE-CT-052",
+    projectId: "memory-leak",
+    title: "Solve NYC-1250 memory-leak mystery (diff vs NYC-1227 sibling)",
+    description:
+      "The only rebuilt room that still leaks. Patrick's 'remove control links from parent core' theory didn't fix it. Diff config line-by-line against clean NYC-1227 and watch both in Splunk for a week.",
+    status: "Backlog",
+    priority: "P2",
+    estimate: "XL",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Config diff documented",
+      "Both rooms monitored in Splunk for 7+ days",
+      "Root cause identified",
+      "Fix pushed to NYC-1250",
+      "Findings written up as RCA",
+    ],
+    sources: [
+      { kind: "Quick Win", label: "QW37 — NYC-1250 leak solve", href: "/quick-wins" },
+      { kind: "Site page", label: "/sites/nyc", href: "/sites/nyc" },
+      { kind: "Site page", label: "/splunk#memory-leak", href: "/splunk#memory-leak" },
+    ],
+  },
+  {
+    id: "WAVE-CT-053",
+    projectId: "memory-leak",
+    title: "Rebuild SFO All Hands as BirdDog → NV camera transport conversion",
+    description:
+      "Patrick's stated next priority. Leaks memory + uses BirdDog only for cameras (not transport). Rebuild + swap to NV camera transport in one project — two birds.",
+    status: "Backlog",
+    priority: "P2",
+    estimate: "XL",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Pre-build BOM with Mark",
+      "Memory leak refactor applied during rebuild",
+      "BirdDog cameras retired from this room",
+      "Splunk memory curve flat post-rebuild",
+      "RCA / case study published",
+    ],
+    sources: [
+      { kind: "Quick Win", label: "QW39 — SFO All Hands rebuild", href: "/quick-wins" },
+      { kind: "Site page", label: "/sites/sfo", href: "/sites/sfo" },
+      { kind: "Site page", label: "/birddog", href: "/birddog" },
+    ],
+  },
+  {
+    id: "WAVE-CT-054",
+    projectId: "memory-leak",
+    title: "Q-Sys Lua style guide — document the 5 leaky patterns + fixes",
+    description:
+      "Patrick learned the patterns from QSC community. Living in his head. Closures, self-re-registering timers, re-bound event handlers, string concat in loops, unbounded table inserts. Document the bad + the safe replacement.",
+    status: "Backlog",
+    priority: "P1",
+    estimate: "S",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Guide committed to GitLab (qsys-dev)",
+      "Linked from /splunk on this site",
+      "Reviewed by Mark + Matt (or at least walked through)",
+    ],
+    sources: [
+      { kind: "Quick Win", label: "QW41 — Q-Sys Lua style guide", href: "/quick-wins" },
+      { kind: "Site page", label: "/splunk#memory-leak", href: "/splunk#memory-leak" },
+    ],
+  },
+
+  // ============ INDIA BUILDOUT ============
+  {
+    id: "WAVE-CT-060",
+    projectId: "india-buildout",
+    title: "Get India BOMs from Mark + read end-to-end",
+    description:
+      "Stacey told Mark to share the India BOMs with you. Don't wait — ask Mark Monday. Read end-to-end. Bring back 3 questions + 1 spec suggestion by Wednesday.",
+    status: "Ready",
+    priority: "P1",
+    estimate: "S",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "BOMs received from Mark",
+      "Full read in one sitting",
+      "3 questions + 1 spec suggestion sent back",
+    ],
+    sources: [
+      { kind: "Slack", label: "Stacey to Mark — share BOMs with Cortney", href: SLACK_MAR13 },
+      { kind: "Site page", label: "/patrick-audit — Cortney mentions", href: "/patrick-audit" },
+    ],
+  },
+  {
+    id: "WAVE-CT-061",
+    projectId: "india-buildout",
+    title: "Volunteer as engineer-of-record on one India room",
+    description:
+      "First solo end-to-end project. Stacey's pet initiative for the year. Strong career investment.",
+    status: "Backlog",
+    priority: "P1",
+    estimate: "XL",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Room selected with Mark + Stacey",
+      "Spec validated against Tier 2 / Tier 3 standard",
+      "BOM finalized",
+      "Commissioning plan",
+      "Stacey thank-you in Friday wins/challenges",
+    ],
+    sources: [
+      { kind: "Quick Win", label: "QW30 — India engineer of record", href: "/quick-wins" },
+    ],
+  },
+
+  // ============ WORLD CUP ============
+  {
+    id: "WAVE-CT-070",
+    projectId: "world-cup",
+    title: "Volunteer to PM the World Cup pop-up rollout",
+    description:
+      "Tell Mark Monday. Multi-site high-visibility hard-deadline project. PM-ing = max visibility in front of Stacey.",
+    status: "Ready",
+    priority: "P1",
+    estimate: "S",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Told Mark in writing",
+      "Calendar lock for PM cadence",
+      "Friday wins email mentions ownership",
+    ],
+    sources: [
+      { kind: "Site issue", label: "world-cup", href: "/issues/world-cup" },
+    ],
+  },
+  {
+    id: "WAVE-CT-071",
+    projectId: "world-cup",
+    title: "Lock pop-up rooms at IRV / SEA / SFO / DEN by mid-June",
+    description:
+      "Constraints: occupancy, display quality, ambient light, F&B policy. Per-site lock with Mark + onsite leads.",
+    status: "Backlog",
+    priority: "P1",
+    estimate: "M",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "1 primary + 1 backup room per site",
+      "Site-lead sign-off (John, Adali, etc.)",
+      "Calendar reservation for World Cup window",
+    ],
+    sources: [
+      { kind: "Site issue", label: "world-cup", href: "/issues/world-cup" },
+    ],
+  },
+  {
+    id: "WAVE-CT-072",
+    projectId: "world-cup",
+    title: "Confirm streaming + HDCP requirements with Events & Brand",
+    description:
+      "Streaming service (Peacock / FOX / Telemundo) — some require end-to-end HDCP. Old AV switches will fail. Confirm with E&B before lock-in.",
+    status: "Backlog",
+    priority: "P1",
+    estimate: "S",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Streaming service confirmed per region",
+      "HDCP requirements documented",
+      "Test in lab on candidate rooms",
+    ],
+    sources: [
+      { kind: "Site issue", label: "world-cup", href: "/issues/world-cup" },
+    ],
+  },
+  {
+    id: "WAVE-CT-073",
+    projectId: "world-cup",
+    title: "Mexico City — remote hands contract for 6-week window",
+    description:
+      "Zillow has presence in MEX but no full-time AV staff. Mark may have a vendor. Lock for the World Cup window.",
+    status: "Backlog",
+    priority: "P2",
+    estimate: "M",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Vendor identified with Mark",
+      "Contract / SOW signed",
+      "On-call escalation path documented",
+    ],
+    sources: [
+      { kind: "Site issue", label: "world-cup", href: "/issues/world-cup" },
+    ],
+  },
+
+  // ============ MATT QOL ============
+  {
+    id: "WAVE-CT-080",
+    projectId: "matt-qol",
+    title: "iPad / scheduler low-battery webhook → Slack alert",
+    description:
+      "Matt's open ask multiple times: 'easy lift that I've seen done at other sites.' Patrick acknowledged + never shipped. AI-author the Lambda; route to #av-alerts.",
+    status: "Backlog",
+    priority: "P2",
+    estimate: "S",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Zoom Controller battery webhook configured",
+      "Lambda receives, applies re-poll pattern",
+      "Routes to #av-alerts when battery < 20%",
+      "Matt confirms it fires on the next dead-iPad event",
+    ],
+    sources: [
+      { kind: "Quick Win", label: "QW42 — iPad low-battery webhook", href: "/quick-wins" },
+      { kind: "Slack", label: "Matt's SFO-07 dead-iPad post", href: SLACK_MAR13 },
+    ],
+  },
+  {
+    id: "WAVE-CT-081",
+    projectId: "matt-qol",
+    title: "Walk Matt through GitLab notification settings",
+    description:
+      "Matt asked 'Participate?' in the Mar 13 thread — he doesn't know the UX. 15-minute pair to set his notification level on every Q-Sys + ops-tools project.",
+    status: "Ready",
+    priority: "P2",
+    estimate: "XS",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Matt set to 'Watch' or 'Participate' on every relevant project",
+      "Pipeline-failure emails arriving to Matt's inbox",
+      "Settings doc added to runbook",
+    ],
+    sources: [
+      { kind: "Slack", label: "Mar 13 thread — Matt asks 'Participate?'", href: SLACK_MAR13 },
+    ],
+  },
+  {
+    id: "WAVE-CT-082",
+    projectId: "matt-qol",
+    title: "Cursor pairing session with Matt — one tiny demo",
+    description:
+      "Pick a tiny Q-Sys ask Matt mentioned in Slack. Open Cursor with him watching. Ship the change in <20 minutes. Demystifies AI tooling so Matt isn't threatened by it.",
+    status: "Backlog",
+    priority: "P3",
+    estimate: "XS",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Session scheduled and held",
+      "One real change shipped during the session",
+      "Matt mentions Cursor unprompted in #av-team within 2 weeks",
+    ],
+    sources: [
+      { kind: "Quick Win", label: "QW36 — Cursor pairing with Matt", href: "/quick-wins" },
+      { kind: "Site page", label: "/playbook#cursor-pairing", href: "/playbook#cursor-pairing" },
+    ],
+  },
+
+  // ============ PROCESS & DOCS ============
+  {
+    id: "WAVE-CT-090",
+    projectId: "process-docs",
+    title: "One-page runbook per Lambda (the Patrick-promised doc)",
+    description:
+      "Stacey's annual operational-excellence goal Patrick never shipped. One page per Lambda: what triggers, where logs go, how to silence, how to debug, owner. Ship by day 30.",
+    status: "Backlog",
+    priority: "P1",
+    estimate: "L",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Runbook per Patrick Lambda (and per new Cortney Lambda)",
+      "Linked from /splunk",
+      "Stacey replies in #av-team to acknowledge",
+    ],
+    sources: [
+      { kind: "Quick Win", label: "QW35 — Monitoring runbook", href: "/quick-wins" },
+      { kind: "Site page", label: "/playbook#deliver-the-patrick-doc", href: "/playbook" },
+    ],
+  },
+  {
+    id: "WAVE-CT-091",
+    projectId: "process-docs",
+    title: "RCA template (based on Patrick's IRV doc) for every P0/P1",
+    description:
+      "Patrick's IRV RCA was the only formal post-mortem he ever wrote. Adopt the format. Every P0/P1 issue going forward gets an RCA filed within a week of resolution.",
+    status: "Backlog",
+    priority: "P2",
+    estimate: "S",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Template documented in /splunk + linked from /patrick-audit",
+      "First RCA written (NYC-1250 if solved, otherwise the IRV-802 fix)",
+      "Stacey + Matt aware of the cadence",
+    ],
+    sources: [
+      { kind: "Google Doc", label: "Patrick IRV RCA template", href: "https://docs.google.com/document/d/1DLhhQMdnv-dENGATLbzBWYi33mXc35bm6kPOyWg9ntA/edit" },
+    ],
+  },
+  {
+    id: "WAVE-CT-092",
+    projectId: "process-docs",
+    title: "Jira ticket template + spare-parts inventory doc",
+    description:
+      "NV-21 SN/MAC tracking runbook + Jira template for gear replacements. Onsite teams (John SEA, Adali IRV) get a 30-second runbook for capture into Jira.",
+    status: "Backlog",
+    priority: "P2",
+    estimate: "S",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Jira template fields defined",
+      "Mark approval on template",
+      "John + Adali buy-in",
+      "Spare-parts inventory doc with location tracking",
+    ],
+    sources: [
+      { kind: "Site issue", label: "nv21-tracking", href: "/issues/nv21-tracking" },
+      { kind: "Quick Win", label: "QW2 — NV-21 SN/MAC runbook", href: "/quick-wins" },
+    ],
+  },
+  {
+    id: "WAVE-CT-093",
+    projectId: "process-docs",
+    title: "Cortney 90-day impact log (private Google Doc for FTE case)",
+    description:
+      "Three-column doc (date, what closed, who benefited). Every closed item logged with link. Share with Stacey at day 60 as 'wanted you to have the receipts when we have the conversion conversation.'",
+    status: "Ready",
+    priority: "P1",
+    estimate: "XS",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Doc started day 1",
+      "Updated weekly minimum",
+      "Shared with Stacey at day 60",
+      "Stacey acknowledges receipt",
+    ],
+    sources: [
+      { kind: "Site page", label: "/playbook#fte-conversion-case-builder", href: "/playbook#fte-conversion-case-builder" },
+    ],
+  },
+  {
+    id: "WAVE-CT-094",
+    projectId: "process-docs",
+    title: "Friday wins/challenges email — closed deliverables only",
+    description:
+      "3 lines weekly: (1) closed this week with link, (2) in-flight with target close, (3) blocked + who unblocks. Always anchor to Stacey's 'operational excellence' phrase.",
+    status: "Ready",
+    priority: "P1",
+    estimate: "XS",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Cadence locked (Friday by 4pm)",
+      "QW# IDs used as anchors",
+      "Stacey forwards at least one up the chain in first 4 weeks",
+    ],
+    sources: [
+      { kind: "Site page", label: "/playbook#friday-wins-discipline", href: "/playbook#friday-wins-discipline" },
+    ],
+  },
+
+  // ============ SITE-SPECIFIC BACKLOG ============
+  {
+    id: "WAVE-CT-100",
+    projectId: "site-specific",
+    title: "NYC-1204 ceiling mics — TCC2 vs MXA920 spec call",
+    description:
+      "Mark asked Patrick which platform to standardize on for the event space. No answer for 12+ months. One-pager comparison + recommendation.",
+    status: "Backlog",
+    priority: "P2",
+    estimate: "S",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "1-page spec comparison (TCC2 vs MXA920)",
+      "Commissioning labor row included",
+      "Recommendation with rationale",
+      "Mark's 12-month-old question closed",
+    ],
+    sources: [
+      { kind: "Site issue", label: "mxa-strategy", href: "/issues/mxa-strategy" },
+      { kind: "Site page", label: "/sites/nyc", href: "/sites/nyc" },
+    ],
+  },
+  {
+    id: "WAVE-CT-101",
+    projectId: "site-specific",
+    title: "TCC2 commissioning sweep — SEA-3925 → SFO All Hands → SEA-3829",
+    description:
+      "Tuning passes on existing TCC2 install never happened. Three rooms identified for sweep. Plumber's pattern — fix what's leaking loudest first.",
+    status: "Backlog",
+    priority: "P2",
+    estimate: "M",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "SEA-3925 tuned (HVAC issue documented)",
+      "SFO All Hands tuned",
+      "SEA-3829 tuned",
+      "Tuning runbook documented",
+    ],
+    sources: [
+      { kind: "Site issue", label: "mxa-strategy — Step 6", href: "/issues/mxa-strategy" },
+      { kind: "Site issue", label: "sea-3647-audio", href: "/issues/sea-3647-audio" },
+    ],
+  },
+  {
+    id: "WAVE-CT-102",
+    projectId: "site-specific",
+    title: "IRV-1250 BirdDog P110 RMA closeout",
+    description:
+      "Patrick blocked here on the BirdDog bad batch RMA. Confirm status with BirdDog, get replacement cameras, complete commissioning.",
+    status: "Backlog",
+    priority: "P2",
+    estimate: "M",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "RMA status confirmed with BirdDog",
+      "Replacement cameras received and installed",
+      "Room fully commissioned",
+      "Documented in IRV RCA format",
+    ],
+    sources: [
+      { kind: "Site page", label: "/sites/irvine", href: "/sites/irvine" },
+      { kind: "Site page", label: "/birddog", href: "/birddog" },
+    ],
+  },
+  {
+    id: "WAVE-CT-103",
+    projectId: "site-specific",
+    title: "NYC-1202 ZRC plugin 'kick' automation",
+    description:
+      "Manual fix Matt does. Scripting opportunity — automate the kick when the ZRC pairing goes stale.",
+    status: "Backlog",
+    priority: "P3",
+    estimate: "S",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Detection: scheduler offline + ZRC pairing stale",
+      "Automated kick via Q-Sys plugin or Lambda",
+      "Logged + alerted only on failure to recover",
+    ],
+    sources: [
+      { kind: "Site page", label: "/sites/nyc", href: "/sites/nyc" },
+    ],
+  },
+  {
+    id: "WAVE-CT-104",
+    projectId: "site-specific",
+    title: "Reopen WAVE-16 (scheduler offline) with new evidence",
+    description:
+      "WAV-16 closed prematurely. May 16, 2026 IRV-1250 / IRV-1110 ZHL evidence is fresh. Reopen + push Zoom Support for root cause.",
+    status: "Backlog",
+    priority: "P2",
+    estimate: "S",
+    assignee: "Cortney",
+    acceptanceCriteria: [
+      "Ticket reopened with new evidence attached",
+      "Weekly cadence with Zoom Support",
+      "Firmware version straggler list built",
+    ],
+    sources: [
+      { kind: "Site issue", label: "scheduler-offline", href: "/issues/scheduler-offline" },
+    ],
+  },
+];
+
+// Quick stats for the index card
+export const JIRA_STATS = (() => {
+  const byProject: Record<string, number> = {};
+  const byStatus: Record<JiraStatus, number> = {
+    Backlog: 0,
+    Ready: 0,
+    "In Progress": 0,
+    "In Review": 0,
+    Done: 0,
+  };
+  const byPriority: Record<string, number> = { P0: 0, P1: 0, P2: 0, P3: 0 };
+  for (const t of JIRA_TASKS) {
+    byProject[t.projectId] = (byProject[t.projectId] ?? 0) + 1;
+    byStatus[t.status]++;
+    byPriority[t.priority]++;
+  }
+  return { total: JIRA_TASKS.length, byProject, byStatus, byPriority };
+})();
+
+// The actual Jira ticket template — copy-paste into the WAVE board.
+export const JIRA_TICKET_TEMPLATE = {
+  summary: "Template structure when creating WAVE tickets in Jira from this plan.",
+  fields: [
+    { name: "Summary", value: "Copy from task title" },
+    { name: "Issue Type", value: "Task (or Story / Epic per project)" },
+    { name: "Priority", value: "Map P0→Highest, P1→High, P2→Medium, P3→Low" },
+    { name: "Labels", value: "Add the project ID (e.g., patrick-stack, splunk-pipeline)" },
+    { name: "Components", value: "AV-Engineering" },
+    { name: "Assignee", value: "Default to Cortney" },
+    { name: "Description (markdown)", value: "Description + Acceptance Criteria + Sources" },
+    { name: "Linked Issues", value: "Link to parent Epic (use the WAVE-PSI / WAVE-SPL / etc. IDs)" },
+    { name: "Story Points", value: "XS=1, S=2, M=3, L=5, XL=8" },
+  ],
+  notes: [
+    "Use the local IDs (WAVE-CT-001 etc.) as ticket-title prefixes until you mint real Jira IDs — keeps the tracker on this site addressable.",
+    "Every ticket includes a 'Sources' block linking back to this site so any teammate can find context.",
+    "When you close a ticket in Jira, flip the status here too so the FTE conversion case stays current.",
+  ],
+};
+
+// =========================================================================
 // MATT REBUTTAL CARDS — quick responses to likely Matt objections.
 // Organized by topic. Each card pairs Matt's likely objection with a
 // confident-but-friendly response that demonstrates technical fluency
