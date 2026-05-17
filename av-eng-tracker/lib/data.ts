@@ -1450,6 +1450,522 @@ export const QUICK_WINS: QuickWin[] = [
 ];
 
 // =========================================================================
+// STEP DETAILS — small summary + links for each tracker action step.
+// Keyed by `${issueId}::${stepIndex}`. The tracker page merges these at
+// render time. Keeps `steps: string[]` backward-compatible.
+// =========================================================================
+
+export interface StepLink {
+  label: string;
+  href: string;
+  external?: boolean;
+}
+
+export interface StepDetail {
+  summary: string;
+  links?: StepLink[];
+}
+
+export const STEP_DETAILS: Record<string, StepDetail> = {
+  // ---- hdmi-share ----
+  "hdmi-share::0": {
+    summary:
+      "Email Scott at QSC and get the official NV-21 + NV-32 endpoint pricing in writing. Without a real quote you can't size the capex case Mark needs.",
+    links: [
+      { label: "QSC NV-21 product page", href: "https://www.qsys.com/products-solutions/q-sys/peripherals/network-video/", external: true },
+      { label: "/nv-fleet — current NV inventory", href: "/nv-fleet" },
+    ],
+  },
+  "hdmi-share::1": {
+    summary:
+      "Audit every conference room and flag every VSI encoder/decoder still in service. This is the denominator for the capex argument: 5 rooms vs. 50 rooms is a 10x difference in the PO.",
+    links: [
+      { label: "/sites — rooms by office", href: "/sites" },
+      { label: "/glossary — VSI definition", href: "/glossary#vsi" },
+    ],
+  },
+  "hdmi-share::2": {
+    summary:
+      "Drop the one-line pitch in the Tuesday sync. Frame as 'parallel data-gathering' that Matt can veto cheaply, not as 'reopening the decision.'",
+    links: [
+      { label: "/hdmi#lab-proposal — full pitch + Matt-rebuttal flow", href: "/hdmi#lab-proposal" },
+      { label: "/glossary — CapEx vs OpEx", href: "/glossary#capex" },
+    ],
+  },
+  "hdmi-share::3": {
+    summary:
+      "Plug a Lightware EDID Lock between source and encoder in the lab. Force a known-good EDID profile. If a $100 box stops handshake drama, NV may not be needed at all.",
+    links: [
+      { label: "Lightware EDID Lock product", href: "https://lightware.com/edid-manager", external: true },
+      { label: "/glossary — EDID", href: "/glossary#edid" },
+      { label: "/hdmi#lab-proposal — pass/fail criteria", href: "/hdmi#lab-proposal" },
+    ],
+  },
+  "hdmi-share::4": {
+    summary:
+      "Inogeni / Magewell convert HDMI → USB. Plug straight into the Mac Mini and feed Zoom natively, bypassing the AV switch. Diagnostic gold even if you end up buying NV.",
+    links: [
+      { label: "Inogeni Share2", href: "https://inogeni.com/product/share2/", external: true },
+      { label: "Magewell USB Capture Plus HDMI", href: "https://www.magewell.com/products/usb-capture-hdmi-plus", external: true },
+    ],
+  },
+  "hdmi-share::5": {
+    summary:
+      "Lock success criteria BEFORE you start the test. Otherwise the result becomes a Rorschach test that everyone reads differently. Format on /hdmi.",
+    links: [{ label: "/hdmi#lab-proposal — pre-defined pass/fail", href: "/hdmi#lab-proposal" }],
+  },
+  "hdmi-share::6": {
+    summary:
+      "Parallel quick win — pick one USB-C → HDMI adapter SKU after testing 3 candidates and lock it in. Closes a fleet-wide BYO-laptop pain point Mark loves.",
+    links: [{ label: "qw1 — USB-C standard SKU win", href: "/quick-wins" }],
+  },
+  "hdmi-share::7": {
+    summary:
+      "Write up findings as dollar cost per option × fleet size. Bring it as a recommendation, not a debate. Two pages max.",
+  },
+  "hdmi-share::8": {
+    summary:
+      "Tie the swap-out to existing site visit cadence so the team doesn't have to schedule extra travel. Matt + John are already on-site for other work.",
+  },
+
+  // ---- zoom-whiteboard ----
+  "zoom-whiteboard::0": {
+    summary:
+      "Matt currently owns the Zoom Support ticket. Ask him to transfer to you so you can drive the cadence — frees Matt up, signals you're owning monitoring escalations.",
+  },
+  "zoom-whiteboard::1": {
+    summary:
+      "Use the Zoom Admin Dashboard to pull every Zoom Room with a paired companion device (Neat Center, Neat Board, Whiteboard tablet). That's your exposure list.",
+    links: [
+      { label: "Zoom Admin → Rooms", href: "https://zoom.us/account/room", external: true },
+    ],
+  },
+  "zoom-whiteboard::2": {
+    summary:
+      "Walk each affected room and confirm whether the documented workaround has been applied. Don't assume — the SFO and IRV teams sometimes diverge from the runbook.",
+  },
+  "zoom-whiteboard::3": {
+    summary:
+      "Write the workaround in plain English in GitLab. Patrick's habit was to leave runbooks 'in his head' — fix that. This is part of the foundation-lift mandate.",
+    links: [
+      { label: "/patrick-audit — foundation gaps", href: "/patrick-audit" },
+      { label: "GitLab (av-ops-tools)", href: "https://gitlab.zgtools.net/core-tech/unified-communications/av/av-ops-tools/", external: true },
+    ],
+  },
+  "zoom-whiteboard::4": {
+    summary:
+      "Weekly cadence — even one-liner emails. Zoom Support escalates faster when the ticket is touched regularly. Calendar reminder Mondays.",
+  },
+  "zoom-whiteboard::5": {
+    summary:
+      "Add a Splunk detection rule for Whiteboard error events. Match the noise-vs-signal pattern Patrick built — Splunk first, Slack only if a reaction is expected.",
+    links: [
+      { label: "/splunk — pipeline + add-alert checklist", href: "/splunk" },
+    ],
+  },
+
+  // ---- sea-3647-audio ----
+  "sea-3647-audio::0": {
+    summary:
+      "Lock 30 min onsite at SEA-3647 with Shelby or John. They have building access and can sit in the room while you run the test from your laptop.",
+  },
+  "sea-3647-audio::1": {
+    summary:
+      "Open the SEA-3647 Q-Sys file in Designer and confirm every MXA910 mic isn't muted at the DSP level, and Dante routing matches the documented signal flow.",
+    links: [
+      { label: "/glossary — MXA910/920", href: "/glossary#mxa910-mxa920" },
+      { label: "/glossary — Dante", href: "/glossary#dante" },
+    ],
+  },
+  "sea-3647-audio::2": {
+    summary:
+      "Walk the room talking at normal + quiet volume from 4 corners and the center. Tests pickup uniformity AND gate-threshold tuning. Most 'mic doesn't pick me up' issues are gate tuning, not hardware.",
+  },
+  "sea-3647-audio::3": {
+    summary:
+      "Pull the last 30 days of Zoom Dashboard audio analytics for SEA-3647. Look for echo-cancellation events, dropped audio, low-volume warnings.",
+    links: [{ label: "Zoom Admin → Dashboard", href: "https://zoom.us/account/dashboard", external: true }],
+  },
+  "sea-3647-audio::4": {
+    summary:
+      "Sep 2025 echo issue might have been a one-off or a recurring root cause. Search #av-team for SEA-3647 echo references; if no documented RCA, write one.",
+    links: [{ label: "Patrick's IRV RCA template", href: "https://docs.google.com/document/d/1DLhhQMdnv-dENGATLbzBWYi33mXc35bm6kPOyWg9ntA/edit", external: true }],
+  },
+  "sea-3647-audio::5": {
+    summary:
+      "Open a Jira ticket on the WAVE board with the root cause and the specific Q-Sys / Dante / MXA setting changed. Future-you (and Matt) will thank past-you.",
+  },
+  "sea-3647-audio::6": {
+    summary:
+      "Three options: (a) tune the existing 910s harder, (b) swap to MXA920 with auto-steer, (c) pull a TCC2 from spares. Recommendation based on dimensions + budget.",
+    links: [{ label: "/glossary — TCC2 vs MXA920", href: "/glossary#mxa910-mxa920" }],
+  },
+  "sea-3647-audio::7": {
+    summary:
+      "Update Stacey via the Friday wins/challenges email. Tie the fix to a fleet-wide ceiling-mic strategy doc so it lands as 'operational excellence' not just one room.",
+    links: [{ label: "/playbook — Friday wins discipline", href: "/playbook#friday-wins-discipline" }],
+  },
+
+  // ---- mac-mini ----
+  "mac-mini::0": {
+    summary:
+      "Patrick + Matt have a Mac Mini reference design that's been the standard for years. Walk it with Matt before proposing any alternative — show respect for the existing investment.",
+    links: [{ label: "/mac-mini — architectural review", href: "/mac-mini" }],
+  },
+  "mac-mini::1": {
+    summary:
+      "Find out exactly how Macs get updated today: Jamf push, AV-team manual cadence, CE (Corp Engineering) ownership, or some hybrid. The answer determines whether the team can BLOCK Sequoia.",
+  },
+  "mac-mini::2": {
+    summary:
+      "Use the WAVE board + Jira history to tally ticket hours spent on Mac-OS-driven room failures (auto-updates, Apple ID prompts, kernel panics). Dollarize it as 'ops cost per year.' That's the capex-vs-opex framing for the Mac→Windows pitch.",
+    links: [{ label: "/glossary — OpEx", href: "/glossary#opex" }],
+  },
+  "mac-mini::3": {
+    summary:
+      "Ask Matt directly what would convince him a Windows appliance pilot is worth running. Get his criteria in writing — it disarms the 'we already decided on Mac' objection.",
+    links: [{ label: "/playbook — Mac-vs-Windows memo", href: "/playbook#mac-vs-windows-memo" }],
+  },
+  "mac-mini::4": {
+    summary:
+      "Zillow IT defaults to Mac-only. Mark knows the exception path. File a proper exception request for one Windows AV appliance in one room as a pilot.",
+  },
+  "mac-mini::5": {
+    summary:
+      "Confirm: does the new Q-Sys Connect for Zoom Rooms platform have ANY Mac support on the roadmap? If not, the Mac standard is on borrowed time regardless. Ask Scott at QSC.",
+    links: [
+      { label: "Q-Sys Connect for ZR", href: "https://www.qsys.com/products-solutions/q-sys/peripherals/q-sys-connect/", external: true },
+    ],
+  },
+  "mac-mini::6": {
+    summary:
+      "Andrew Spokes (Zillow IT) controls macOS rollout cadence. Identify the gate where he'd push Sequoia to all Macs and pre-test in the lab BEFORE it hits production rooms.",
+  },
+  "mac-mini::7": {
+    summary:
+      "By day 90 — one-page brief with data: status quo cost, roadmap conflict, pilot proposal, success criteria, decision date. To Matt + Mark + Stacey. The trump card for FTE.",
+    links: [{ label: "/playbook — FTE ask", href: "/playbook" }],
+  },
+
+  // ---- scheduler-offline ----
+  "scheduler-offline::0": {
+    summary:
+      "WAV-16 was closed prematurely. Reopen with the May 16, 2026 IRV-1250/IRV-1110 evidence — the same failure mode is still happening, so the close was wrong.",
+    links: [{ label: "/issues/scheduler-offline — full evidence", href: "/issues/scheduler-offline" }],
+  },
+  "scheduler-offline::1": {
+    summary:
+      "Matt is the current ticket owner. Ask him to transfer + share his last touchpoint with Zoom Support so you don't repeat their last debug request.",
+  },
+  "scheduler-offline::2": {
+    summary:
+      "Zoom Admin shows firmware per device. Pull a CSV of every scheduler + current firmware version. Group by version — that's your stragglers list.",
+    links: [{ label: "Zoom Admin → Devices", href: "https://zoom.us/account/devices", external: true }],
+  },
+  "scheduler-offline::3": {
+    summary:
+      "Anyone still on v6.6.10 is the at-risk cohort. Flag them for proactive firmware push before they fail in a calendar-visible way.",
+  },
+  "scheduler-offline::4": {
+    summary:
+      "Add a daily Splunk check: scheduler offline AND firmware version. Same re-poll pattern Patrick used for Reflect — confirm offline before alerting.",
+    links: [{ label: "/splunk — re-poll pattern", href: "/splunk" }],
+  },
+  "scheduler-offline::5": {
+    summary:
+      "Document the panel-reboot workaround in a one-page runbook. Make sure John (SEA) and Adali (IRV) can both run it from the doc without calling you.",
+  },
+  "scheduler-offline::6": {
+    summary:
+      "Two open sub-findings: rooms with TWO schedulers where only one shows online, and pads stuck on the 'upgrading' screen. Each needs its own resolution path.",
+  },
+  "scheduler-offline::7": {
+    summary:
+      "Weekly Zoom Support email. Even a one-liner. Tickets without cadence get deprioritized fast.",
+  },
+
+  // ---- neat-mic-coverage ----
+  "neat-mic-coverage::0": {
+    summary:
+      "SEA-3829 already runs TCC2 + Neat Pad cleanly. Document the signal flow with screenshots — that's your Tier 2 reference design for everyone else.",
+    links: [{ label: "/sites/sea — SEA-3829 Dev Space", href: "/sites/sea" }],
+  },
+  "neat-mic-coverage::1": {
+    summary:
+      "AVIO USB lets the Neat Bar Pro 'speak Dante.' Test on the bench with a Q-Sys Core before pitching to Mark — proves the bidirectional audio flow actually works.",
+    links: [{ label: "/glossary — AVIO", href: "/glossary#avio" }, { label: "Shure AVIO USB", href: "https://www.shure.com/en-US/microphones/avio-usb", external: true }],
+  },
+  "neat-mic-coverage::2": {
+    summary:
+      "Matt tested SOMETHING that failed previously. Confirm what — AVIO or P300 — so you don't repeat his exact failure mode. Could be a P300 routing config issue, not an AVIO problem.",
+  },
+  "neat-mic-coverage::3": {
+    summary:
+      "Walk IRV-825, Jeremy Hofmann's office, and zRetreat rooms. Note where coverage is weak. Build the evidence file before recommending hardware spend.",
+    links: [{ label: "/sites/zretreat", href: "/sites/zretreat" }],
+  },
+  "neat-mic-coverage::4": {
+    summary:
+      "If AVIO + ceiling mic works, write it up as a Tier 2 → Tier 3 upgrade path so the team has a documented playbook. Closes the loop on Mark's Feb 2025 question.",
+  },
+  "neat-mic-coverage::5": {
+    summary:
+      "Bring the recommendation to the next AV sync. Mark has been waiting on this answer for over a year — first person to give him a definitive 'yes here's how' wins.",
+  },
+
+  // ---- neat-install-quality ----
+  "neat-install-quality::0": {
+    summary:
+      "Inventory every Neat Bar Pro in the fleet with current mount orientation (right-side up or upside-down). Photos preferred.",
+  },
+  "neat-install-quality::1": {
+    summary:
+      "Some have already been flipped, some haven't. The two cohorts need different remediation plans (touch-up vs full re-mount).",
+  },
+  "neat-install-quality::2": {
+    summary:
+      "Coordinate with Zillow Workplace (the real-estate / facilities team) for patch + paint. Don't try to do the wall work yourself — it's not in the AV swim lane.",
+  },
+  "neat-install-quality::3": {
+    summary:
+      "Update the install runbook so this never happens again. Add a 'mount orientation' explicit step + a photo example. Hand to the next AV vendor that mounts.",
+  },
+
+  // ---- ui-standardization ----
+  "ui-standardization::0": {
+    summary:
+      "Patrick's single-page UCI source lives in GitLab. Pull it locally, run it in Designer. This is the foundation of everything UCI-related.",
+    links: [
+      { label: "GitLab (qsys-dev)", href: "https://gitlab.zgtools.net/core-tech/unified-communications/av/qsys-dev/", external: true },
+      { label: "/uci — half-standards", href: "/uci" },
+    ],
+  },
+  "ui-standardization::1": {
+    summary:
+      "For every custom Q-Sys plugin: is it community-sourced from the QSC Discord, or did Patrick write it? License + support contact per plugin.",
+    links: [{ label: "/uci#patricks-half-standards", href: "/uci" }],
+  },
+  "ui-standardization::2": {
+    summary:
+      "Walk every room or pull every UCI file. Classify by Tier 1 (huddle), Tier 2 (default), Tier 3 (event / multi-display). Strawman, not gospel.",
+  },
+  "ui-standardization::3": {
+    summary:
+      "Write a Tier 1/2/3 standards doc. Length: 3 pages max. Show the WHAT, the WHY, and the cost-to-deviate. Mark loves standardization docs.",
+  },
+  "ui-standardization::4": {
+    summary:
+      "Send to Matt + Mark for feedback before pitching to Stacey. 'Strawman' framing invites edits without ego.",
+  },
+  "ui-standardization::5": {
+    summary:
+      "Pilot Tier 1 (the SEA-3647 single-page UCI) in one additional room. Pick a low-traffic room so a regression doesn't block a meeting.",
+  },
+  "ui-standardization::6": {
+    summary:
+      "IRV-802 is the canonical broken-UCI example. Re-add projector + screen controls under a visible settings tab. Demo to Matt + Mark together.",
+    links: [{ label: "/sites/irvine", href: "/sites/irvine" }],
+  },
+  "ui-standardization::7": {
+    summary:
+      "Roll out approved standards site-by-site as part of existing site-visit cadence. No extra travel needed.",
+  },
+
+  // ---- nv21-tracking ----
+  "nv21-tracking::0": {
+    summary:
+      "When NV-21 hardware gets swapped, the onsite team needs a 30-second runbook for capturing SN + MAC into Jira. Patrick + Matt tried to eliminate clerical fields — this is the minimum that survived.",
+  },
+  "nv21-tracking::1": {
+    summary:
+      "Build a Jira ticket template with SN, MAC, IP, room, install date, replaced-because reason. Mark approves the template.",
+  },
+  "nv21-tracking::2": {
+    summary:
+      "Mark is the IP-doc owner — he has to sign off. Frame as 'closing a process gap' not 'adding paperwork.'",
+  },
+  "nv21-tracking::3": {
+    summary:
+      "John (SEA) and Adali (IRV) are the onsite teams who'll fill the template. Their buy-in determines whether it actually gets used.",
+  },
+  "nv21-tracking::4": {
+    summary:
+      "Spare parts inventory doc — count of NV-21s, NV-32s, PSUs, Phoenix blocks, capture cards, UE1s. Track per site. This goes into the foundation-lift runbook.",
+    links: [{ label: "/nv-fleet — current spares", href: "/nv-fleet" }],
+  },
+  "nv21-tracking::5": {
+    summary:
+      "NV-21 PSU + Phoenix block — sourcing isn't obvious. Document the Phihong / Digikey path so the next person doesn't re-discover it.",
+  },
+  "nv21-tracking::6": {
+    summary:
+      "Add a 'physical location' column to the inventory doc. Matt's current stash is in the SFO 10th floor — that needs to be findable by someone who isn't Matt.",
+  },
+
+  // ---- mxa-strategy ----
+  "mxa-strategy::0": {
+    summary:
+      "NYC-1204 dimensions + ceiling height determine which mic platform makes sense. Confirm before recommending TCC2 vs MXA920. Mark may have it on file.",
+  },
+  "mxa-strategy::1": {
+    summary:
+      "Count actual TCC2 spare inventory: SFO 10th floor, Matt's stash, SEA-3925. You need the real number to decide whether to consolidate on Sennheiser or split platforms.",
+  },
+  "mxa-strategy::2": {
+    summary:
+      "One-pager comparison: pickup pattern, auto-steer behavior, commissioning labor, $ per room, support availability. Length: 1 page. Mark will read 1 page.",
+  },
+  "mxa-strategy::3": {
+    summary:
+      "Add a 'commissioning labor' row — that's the no-tuning pattern Mark + Matt keep hitting. TCC2 needs in-room tuning to perform; MXA920 auto-steers. Real labor cost difference.",
+  },
+  "mxa-strategy::4": {
+    summary:
+      "Recommendation: Shure consolidation, Sennheiser consolidation, or mixed by room type. Don't sit on the fence — pick one.",
+  },
+  "mxa-strategy::5": {
+    summary:
+      "Bring to the next WAVE sync. Don't bring it in #av-team first — let Mark + Matt see it in the meeting where decisions actually get made.",
+  },
+  "mxa-strategy::6": {
+    summary:
+      "TCC2 commissioning sweep: SEA-3925 first (HVAC issue documented), then SFO All Hands (big visibility), then SEA-3829. Plumber's pattern — fix what's leaking loudest first.",
+  },
+  "mxa-strategy::7": {
+    summary:
+      "If we end up consolidating on a single platform, the MXA910 fleet is on borrowed time. Put a 2027 AOP (Annual Operating Plan) item in the queue now.",
+  },
+
+  // ---- usb-c-adapters ----
+  "usb-c-adapters::0": {
+    summary:
+      "Buy 3 candidate USB-C → HDMI adapter SKUs (different chipsets). Anker, StarTech, Apple are the safest starting candidates.",
+  },
+  "usb-c-adapters::1": {
+    summary:
+      "Test on Mac (the Mac Mini host case), PC (BYOD laptops), and iPad (some users tether iPads). Test against current AV switch capture cards.",
+  },
+  "usb-c-adapters::2": {
+    summary:
+      "Score adapters on EDID stability (does the source see a consistent profile?), audio passthrough (some adapters drop audio), and hot-plug behavior (re-handshake on unplug).",
+    links: [{ label: "/glossary — EDID", href: "/glossary#edid" }],
+  },
+  "usb-c-adapters::3": {
+    summary:
+      "Pick the winner. Write the part number in the runbook. Be specific — 'Anker 332' isn't enough; record the exact SKU because Anker revs silently.",
+  },
+  "usb-c-adapters::4": {
+    summary:
+      "Mark places the bulk order. Spread the SKU across all sites so a roving meeting attendee can grab one from any AV cabinet.",
+  },
+  "usb-c-adapters::5": {
+    summary:
+      "Ship to SEA, SFO, IRV, NYC, DEN, MEX. Use existing site cadence — Matt is in SEA most days, John is onsite. Coordinate with each site lead.",
+  },
+  "usb-c-adapters::6": {
+    summary:
+      "Lock the SKU + part number in the public AV runbook. Tag it as 'do not deviate' — every adapter swap reopens the EDID risk.",
+  },
+
+  // ---- irv-802-projector ----
+  "irv-802-projector::0": {
+    summary:
+      "Document the quirks: projector + screen controls hidden behind 'No source selected' gating. Matt rolled screens manually from QDS. Write it down so the fix has a baseline.",
+    links: [{ label: "/sites/irvine — IRV-802", href: "/sites/irvine" }],
+  },
+  "irv-802-projector::1": {
+    summary:
+      "IRV-802 is the canonical multi-display room. It belongs in the Tier 1/2/3 standardization scope so the fix isn't a one-off.",
+  },
+  "irv-802-projector::2": {
+    summary:
+      "Re-add projector + screen controls under a visible settings tab (long-press or PIN if Mark wants gating). This is the foundation fix to Patrick's 'hide it' pattern.",
+  },
+  "irv-802-projector::3": {
+    summary:
+      "Pilot the new UCI in IRV-802 with Matt watching. Demo to Mark before fleet rollout. Matt explains it to John himself.",
+    links: [{ label: "/playbook — credit Matt publicly", href: "/playbook#matt-credit-pattern" }],
+  },
+
+  // ---- ip-drift ----
+  "ip-drift::0": {
+    summary:
+      "Patrick wrote an IP/switch validator that ran on a cron. Find the repo — probably in GitLab av-ops-tools. May also be in legacy CodeCommit.",
+    links: [
+      { label: "GitLab av-ops-tools", href: "https://gitlab.zgtools.net/core-tech/unified-communications/av/av-ops-tools/", external: true },
+    ],
+  },
+  "ip-drift::1": {
+    summary:
+      "Get prod credentials + the cron host. If the cron ran under Patrick's identity, it may have died on his deactivation. Same blast-radius pattern as the Lambdas.",
+    links: [{ label: "/patrick-audit — deactivation blast radius", href: "/patrick-audit" }],
+  },
+  "ip-drift::2": {
+    summary:
+      "Run the validator end-to-end manually. Confirm it still works post-Patrick. If broken, log the failure mode before debugging.",
+  },
+  "ip-drift::3": {
+    summary:
+      "One-page runbook: inputs (switch credentials, IP doc), outputs (CSV / Slack alert), dependencies (Python? Node?), known limitations.",
+  },
+  "ip-drift::4": {
+    summary:
+      "When the validator alerts, what does the on-call do? Right now it goes silently dark. Document the response procedure so Matt + John can act on it without calling you.",
+  },
+  "ip-drift::5": {
+    summary:
+      "Failover plan — if the cron host dies, where does it run next? Service-account ownership so a single human's offboarding can't kill it again.",
+  },
+
+  // ---- dwb-adoption ----
+  "dwb-adoption::0": {
+    summary:
+      "Watch DWB (Digital Whiteboard) usage during World Cup pop-up rooms. Lots of organic traffic = real data on whether DWB is adopted or just installed.",
+  },
+  "dwb-adoption::1": {
+    summary:
+      "DWB adoption is a cultural / org-behavior thing, not an engineering thing. Don't propose changes — observe and report. Save engineering capital for problems that have engineering solutions.",
+  },
+
+  // ---- world-cup ----
+  "world-cup::0": {
+    summary:
+      "Tell Mark Monday. World Cup pop-up at multiple sites is a high-visibility project with a hard deadline. PM-ing it = max visibility in front of Stacey.",
+    links: [{ label: "/playbook — Friday wins", href: "/playbook#friday-wins-discipline" }],
+  },
+  "world-cup::1": {
+    summary:
+      "Specific rooms at IRV, SEA, SFO, DEN need to be picked. Constraints: occupancy, display quality, ambient light, food-and-beverage policy. Lock by mid-June.",
+  },
+  "world-cup::2": {
+    summary:
+      "Streaming service (Peacock / FOX / Telemundo) + HDCP requirements. Some streaming services REQUIRE end-to-end HDCP — old AV switches will fail. Confirm with E&B (Events & Brand).",
+    links: [{ label: "/glossary — HDCP", href: "/glossary#hdcp" }],
+  },
+  "world-cup::3": {
+    summary:
+      "Mexico City — Zillow has presence but no full-time AV staff. Find a remote hands contract for the 6-week window. Mark may have a vendor.",
+  },
+  "world-cup::4": {
+    summary:
+      "Some matches stream via console-native apps. PlayStation + Xbox + Fire Stick + Apple TV — pick one per room to standardize remote support.",
+  },
+  "world-cup::5": {
+    summary:
+      "Hard deadline: physical install + test day at each site before June 11 kickoff. Bake in time for HDCP / EDID / audio routing issues — they will appear.",
+  },
+  "world-cup::6": {
+    summary:
+      "DWB built-in speakers are NOT loud enough for a 30-person watch party. Verify audio expectation per location and pull in a portable PA if needed.",
+  },
+  "world-cup::7": {
+    summary:
+      "Daily Splunk check during the World Cup window: every pop-up room is online, displays are awake, audio is routed. Goes to #av-alerts if anything drifts.",
+    links: [{ label: "/splunk — pipeline", href: "/splunk" }],
+  },
+};
+
+// =========================================================================
 // GLOSSARY — every acronym / industry term that shows up in #av-team or
 // in this site. So you can pull up a definition mid-conversation without
 // asking Matt "what's capex?"

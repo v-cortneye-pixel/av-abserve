@@ -4,6 +4,7 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   ISSUES,
+  STEP_DETAILS,
   type Issue,
   type IssueCategory,
   type IssueStatus,
@@ -451,28 +452,66 @@ export default function TrackerPage() {
                             <ul className="mt-3 space-y-2">
                               {issue.steps.map((step, idx) => {
                                 const done = (checked[issue.id] ?? {})[idx];
+                                const detail = STEP_DETAILS[`${issue.id}::${idx}`];
                                 return (
                                   <li
                                     key={idx}
-                                    className="flex items-start gap-3 rounded-lg bg-white px-3 py-2.5 transition-colors hover:bg-zillow-blue-light/40"
+                                    className="rounded-lg bg-white px-3 py-2.5 transition-colors hover:bg-zillow-blue-light/40"
                                   >
-                                    <input
-                                      id={`${issue.id}-${idx}`}
-                                      type="checkbox"
-                                      checked={!!done}
-                                      onChange={() => toggleStep(issue.id, idx)}
-                                      className="mt-0.5 h-4 w-4 shrink-0 rounded border-zillow-gray-border text-zillow-blue focus:ring-zillow-blue"
-                                    />
-                                    <label
-                                      htmlFor={`${issue.id}-${idx}`}
-                                      className={`flex-1 cursor-pointer text-sm leading-relaxed ${
-                                        done
-                                          ? "text-zillow-gray line-through"
-                                          : "text-zillow-ink"
-                                      }`}
-                                    >
-                                      {step}
-                                    </label>
+                                    <div className="flex items-start gap-3">
+                                      <input
+                                        id={`${issue.id}-${idx}`}
+                                        type="checkbox"
+                                        checked={!!done}
+                                        onChange={() => toggleStep(issue.id, idx)}
+                                        className="mt-1 h-4 w-4 shrink-0 rounded border-zillow-gray-border text-zillow-blue focus:ring-zillow-blue"
+                                      />
+                                      <label
+                                        htmlFor={`${issue.id}-${idx}`}
+                                        className={`flex-1 cursor-pointer text-sm font-medium leading-relaxed ${
+                                          done
+                                            ? "text-zillow-gray line-through"
+                                            : "text-zillow-ink"
+                                        }`}
+                                      >
+                                        {step}
+                                      </label>
+                                    </div>
+                                    {detail && (
+                                      <div className={`ml-7 mt-2 ${done ? "opacity-50" : ""}`}>
+                                        <p className="text-xs leading-relaxed text-zillow-slate">
+                                          {detail.summary}
+                                        </p>
+                                        {detail.links && detail.links.length > 0 && (
+                                          <div className="mt-2 flex flex-wrap gap-1.5">
+                                            {detail.links.map((l) => (
+                                              <a
+                                                key={l.href}
+                                                href={l.href}
+                                                target={
+                                                  l.external || l.href.startsWith("http")
+                                                    ? "_blank"
+                                                    : undefined
+                                                }
+                                                rel={
+                                                  l.external || l.href.startsWith("http")
+                                                    ? "noopener noreferrer"
+                                                    : undefined
+                                                }
+                                                onClick={(e) => e.stopPropagation()}
+                                                className="inline-flex items-center gap-1 rounded-md bg-zillow-blue-light px-2 py-0.5 text-[11px] font-medium text-zillow-blue ring-1 ring-blue-200 hover:bg-zillow-blue hover:text-white"
+                                              >
+                                                {l.label}
+                                                {(l.external ||
+                                                  l.href.startsWith("http")) && (
+                                                  <span aria-hidden>↗</span>
+                                                )}
+                                              </a>
+                                            ))}
+                                          </div>
+                                        )}
+                                      </div>
+                                    )}
                                   </li>
                                 );
                               })}
