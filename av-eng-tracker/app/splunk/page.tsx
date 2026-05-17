@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SPLUNK_WORKFLOW } from "@/lib/data";
+import { MEMORY_LEAK_REFACTOR, SPLUNK_WORKFLOW } from "@/lib/data";
 
 const SEV_STYLE: Record<string, string> = {
   P0: "bg-red-50 text-zillow-red ring-1 ring-inset ring-red-200",
@@ -219,6 +219,208 @@ export default function SplunkPage() {
             </article>
           ))}
         </div>
+      </section>
+
+      {/* Memory leak refactor — the deep dive */}
+      <section id="memory-leak" className="space-y-6">
+        <header>
+          <h2 className="z-h2">7. The memory-leak refactor — what it actually is</h2>
+          <p className="mt-2 max-w-3xl text-sm text-zillow-slate">
+            One of Patrick&apos;s biggest engineering projects, half-finished. The Splunk
+            memory-examination dashboard is how he found it. Here&apos;s the full picture.
+          </p>
+        </header>
+
+        <article className="z-card">
+          <h3 className="z-h3">What a Q-Sys memory leak actually is</h3>
+          <p className="mt-2 text-sm leading-relaxed text-zillow-ink">
+            {MEMORY_LEAK_REFACTOR.whatItIs}
+          </p>
+          <div className="mt-3 rounded-md border-l-4 border-zillow-red bg-red-50 px-3 py-2 text-sm leading-relaxed text-zillow-ink">
+            <span className="font-semibold text-zillow-red">Why it matters: </span>
+            {MEMORY_LEAK_REFACTOR.whyItMatters}
+          </div>
+        </article>
+
+        {/* Root cause patterns */}
+        <article className="z-card">
+          <h3 className="z-h3">The Lua patterns that leak (Patrick learned these from QSC)</h3>
+          <p className="mt-2 text-xs text-zillow-slate">
+            Source: {MEMORY_LEAK_REFACTOR.rootCausePatterns.source}
+          </p>
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-zillow-red">
+                Bad patterns
+              </div>
+              <ul className="mt-2 space-y-1 pl-4 text-sm leading-relaxed text-zillow-ink">
+                {MEMORY_LEAK_REFACTOR.rootCausePatterns.badPatterns.map((p) => (
+                  <li key={p} className="list-disc">
+                    {p}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-emerald-700">
+                The fix
+              </div>
+              <p className="mt-2 text-sm leading-relaxed text-zillow-ink">
+                {MEMORY_LEAK_REFACTOR.rootCausePatterns.fix}
+              </p>
+            </div>
+          </div>
+        </article>
+
+        {/* Room status table */}
+        <article className="z-card">
+          <h3 className="z-h3">Where Patrick swept (and where he didn&apos;t)</h3>
+          <p className="mt-2 text-sm leading-relaxed text-zillow-slate">
+            Patrick fixed the Main script in 8 rooms but explicitly never touched the
+            touch-panel (TP) scripts. The TP scripts have the same Lua patterns — same leak,
+            different file.
+          </p>
+          <div className="mt-4 overflow-x-auto rounded-xl border border-zillow-gray-border bg-white">
+            <table className="w-full text-sm">
+              <thead className="bg-zillow-gray-light text-left">
+                <tr>
+                  <th className="px-4 py-3 font-semibold text-zillow-ink">Room</th>
+                  <th className="px-4 py-3 font-semibold text-zillow-ink">Main script</th>
+                  <th className="px-4 py-3 font-semibold text-zillow-ink">TP scripts</th>
+                  <th className="px-4 py-3 font-semibold text-zillow-ink">Notes</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zillow-gray-border">
+                {MEMORY_LEAK_REFACTOR.mainScriptFixed.map((r) => (
+                  <tr key={r.room} className="align-top">
+                    <td className="px-4 py-3 font-mono text-xs text-zillow-ink">{r.room}</td>
+                    <td className="px-4 py-3">
+                      <span className="rounded bg-emerald-50 px-2 py-0.5 text-xs text-emerald-700">
+                        {r.mainScript}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className="rounded bg-red-50 px-2 py-0.5 text-xs text-zillow-red">
+                        {r.tpScripts}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-xs text-zillow-slate">{r.notes ?? "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        {/* Rebuilt rooms */}
+        <article className="z-card">
+          <h3 className="z-h3">Rooms Patrick + Matt rebuilt from scratch</h3>
+          <p className="mt-2 text-sm leading-relaxed text-zillow-slate">
+            Of all the systems they re-did, only one still leaks — and Patrick never figured
+            out why.
+          </p>
+          <div className="mt-4 grid gap-2 md:grid-cols-2">
+            {MEMORY_LEAK_REFACTOR.rebuiltRooms.map((r) => (
+              <div
+                key={r.room}
+                className={`rounded-md border px-3 py-2 text-sm ${
+                  r.status.startsWith("STILL")
+                    ? "border-zillow-red bg-red-50 text-zillow-ink"
+                    : "border-zillow-gray-border bg-white text-zillow-slate"
+                }`}
+              >
+                <span className="font-mono font-semibold text-zillow-ink">{r.room}</span>
+                <span className="ml-2 text-xs">— {r.status}</span>
+              </div>
+            ))}
+          </div>
+        </article>
+
+        {/* NYC-1250 mystery */}
+        <article className="z-card border-l-4 border-zillow-red">
+          <div className="z-eyebrow">Open investigation</div>
+          <h3 className="z-h3 mt-2">The NYC-1250 mystery</h3>
+          <p className="mt-2 text-sm leading-relaxed text-zillow-ink">
+            {MEMORY_LEAK_REFACTOR.nyc1250Investigation.summary}
+          </p>
+          <div className="mt-3 space-y-2">
+            {MEMORY_LEAK_REFACTOR.nyc1250Investigation.quotes.map((q, idx) => (
+              <blockquote
+                key={idx}
+                className="border-l-2 border-zillow-gray-border pl-3 text-xs italic leading-relaxed text-zillow-slate"
+              >
+                &ldquo;{q}&rdquo;
+              </blockquote>
+            ))}
+          </div>
+          <div className="mt-3 rounded-md bg-zillow-blue-light px-3 py-2 text-sm leading-relaxed text-zillow-ink">
+            <span className="font-semibold text-zillow-blue">Cortney&apos;s next step: </span>
+            {MEMORY_LEAK_REFACTOR.nyc1250Investigation.cortneyNextStep}
+          </div>
+        </article>
+
+        {/* SFO All Hands */}
+        <article className="z-card">
+          <h3 className="z-h3">SFO All Hands — Patrick&apos;s stated next priority</h3>
+          <p className="mt-2 text-sm leading-relaxed text-zillow-ink">
+            {MEMORY_LEAK_REFACTOR.sfoAllHands.summary}
+          </p>
+          <blockquote className="mt-3 border-l-2 border-zillow-gray-border pl-3 text-xs italic leading-relaxed text-zillow-slate">
+            &ldquo;{MEMORY_LEAK_REFACTOR.sfoAllHands.quote}&rdquo;
+          </blockquote>
+          <div className="mt-3 rounded-md bg-zillow-blue-light px-3 py-2 text-sm leading-relaxed text-zillow-ink">
+            <span className="font-semibold text-zillow-blue">Cortney&apos;s next step: </span>
+            {MEMORY_LEAK_REFACTOR.sfoAllHands.cortneyNextStep}
+          </div>
+        </article>
+
+        {/* Memory dashboard */}
+        <article className="z-card">
+          <h3 className="z-h3">The memory-examination Splunk dashboard</h3>
+          <p className="mt-2 text-sm leading-relaxed text-zillow-ink">
+            {MEMORY_LEAK_REFACTOR.memoryDashboard.summary}
+          </p>
+          <blockquote className="mt-3 border-l-2 border-zillow-gray-border pl-3 text-xs italic leading-relaxed text-zillow-slate">
+            &ldquo;{MEMORY_LEAK_REFACTOR.memoryDashboard.quote}&rdquo;
+          </blockquote>
+          <p className="mt-2 text-xs text-zillow-slate">
+            <span className="font-semibold text-zillow-ink">Where it lives: </span>
+            {MEMORY_LEAK_REFACTOR.memoryDashboard.location}
+          </p>
+          <div className="mt-3 rounded-md border-l-4 border-zillow-red bg-red-50 px-3 py-2 text-sm leading-relaxed text-zillow-ink">
+            <span className="font-semibold text-zillow-red">Cortney&apos;s next step: </span>
+            {MEMORY_LEAK_REFACTOR.memoryDashboard.cortneyNextStep}
+          </div>
+        </article>
+
+        {/* Inherited memory-leak tasks */}
+        <article className="z-card bg-zillow-gray-light">
+          <h3 className="z-h3">Inherited memory-leak work</h3>
+          <div className="mt-4 overflow-x-auto rounded-xl border border-zillow-gray-border bg-white">
+            <table className="w-full text-sm">
+              <thead className="bg-zillow-gray-light text-left">
+                <tr>
+                  <th className="px-4 py-3 font-semibold text-zillow-ink">Sev</th>
+                  <th className="px-4 py-3 font-semibold text-zillow-ink">Task</th>
+                  <th className="px-4 py-3 font-semibold text-zillow-ink">Why</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zillow-gray-border">
+                {MEMORY_LEAK_REFACTOR.inheritedTasks.map((t, idx) => (
+                  <tr key={idx} className="align-top">
+                    <td className="px-4 py-3">
+                      <span className={`z-chip ${SEV_STYLE[t.severity] ?? ""}`}>
+                        {t.severity}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 font-semibold text-zillow-ink">{t.task}</td>
+                    <td className="px-4 py-3 text-zillow-slate">{t.reason}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </article>
       </section>
 
       <section className="text-sm text-zillow-slate">

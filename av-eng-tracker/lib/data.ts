@@ -4260,6 +4260,582 @@ export const SPLUNK_WORKFLOW = {
   ],
 };
 
+// =========================================================================
+// CORTNEY MENTIONS — every Slack reference to Cortney in #av-team.
+// This is how the team is currently talking about Cortney. Read it to
+// calibrate expectations and tone.
+// =========================================================================
+
+export interface CortneyMention {
+  who: "Stacey Newman" | "Mark Hampson" | "Matt Cornick";
+  context:
+    | "Welcome"
+    | "Onboarding"
+    | "Access setup"
+    | "Standup green-circle"
+    | "Project assignment"
+    | "Social"
+    | "Indirect role context";
+  quote: string;
+  whyItMatters: string;
+}
+
+export const CORTNEY_MENTIONS: CortneyMention[] = [
+  {
+    who: "Stacey Newman",
+    context: "Welcome",
+    quote:
+      "Hi Cortney! Welcome to the team. This is our main communication channel as a team. I'm adding you to a million other channels right now as well.",
+    whyItMatters:
+      "First public welcome. Stacey owns the people side — she's already routing you into the channel ecosystem.",
+  },
+  {
+    who: "Mark Hampson",
+    context: "Welcome",
+    quote: "Welcome Cortney!",
+    whyItMatters: "Mark went on-record same day. Low-friction signal.",
+  },
+  {
+    who: "Stacey Newman",
+    context: "Access setup",
+    quote:
+      "Hey I'm setting up access for Cortney, besides AV alerts and AV Team any other distro lists we should add him to.",
+    whyItMatters:
+      "She's specifically adding you to #av-alerts on day 1 — that channel is the team's eyes. Confirms the role is expected to own monitoring.",
+  },
+  {
+    who: "Stacey Newman",
+    context: "Standup green-circle",
+    quote:
+      "Stacey is :greencircle: • Cortney Onboarding • We changed some of the India buildout scope and I need to go through the budget line by line and make sure we're still in budget but I think we are yay! • Catch up from being gone but I think everything is under control.",
+    whyItMatters:
+      "You are the top item on Stacey's Monday. Onboarding is her active focus, and the India buildout is in motion in parallel — that's where Cortney will likely get pulled in next.",
+  },
+  {
+    who: "Mark Hampson",
+    context: "Standup green-circle",
+    quote:
+      "Mark is :greencircle: • Zip training/testing • Meet with Cortney • May reforecasting • Seattle lifecycle tracker complete • Claude testing (Create projects for each 2026 project on our roadmap, Add connectors for gmail, calendar, and Jira).",
+    whyItMatters:
+      "Mark has a 1:1 with you on his standup. He's also already doing Claude testing — which means he is OPEN to the AI-tooling direction Patrick set. Lean into Cursor + Claude with Mark; he won't push back on it.",
+  },
+  {
+    who: "Matt Cornick",
+    context: "Standup green-circle",
+    quote:
+      "Matt is :greencircle: • Post Google move/Room Resource access cleanup • Zall Hall Q2 draft • Founder's Suite monitoring/alert cleanup • Sync with Cortney.",
+    whyItMatters:
+      "Matt has 'Sync with Cortney' on his Monday list — alongside 'Founder's Suite monitoring/alert cleanup.' Read: Matt wants help on the monitoring fallout from Patrick's departure. This is your in.",
+  },
+  {
+    who: "Stacey Newman",
+    context: "Project assignment",
+    quote: "Mark can you share the India Boms with Cortney.",
+    whyItMatters:
+      "Stacey is putting Cortney on the India buildout (BOMs = bill of materials). This is a real, in-flight project — not just onboarding busywork. Take it seriously and ask Mark for the BOM doc proactively.",
+  },
+  {
+    who: "Mark Hampson",
+    context: "Project assignment",
+    quote: "awesome thanks Cortney",
+    whyItMatters: "Mark publicly thanking you for a deliverable. Whatever you did, do more of it.",
+  },
+  {
+    who: "Stacey Newman",
+    context: "Social",
+    quote:
+      "Yes congrats Cortney! How was it? Are you driving back to SF this weekend? Matt hopefully you're spoiling Zahra this weekend?! Mark told me he's taking over all kid duties all weekend so he'll be busy ha.",
+    whyItMatters:
+      "Stacey is including Cortney in the personal-life banter the team uses to stay close. That's a relationship offer — reciprocate. Also: SF is on the table for Cortney (location signal).",
+  },
+  {
+    who: "Matt Cornick",
+    context: "Indirect role context",
+    quote:
+      "I have access. We kind of knew and chatted about that this would be the situation we would be in if Patrick ever left. This is not my world nor do I care for it to be and I don't think it's expected of me to know. I can click on a link all day long but then? :shrug-dk: I can rerun some scripts because that's just clicking a button but if that doesn't work...",
+    whyItMatters:
+      "MOST IMPORTANT QUOTE for understanding your role. Matt is publicly saying he is NOT the engineer/scripter and doesn't want to be. He can do rote ops (click links, rerun scripts) but not author code. Your role exists to fill exactly that gap. Don't try to do Matt's work; do the work he can't.",
+  },
+];
+
+// =========================================================================
+// ROLE DETAILS — what the role actually is, not what you might assume.
+// Reconstructed from Stacey + Mark Slack messages.
+// =========================================================================
+
+export const ROLE_DETAILS = {
+  title: "AV Systems Engineer — contractor backfill for Patrick Gilligan",
+  classification:
+    "CONTRACTOR (not FTE). Stacey explicitly: 'contracting department is running a comp analysis on the the backfill contractor role.'",
+  hiringPath: [
+    {
+      step: "Comp analysis by contracting dept",
+      quote:
+        "Also the contracting department is running a comp analysis on the the backfill contractor role and then I'll get that posted so fingers crossed by end of next week.",
+      who: "Stacey Newman",
+    },
+    {
+      step: "Req creation with contracting team",
+      quote:
+        "Update on the contractor role. I'm meeting with our contracting team today to make the req and post it the comp analysis is completed.",
+      who: "Stacey Newman",
+    },
+    {
+      step: "Req live for 48 hours, top 10 candidates",
+      quote:
+        "Ok Patrick's backfill req is going live today and then will be up for 48 hours and they'll be sending me the top 10 candidates and then all 3 of us will be able to interview them.",
+      who: "Stacey Newman",
+    },
+    {
+      step: "3-way interview panel (Stacey + Matt + Mark)",
+      quote: "all 3 of us will be able to interview them",
+      who: "Stacey Newman",
+    },
+    {
+      step: "Cortney joins team",
+      quote: "Welcome Cortney! / Hi Cortney! Welcome to the team.",
+      who: "Mark + Stacey",
+    },
+  ],
+  // What the team expects the role to actually do
+  expectedScope: [
+    {
+      area: "Q-Sys / Lua engineering",
+      detail:
+        "Author and maintain Q-Sys Lua scripts, UCI files, custom plugins. This is the core gap — Matt explicitly said this is 'not my world.'",
+    },
+    {
+      area: "Monitoring + alerting pipeline ownership",
+      detail:
+        "Splunk dashboards, Lambda alerts, av-alerts channel hygiene, daily updater. Patrick's stack — see /splunk.",
+    },
+    {
+      area: "AV-over-IP fleet ownership",
+      detail:
+        "Q-Sys NV-21 / NV-32 endpoints, BirdDog phase-out, HDMI reliability fixes. See /nv-fleet, /birddog, /hdmi.",
+    },
+    {
+      area: "Room-tier UCI standardization",
+      detail:
+        "Tier 1/2/3 UCIs. Patrick's 'no touch panel' thesis is up for review (Cortney counter-thesis on /uci).",
+    },
+    {
+      area: "New buildout participation",
+      detail:
+        "India buildout is in-flight — Mark/Stacey are already routing BOMs your way. Expect to spec, validate, and field-support new sites.",
+    },
+    {
+      area: "On-call rotation for AV alerts",
+      detail:
+        "Being added to #av-alerts on day 1 is the signal. Patrick's silent on-call gap is what broke the morning he was deactivated.",
+    },
+  ],
+  // Position the team is hoping the role fills
+  whatTheyActuallyNeed:
+    "They need someone who can code Q-Sys AND comes from an AV background — i.e., the thing Patrick was half of. Matt covers the room-floor / wiring / IT-politics side. Mark covers PM / budget / vendor. Stacey covers people / leadership. The empty seat is 'AV engineer who can write Lua, Lambda, and Splunk dashboards AND knows what a TCC2 actually does.' That's the wedge.",
+  // Things that confirm contractor vs FTE
+  contractorNotes: [
+    "Hired via contracting department, not Zillow recruiting",
+    "Comp set by comp analysis on contractor band (not FTE band)",
+    "Backfill timeline ('end of next week') is contracting-speed, not FTE-speed",
+    "No mention of equity, full-time benefits package, or FTE-track conversion in #av-team",
+  ],
+};
+
+// =========================================================================
+// MEMORY-LEAK REFACTOR — what Patrick was actually doing, what's left.
+// =========================================================================
+
+export interface MemoryLeakRoom {
+  room: string;
+  mainScript: "Fixed" | "Not touched" | "Mystery — still leaking after fix";
+  tpScripts: "Fixed" | "Not touched" | "N/A";
+  notes?: string;
+}
+
+export const MEMORY_LEAK_REFACTOR = {
+  // What it actually is
+  whatItIs:
+    "Q-Sys cores run Lua scripts (Main script + per-touch-panel TP scripts) that allocate memory continuously. Certain Lua patterns — closures that capture controls, timers that never get garbage collected, event handlers that don't disconnect, table mutations inside loops — never release memory. Over hours or days, RAM fills up. The Core's monitor throws 'Critical Value' errors. Eventually the Core forces a reboot, which drops every room running on that Core mid-meeting. THAT is the memory leak.",
+
+  whyItMatters:
+    "Every reboot = users in a meeting suddenly lose AV. The leak is invisible until the Critical Value alarm fires, which is usually after the meeting has already started failing. This is the most common 'why did the room just die?' root cause Patrick was hunting.",
+
+  // What Patrick learned from QSC
+  rootCausePatterns: {
+    source: "Q-Sys community contact (per Patrick — possibly via the QSC Discord)",
+    badPatterns: [
+      "Closures inside Lua that reference Q-Sys Controls without releasing",
+      "Timer callbacks that re-register themselves without cleanup",
+      "Event handlers (`.EventHandler = function() ... end`) that get re-bound on every script reload",
+      "String concatenation in tight loops (Lua doesn't free intermediate strings)",
+      "Table inserts without paired removes inside long-running coroutines",
+    ],
+    fix:
+      "Replace with explicit `EventHandler = nil` on teardown, paired allocate/release on timers, table.concat instead of string concat, and bounded queues in coroutines.",
+  },
+
+  // The Main script sweep Patrick did
+  mainScriptFixed: [
+    { room: "SEA-3611", mainScript: "Fixed", tpScripts: "Not touched", notes: "The CTO incident room" },
+    { room: "SEA-3925", mainScript: "Fixed", tpScripts: "Not touched" },
+    { room: "SEA-3619", mainScript: "Fixed", tpScripts: "Not touched" },
+    { room: "IRV-1250", mainScript: "Fixed", tpScripts: "Not touched" },
+    { room: "IRV-1249", mainScript: "Fixed", tpScripts: "Not touched" },
+    { room: "IRV-851", mainScript: "Fixed", tpScripts: "Not touched" },
+    { room: "SFO-735", mainScript: "Fixed", tpScripts: "Not touched" },
+    { room: "SFO-726", mainScript: "Fixed", tpScripts: "Not touched" },
+  ] as MemoryLeakRoom[],
+
+  // The rebuilt rooms (Matt + Patrick redid Main + TP from scratch — should be clean)
+  rebuiltRooms: [
+    { room: "SEA-4000", status: "Clean" },
+    { room: "SEA-3737", status: "Clean" },
+    { room: "SFO-716", status: "Clean" },
+    { room: "SFO-1027", status: "Clean" },
+    { room: "SEA-3829", status: "Clean" },
+    { room: "NYC-1227", status: "Clean" },
+    { room: "NYC-1250", status: "STILL LEAKING — slower than the others. Mystery." },
+  ],
+
+  // The NYC-1250 mystery
+  nyc1250Investigation: {
+    summary:
+      "NYC-1250 was rebuilt from scratch like the others but still leaks. Patrick tried removing control links from the parent core — didn't fix it. He speculated room usage (Zoom calls, start/stop cycles) might be a factor. Investigation was open when he left.",
+    quotes: [
+      "Of all the systems that I have done re-programming of recently, since Matt and I started re-doing systems (SEA-4000, SEA-3737, SFO-716, SFO-1027, SEA-3829, NYC-1227, NYC-1250)...the ONLY one that leaks memory of those is NYC-1250.",
+      "I was hoping that removing the control links from the parent core would have been the cause of the memory leak, yet now I am not sure.",
+      "I'm starting to wonder if whatever is causing this memory leak is also affected by usage of the room, whether its talking to Zoom, starting/stopping the system, or what.",
+    ],
+    cortneyNextStep:
+      "Diff NYC-1250 against NYC-1227 (its clean sibling). Patrick said the difference wasn't 'any of the items that I guessed it would have been' — which means it's a NON-obvious diff. Compare config files line-by-line in GitLab and run both against the memory-examination dashboard for a week.",
+  },
+
+  // The SFO All Hands carve-out
+  sfoAllHands: {
+    summary:
+      "SFO All Hands also leaks but uses BirdDog for cameras ONLY (not video transport). Patrick had it on the list to re-do after CPR + performance review season.",
+    quote:
+      "After the CPR and performance review stuff, I'm going to prioritize re-doing the SFO All Hands system....that one does leak memory, but only uses birddog for the cameras and not the video transport. It will be an interesting piece of the puzzle.",
+    cortneyNextStep:
+      "Tie this into the BirdDog phase-out (/birddog). SFO All Hands is a candidate for an NV-endpoint conversion as part of the rebuild.",
+  },
+
+  // The dashboard Patrick built specifically for memory leak tracking
+  memoryDashboard: {
+    summary:
+      "Patrick built a Splunk dashboard panel that specifically tracks Lua script memory + 'Critical Value' errors per Core. It's how he caught the leaks in the first place.",
+    quote:
+      "This new dashboard I made is super helpful for examining script memory, or that error that causes us to have to reboot the Q-Sys cores ('Critical Value' errors).",
+    location: "Likely in the zgav Splunk app — see /splunk.",
+    cortneyNextStep:
+      "Find this panel in zgav_non-prod. Confirm it's still receiving data after Patrick's deactivation (HEC token may have been under his identity).",
+  },
+
+  // What's left to do
+  inheritedTasks: [
+    {
+      task: "Sweep TP scripts for memory leaks across all 8 Main-fixed rooms",
+      severity: "P1",
+      reason:
+        "Patrick explicitly flagged TP scripts as untouched: 'I hadn't thought of the touch panel scripts, for the larger rooms.' Same leaky patterns, different file.",
+    },
+    {
+      task: "Solve the NYC-1250 mystery",
+      severity: "P2",
+      reason: "Open investigation. Diff against NYC-1227 and watch for a week.",
+    },
+    {
+      task: "Re-do SFO All Hands system (Patrick's stated next priority)",
+      severity: "P2",
+      reason:
+        "Leaks memory. Also candidate for BirdDog → NV camera transport upgrade — kill two birds.",
+    },
+    {
+      task: "Confirm the memory-examination Splunk dashboard is still receiving data",
+      severity: "P0",
+      reason: "If the HEC token was tied to Patrick's identity, the dashboard is dark and you wouldn't know.",
+    },
+    {
+      task: "Document the bad Lua patterns + the safe replacements in a team Q-Sys style guide",
+      severity: "P1",
+      reason:
+        "Patrick learned the patterns from a QSC community contact. They live in his head. Write them down so Mark, Matt, and the next contractor have them.",
+    },
+  ],
+};
+
+// =========================================================================
+// THE THREAD THAT EXPLAINS YOUR ROLE — Mar 13, 2026.
+// Patrick wrote a handoff doc. Mark + Matt picked it apart in real time.
+// This thread is the single richest piece of context for what your role
+// is, what the team expects, and what gaps Patrick himself admitted to.
+// =========================================================================
+
+export interface RoleThreadMessage {
+  who: "Matt Cornick" | "Mark Hampson" | "Patrick Gilligan";
+  ts: string;
+  text: string;
+  significance: string; // why Cortney should care about this exact line
+}
+
+export const ROLE_THREAD: {
+  title: string;
+  when: string;
+  permalink: string;
+  context: string;
+  messages: RoleThreadMessage[];
+} = {
+  title: "The handoff-doc thread — \"pretend I'm a new guy\"",
+  when: "Mar 13, 2026, 11:11 AM PDT (#av-team)",
+  permalink:
+    "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1773425550031039?thread_ts=1773342215.611929&cid=C04GF3S3KQF",
+  context:
+    "Patrick had written a handoff doc Mark + Matt had asked for. Mark thought it was insufficient. Stacey was in India and the role spec wasn't finalized. The next 30 minutes of Slack are the most candid description of what your role actually is.",
+  messages: [
+    {
+      who: "Mark Hampson",
+      ts: "11:14:26",
+      text: "Is this the doc Matt and I asked you to create? or did Stacey ask for a job writeup for a replacement?",
+      significance:
+        "Mark and Matt drove the handoff-doc requirement, NOT Stacey. Mark owns the technical-handoff completeness; Stacey owns the people side.",
+    },
+    {
+      who: "Patrick Gilligan",
+      ts: "11:15:13",
+      text: "The one you asked for, but I guess in my head if somebody got the job, this is an easy map to understand what I do. I keep adding to it and editing it.",
+      significance:
+        "Patrick CONFLATED the operational-handoff doc with the role-spec doc. That's why your role spec is fuzzy — he wrote one doc trying to do two jobs.",
+    },
+    {
+      who: "Mark Hampson",
+      ts: "11:16:55",
+      text: "Gotcha. this is assuming a direct replacement and given that Stacey is in India i don't think any of that has been worked out. Can you make this as detailed as possible please, not assuming a direct replacement?",
+      significance:
+        "CRITICAL. Mark explicitly told Patrick: don't assume a 1:1 replacement. The team was already negotiating whether your role would be a programmer-clone or a different shape. The 'direct replacement' question was OPEN — that's still your wedge.",
+    },
+    {
+      who: "Mark Hampson",
+      ts: "11:19:23",
+      text: "It's missing the day to day troubleshooting. For example - what do we do if alerting stops working?",
+      significance:
+        "Mark articulated the exact gap your role exists to fill: there is no documented day-to-day troubleshooting flow for the monitoring stack.",
+    },
+    {
+      who: "Patrick Gilligan",
+      ts: "11:20:10",
+      text: "I will add some more detail on that. Good idea. However, it can be one of a million different things.",
+      significance:
+        "Patrick's tell. He has no systematic troubleshooting framework — only intuition built up over years. That's not a system, that's tribal knowledge.",
+    },
+    {
+      who: "Mark Hampson",
+      ts: "11:21:33",
+      text: "Yeah but where would we go based on this? If I pass this off to a new person, any direction would be helpful.",
+      significance:
+        "Mark was already prepping the role for you. 'A new person' = Cortney. He wanted decision trees, not war stories.",
+    },
+    {
+      who: "Mark Hampson",
+      ts: "11:25:48",
+      text: "Matt try to give me access to these links when you get a chance. doesn't need to be today. pretend im a new guy.",
+      significance:
+        "GOLD. Mark literally road-tested the doc as if he were Cortney. The 'pretend I'm a new guy' frame is the same frame you should use when reading every Patrick doc — does it work without him in the room?",
+    },
+    {
+      who: "Patrick Gilligan",
+      ts: "11:26:30",
+      text: "You need to request access to Gitlab, and it only works on VPN.",
+      significance:
+        "Access tile #1: GitLab via VPN. Confirmed Gitlab.zgtools.net — Zillow's internal GitLab.",
+    },
+    {
+      who: "Patrick Gilligan",
+      ts: "11:26:32",
+      text: "AWS probably needs an access tile as well. Splunk, I would hope that you have? But a request if not.",
+      significance:
+        "Access tiles #2 + #3: AWS console and Splunk. File ServiceNow requests for both day 1. See /splunk.",
+    },
+    {
+      who: "Mark Hampson",
+      ts: "11:26:43",
+      text: "I have splunk access.",
+      significance:
+        "Mark already has Splunk. He's the easiest in-org reference if Cortney's Splunk access is delayed.",
+    },
+    {
+      who: "Matt Cornick",
+      ts: "11:12:30 (the headline quote, in full context)",
+      text: "I have access. We kind of knew and chatted about that this would be the situation we would be in if Patrick ever left. This is not my world nor do I care for it to be and I don't think it's expected of me to know. I can click on a link all day long but then? :shrug-dk: I can rerun some scripts because that's just clicking a button but if that doesn't work...",
+      significance:
+        "The single most important quote for understanding your role. Matt is publicly drawing the line: he can do rote ops (click links, rerun scripts), but he cannot author/debug code. The team knew this was coming. Your role exists to be the engineer Matt explicitly does not want to be — without making him feel that you're showing him up.",
+    },
+    {
+      who: "Matt Cornick",
+      ts: "11:21:00",
+      text: "For example, monitoring went down right after Patrick went on PL and it only came back because he was alerted about something. This stuff takes regular maintenance by someone who lives in this world.",
+      significance:
+        "Real precedent. Monitoring already failed once before — on Patrick's PATERNITY leave — and stayed broken until Patrick himself happened to get alerted. The role you're stepping into is 'the person who lives in this world.'",
+    },
+    {
+      who: "Patrick Gilligan",
+      ts: "11:23:08",
+      text: "That's what I was trying to get at. Its pretty complex - I have spent a lot of time on it, and I am not sure how to document how to troubleshoot it. On the other hand, anybody who is into building software and/or doing programming, would have a nice time jumping in, and making it their own over time. They would probably improve it greatly, and trim a lot of the fat out.",
+      significance:
+        "PATRICK ENDORSED YOUR ROLE PROFILE. He explicitly told the team: hire someone who builds software, they'll improve it. He also conceded his stack has 'fat to trim' — meaning he's not defending his own code as optimal. Permission to refactor without diplomacy debt.",
+    },
+    {
+      who: "Mark Hampson",
+      ts: "11:26:12",
+      text: "So TL:DR too many variables/too complicated to accurately document.",
+      significance:
+        "Mark's verdict. The team manager officially recorded that the stack is undocumentable in its current form. That's the FOUNDATION LIFT your role is being measured on.",
+    },
+    {
+      who: "Patrick Gilligan",
+      ts: "12:15:43",
+      text: "wait, so when the pipeline breaks, do you not get an email Matt? Because I see you as a member: Trying to change your role to `owner` and see if that changes things.",
+      significance:
+        "Hidden bug: Matt was a GitLab 'member' not 'owner,' so he wasn't getting pipeline-failure emails. Patrick fixed this in-thread. What else has the same trap? Likely AWS CloudWatch, Splunk alert recipients, Domotz email list — audit every notification destination on day 1.",
+    },
+    {
+      who: "Matt Cornick",
+      ts: "12:50:19",
+      text: "Looking at Gitlab is like looking at a lighting console for me.",
+      significance:
+        "Matt's self-disclosure. His background is theater / stagehand (the 'chicken' = extra cable length joke he shares with Patrick). He's a phenomenal AV technician but not a developer. Frame your code-side work as supporting Matt's room-side work — never as replacing it.",
+    },
+    {
+      who: "Matt Cornick",
+      ts: "12:50:43",
+      text: "Participate?",
+      significance:
+        "Matt asking how to configure GitLab notifications. He doesn't know GitLab UX. Concrete day-2 deliverable from Cortney: walk Matt through GitLab notification settings, project-watch level, and #av-team push routing.",
+    },
+    {
+      who: "Matt Cornick",
+      ts: "12:56:15",
+      text: "No guarantees if there's a new person(s). I have some armor on my :broken_heart: now.",
+      significance:
+        "Matt publicly set expectations LOW for the new hire. He doesn't expect a unicorn. Walk in under-promising; over-deliver in week 1 and Matt is your strongest advocate.",
+    },
+  ],
+};
+
+// =========================================================================
+// MATT vs CORTNEY — explicit boundary clarity. Where Matt's range stops
+// and yours begins. Drawn from the Mar 13 thread + 4 years of #av-team.
+// =========================================================================
+
+export const MATT_VS_CORTNEY = {
+  matt: {
+    role: "Senior IC — AV technician / operator",
+    background:
+      "Live-event / theater stagehand background ('chicken' = stagehand term for leaving extra cable length). Self-described: 'Looking at Gitlab is like looking at a lighting console for me.'",
+    canDo: [
+      "Hands-on room work — racks, wiring, rigging, cable management",
+      "Click links, follow runbooks, re-run scripted jobs (rote ops)",
+      "Hardware diagnostics on Q-Sys, Neat, Poly, BirdDog devices",
+      "On-site troubleshooting — IRV, SFO, SEA, NYC",
+      "Vendor escalation (QSC, Neat, Zoom, Crestron)",
+      "Roll a screen up manually from QDS when the UCI hides the control",
+    ],
+    cantOrWontDo: [
+      "Write or refactor Lua scripts",
+      "Author / debug Lambda functions",
+      "Build or modify Splunk dashboards",
+      "Read GitLab MR diffs",
+      "Configure GitLab notification routing (Patrick had to set it for him)",
+      "Architect AWS event pipelines",
+    ],
+    keyQuote:
+      "This is not my world nor do I care for it to be and I don't think it's expected of me to know. I can click on a link all day long but then? I can rerun some scripts because that's just clicking a button but if that doesn't work...",
+  },
+  cortney: {
+    role: "AV Systems Engineer (contractor) — the engineer-in-residence",
+    background:
+      "AV-background engineer (the thing Patrick was half of). Brings the room knowledge Patrick lacked + the code skills Matt doesn't have.",
+    yourLane: [
+      "Q-Sys Lua authorship, refactoring, code reviews",
+      "Lambda / AWS pipeline ownership (post-Patrick re-keying)",
+      "Splunk dashboards + alert rules",
+      "GitLab MR reviews, plugin documentation, repo hygiene",
+      "Q-Sys plugin provenance + custom plugin audit",
+      "UCI tiering standard (Tier 1/2/3) and tuning passes",
+      "Room AV architecture decisions (Mac vs Windows, NV vs BirdDog, TCC2 vs MXA920)",
+      "Memory-leak refactor (Main + TP scripts) — see /splunk",
+      "Bring open architectural decisions to Matt/Mark/Stacey on a cadence",
+    ],
+    notYourLane: [
+      "Daily room walk-throughs (that's Matt + John)",
+      "Rack hardware installs (that's Matt's craft — assist, don't take over)",
+      "Vendor account management / POs (that's Mark)",
+      "Hiring decisions / people performance (that's Stacey)",
+      "iPad MDM / Zoom Rooms host IT policy (that's Zillow IT — defend the swim lane)",
+    ],
+    keyMove:
+      "Matt explicitly said 'I have some armor on my :broken_heart: now' — meaning he's set the bar low. Walk in week 1 with under-promised wins (fix the GitLab notification trap for him, document one Lambda, take one Splunk panel from idea to production) and you'll have a strong advocate fast.",
+  },
+};
+
+// =========================================================================
+// ACCESS TILES — the day-1 ServiceNow checklist Mark already road-tested.
+// =========================================================================
+
+export const ACCESS_TILES = [
+  {
+    tile: "GitLab (gitlab.zgtools.net)",
+    why: "All Q-Sys repos + Lambda + ops-tools live here. Bot posts pushes to #av-team.",
+    how: "ServiceNow request. VPN required to access GitLab — confirm VPN is set up FIRST.",
+    notificationTrap:
+      "Default role for new members is 'Member' which does NOT get pipeline-failure emails. Patrick had to elevate Matt to 'Owner.' Confirm your role is 'Owner' on every Q-Sys + ops-tools project.",
+  },
+  {
+    tile: "AWS console",
+    why: "Lambda functions, CloudWatch logs, IAM roles. The alerting Lambda runs here and currently fails because it's tied to Patrick's identity.",
+    how: "ServiceNow access tile (Patrick: 'AWS probably needs an access tile as well').",
+    notificationTrap:
+      "CloudWatch alarms route to SNS topics — confirm your email is on every topic Patrick's old email was on. Audit pre-existing topics first.",
+  },
+  {
+    tile: "Splunk Cloud (zgav app)",
+    why: "All dashboards + alert rules. The eyes of the team.",
+    how: "ServiceNow tile: https://zillow.service-now.com/esc?id=sc_cat_item&searchTerm=splunk. Mark already has it — fastest cross-reference if your request stalls.",
+    notificationTrap:
+      "Splunk alert rules route to email lists. Audit which email lists Patrick's was on so we don't miss alerts during the handoff window.",
+  },
+  {
+    tile: "VPN (required for GitLab + internal services)",
+    why: "Nothing internal works without VPN.",
+    how: "Standard Zillow IT request, separate from AV-specific tiles.",
+  },
+  {
+    tile: "#av-alerts Slack channel",
+    why: "Stacey already adds you here on day 1 — it's the team's monitoring signal.",
+    how: "Stacey: 'I'm setting up access for Cortney, besides AV alerts and AV Team any other distro lists we should add him to.' Already in motion.",
+  },
+  {
+    tile: "Q-Sys Core admin (per-core)",
+    why: "Required to push Designer files, view memory stats, trigger reboots.",
+    how: "Via the Q-Sys Designer file (which lives in GitLab). Ask Matt or Mark for the existing admin credentials.",
+  },
+  {
+    tile: "Domotz dashboard",
+    why: "Network-device monitoring that feeds the av-alerts pipeline.",
+    how: "Patrick referenced 'add some links to the various APIs used and a sections about the Domotz dashboard.' Find the dashboard URL in his handoff doc and request access.",
+  },
+  {
+    tile: "Zoom Webhook admin (Zoom marketplace app)",
+    why: "Patrick was mid-flight migrating Zoom Webhooks → Splunk. Need admin to inspect / re-key.",
+    how: "Coordinate with Zoom admin (likely Stacey or Zillow IT) to get marketplace-app management access.",
+  },
+  {
+    tile: "Q-Sys community Discord",
+    why: "Patrick's plugin source channel. Where he learned the memory-leak Lua patterns.",
+    how: "Ask Scott at QSC (Patrick's contact) or Mark/Matt for the invite.",
+  },
+];
+
 // Helper: compute summary percentages by category and by status.
 export const PATRICK_SUMMARY = (() => {
   const total = PATRICK_PORTFOLIO.length;

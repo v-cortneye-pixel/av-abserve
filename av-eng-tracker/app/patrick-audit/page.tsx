@@ -3,10 +3,15 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
+  ACCESS_TILES,
   ACTIVE_HANDOFFS,
+  CORTNEY_MENTIONS,
+  MATT_VS_CORTNEY,
   PATRICK_PATTERNS,
   PATRICK_PORTFOLIO,
   PATRICK_SUMMARY,
+  ROLE_DETAILS,
+  ROLE_THREAD,
   type PatrickCategory,
   type PatrickContribution,
 } from "@/lib/data";
@@ -87,6 +92,252 @@ export default function PatrickAuditPage() {
           </strong>
         </p>
       </header>
+
+      {/* WHY YOUR ROLE EXISTS — the Mar 13 thread */}
+      <section id="role-thread">
+        <h2 className="z-h2 mb-1">
+          Why your role exists — the thread that explains everything
+        </h2>
+        <p className="mb-5 max-w-3xl text-sm text-zillow-slate">
+          A 90-minute Slack thread on <strong>{ROLE_THREAD.when}</strong> is the single
+          richest piece of context for what you&apos;re walking into. Patrick had written
+          a handoff doc; Mark + Matt picked it apart in real time and made the role spec
+          obvious. {ROLE_THREAD.context}{" "}
+          <a
+            href={ROLE_THREAD.permalink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="z-link"
+          >
+            View full thread in Slack ↗
+          </a>
+        </p>
+        <div className="space-y-3">
+          {ROLE_THREAD.messages.map((m, idx) => (
+            <article key={idx} className="z-card">
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                <span className="text-sm font-semibold text-zillow-ink">{m.who}</span>
+                <span className="font-mono text-[10px] text-zillow-slate">{m.ts}</span>
+              </div>
+              <blockquote className="mt-2 border-l-4 border-zillow-blue pl-3 text-sm italic leading-relaxed text-zillow-ink">
+                &ldquo;{m.text}&rdquo;
+              </blockquote>
+              <div className="mt-3 rounded-md bg-zillow-blue-light px-3 py-2 text-xs leading-relaxed text-zillow-ink">
+                <span className="font-semibold text-zillow-blue">Why this matters: </span>
+                {m.significance}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* MATT vs CORTNEY — the boundary */}
+      <section>
+        <h2 className="z-h2 mb-1">Matt&apos;s range vs. your range — explicit boundaries</h2>
+        <p className="mb-5 max-w-3xl text-sm text-zillow-slate">
+          Matt drew the line publicly in the Mar 13 thread:{" "}
+          <em>&ldquo;{MATT_VS_CORTNEY.matt.keyQuote}&rdquo;</em> Your role exists to fill what
+          he explicitly said he can&apos;t and doesn&apos;t want to do — without making him
+          feel replaced.
+        </p>
+        <div className="grid gap-4 md:grid-cols-2">
+          {/* Matt */}
+          <article className="z-card border-l-4 border-amber-500">
+            <div className="z-eyebrow">Matt Cornick — Senior IC</div>
+            <h3 className="z-h3 mt-2">{MATT_VS_CORTNEY.matt.role}</h3>
+            <p className="mt-2 text-xs leading-relaxed text-zillow-slate">
+              {MATT_VS_CORTNEY.matt.background}
+            </p>
+            <div className="mt-4">
+              <div className="text-xs font-semibold uppercase tracking-wider text-emerald-700">
+                Can do (his craft)
+              </div>
+              <ul className="mt-2 space-y-1 pl-4 text-xs leading-relaxed text-zillow-ink">
+                {MATT_VS_CORTNEY.matt.canDo.map((c) => (
+                  <li key={c} className="list-disc">
+                    {c}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="mt-4">
+              <div className="text-xs font-semibold uppercase tracking-wider text-zillow-red">
+                Can&apos;t / won&apos;t do
+              </div>
+              <ul className="mt-2 space-y-1 pl-4 text-xs leading-relaxed text-zillow-ink">
+                {MATT_VS_CORTNEY.matt.cantOrWontDo.map((c) => (
+                  <li key={c} className="list-disc">
+                    {c}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </article>
+
+          {/* Cortney */}
+          <article className="z-card border-l-4 border-zillow-blue">
+            <div className="z-eyebrow">Cortney — Systems Engineer (contractor)</div>
+            <h3 className="z-h3 mt-2">{MATT_VS_CORTNEY.cortney.role}</h3>
+            <p className="mt-2 text-xs leading-relaxed text-zillow-slate">
+              {MATT_VS_CORTNEY.cortney.background}
+            </p>
+            <div className="mt-4">
+              <div className="text-xs font-semibold uppercase tracking-wider text-zillow-blue">
+                Your lane
+              </div>
+              <ul className="mt-2 space-y-1 pl-4 text-xs leading-relaxed text-zillow-ink">
+                {MATT_VS_CORTNEY.cortney.yourLane.map((c) => (
+                  <li key={c} className="list-disc">
+                    {c}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="mt-4">
+              <div className="text-xs font-semibold uppercase tracking-wider text-zillow-slate">
+                Not your lane — defend the boundary
+              </div>
+              <ul className="mt-2 space-y-1 pl-4 text-xs leading-relaxed text-zillow-ink">
+                {MATT_VS_CORTNEY.cortney.notYourLane.map((c) => (
+                  <li key={c} className="list-disc">
+                    {c}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="mt-4 rounded-md bg-zillow-blue-light px-3 py-2 text-xs leading-relaxed text-zillow-ink">
+              <span className="font-semibold text-zillow-blue">Key move: </span>
+              {MATT_VS_CORTNEY.cortney.keyMove}
+            </div>
+          </article>
+        </div>
+      </section>
+
+      {/* CORTNEY MENTIONS — how the team is talking about you */}
+      <section>
+        <h2 className="z-h2 mb-1">How the team is talking about you in #av-team</h2>
+        <p className="mb-5 max-w-3xl text-sm text-zillow-slate">
+          Every Slack mention of Cortney pulled from #av-team — welcome moments, standup
+          green-circles, project routing, and the indirect quotes that define what they
+          expect.
+        </p>
+        <div className="grid gap-3 md:grid-cols-2">
+          {CORTNEY_MENTIONS.map((m, idx) => (
+            <article key={idx} className="z-card">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="text-sm font-semibold text-zillow-ink">{m.who}</span>
+                <span className="z-chip bg-zillow-gray-light text-zillow-slate ring-1 ring-inset ring-zillow-gray-border">
+                  {m.context}
+                </span>
+              </div>
+              <blockquote className="mt-2 border-l-4 border-zillow-blue pl-3 text-xs italic leading-relaxed text-zillow-ink">
+                &ldquo;{m.quote}&rdquo;
+              </blockquote>
+              <div className="mt-3 rounded-md bg-zillow-blue-light px-3 py-2 text-xs leading-relaxed text-zillow-ink">
+                <span className="font-semibold text-zillow-blue">Why it matters: </span>
+                {m.whyItMatters}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* ROLE DETAILS — the actual role */}
+      <section>
+        <h2 className="z-h2 mb-1">Your role, exactly as it was scoped</h2>
+        <p className="mb-5 max-w-3xl text-sm text-zillow-slate">
+          Reconstructed from the Stacey + Mark Slack record. Title, classification, hiring
+          path, expected scope, and what the team actually needs from you.
+        </p>
+        <div className="z-card">
+          <div className="z-eyebrow">Title + classification</div>
+          <h3 className="z-h3 mt-2">{ROLE_DETAILS.title}</h3>
+          <p className="mt-2 rounded-md bg-amber-50 px-3 py-2 text-sm leading-relaxed text-amber-900">
+            <strong>Classification: </strong>
+            {ROLE_DETAILS.classification}
+          </p>
+
+          <div className="mt-6">
+            <div className="text-xs font-semibold uppercase tracking-wider text-zillow-slate">
+              Hiring path (Stacey ran this)
+            </div>
+            <ol className="mt-3 space-y-3 pl-5 text-sm leading-relaxed text-zillow-ink list-decimal">
+              {ROLE_DETAILS.hiringPath.map((step, idx) => (
+                <li key={idx}>
+                  <span className="font-semibold">{step.step}</span>
+                  <blockquote className="mt-1 border-l-2 border-zillow-gray-border pl-3 text-xs italic text-zillow-slate">
+                    &ldquo;{step.quote}&rdquo;
+                    <span className="not-italic mt-0.5 block text-[10px]">— {step.who}</span>
+                  </blockquote>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-zillow-slate">
+                Expected scope
+              </div>
+              <ul className="mt-2 space-y-2 text-sm leading-relaxed text-zillow-ink">
+                {ROLE_DETAILS.expectedScope.map((s) => (
+                  <li key={s.area} className="rounded-md border border-zillow-gray-border px-3 py-2">
+                    <div className="font-semibold text-zillow-ink">{s.area}</div>
+                    <div className="text-xs text-zillow-slate">{s.detail}</div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-zillow-slate">
+                Contractor signals (not FTE)
+              </div>
+              <ul className="mt-2 space-y-1 pl-4 text-xs leading-relaxed text-zillow-ink">
+                {ROLE_DETAILS.contractorNotes.map((n) => (
+                  <li key={n} className="list-disc">
+                    {n}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-4 rounded-md border-l-4 border-zillow-blue bg-zillow-blue-light px-3 py-2 text-sm leading-relaxed text-zillow-ink">
+                <span className="font-semibold text-zillow-blue">What they actually need: </span>
+                {ROLE_DETAILS.whatTheyActuallyNeed}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ACCESS TILES — day 1 checklist */}
+      <section>
+        <h2 className="z-h2 mb-1">Day-1 access tiles (Mark already road-tested these)</h2>
+        <p className="mb-5 max-w-3xl text-sm text-zillow-slate">
+          The exact access list that came out of the Mar 13 thread when Mark told Matt
+          &ldquo;pretend I&apos;m a new guy.&rdquo; File every ServiceNow tile day 1 — and
+          watch the notification traps.
+        </p>
+        <div className="space-y-3">
+          {ACCESS_TILES.map((t) => (
+            <article key={t.tile} className="z-card">
+              <h3 className="text-base font-bold text-zillow-ink">{t.tile}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-zillow-slate">
+                <span className="font-semibold text-zillow-ink">Why: </span>
+                {t.why}
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-zillow-slate">
+                <span className="font-semibold text-zillow-ink">How: </span>
+                {t.how}
+              </p>
+              {t.notificationTrap && (
+                <div className="mt-3 rounded-md border-l-4 border-zillow-red bg-red-50 px-3 py-2 text-xs leading-relaxed text-zillow-ink">
+                  <span className="font-semibold text-zillow-red">Notification trap: </span>
+                  {t.notificationTrap}
+                </div>
+              )}
+            </article>
+          ))}
+        </div>
+      </section>
 
       {/* Headline reality check */}
       <section className="z-card border-l-4 border-zillow-red bg-red-50">
