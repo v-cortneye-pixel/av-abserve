@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AV Team — Mac / Zoom / Login Issues Slowing Productivity</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      html,
+      body,
+      #root {
+        height: 100%;
+      }
+      body {
+        background: radial-gradient(1200px 600px at 20% 0%, #1e293b 0%, #0b1220 60%, #05070d 100%);
+        color: #e2e8f0;
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+          sans-serif;
+      }
+      .glass {
+        background: rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .slide-enter {
+        animation: slidein 350ms ease-out;
+      }
+      @keyframes slidein {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .sev-high {
+        background: rgba(239, 68, 68, 0.15);
+        color: #fecaca;
+        border-color: rgba(239, 68, 68, 0.4);
+      }
+      .sev-med {
+        background: rgba(234, 179, 8, 0.15);
+        color: #fde68a;
+        border-color: rgba(234, 179, 8, 0.4);
+      }
+      .sev-low {
+        background: rgba(59, 130, 246, 0.15);
+        color: #bfdbfe;
+        border-color: rgba(59, 130, 246, 0.4);
+      }
+      .kbd {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.7rem;
+        padding: 1px 6px;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .timeline-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 999px;
+        flex-shrink: 0;
+        margin-top: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel" data-presets="react">
+      const { useState, useEffect, useMemo, useCallback } = React;
+
+      const ISSUES = [
+        {
+          id: "login-loop",
+          title: "Mac Minis stuck on the macOS login screen after updates",
+          severity: "high",
+          firstSeen: "2024-12-20",
+          lastSeen: "2026-03-24",
+          impact: "Entire Zoom Rooms unavailable until manual remote login.",
+          summary:
+            "Recurring: overnight macOS / Zoom Rooms updates revert Minis to the login screen. Auto-login fails and Zoom Dashboard still reports the rooms as 'online'.",
+          evidence: [
+            {
+              who: "Matt Cornick",
+              when: "Dec 20, 2024",
+              note: "Update pushed at 9:06 PM left newer Mac Minis + all Digital Signage stuck at login (Olympic, SEA-3925, etc.). Logged each one back in manually.",
+            },
+            {
+              who: "Patrick Gilligan",
+              when: "Aug 2025",
+              note: "Tracking with CE (Andrew Spokes). 'Mac Minis are meant to auto-login… every once in a while they stay at the login screen and a user needs to punch in credentials.'",
+            },
+            {
+              who: "Andrew Spokes",
+              when: "Aug 15, 2025",
+              note: "Rolling out macOS updates with work to prevent the lock screen appearing after the update.",
+            },
+            {
+              who: "Mark Hampson",
+              when: "Mar 24, 2026",
+              note: "NYC-1227 Mac Mini was never properly set up as a Zoom Room — auto-login for the zoomrooms account was never configured.",
+            },
+          ],
+          workaround: [
+            "Remote in with AV admin",
+            "Quit Zoom Rooms (00000) — do NOT sign out",
+            "Reopen Zoom to trigger permission prompts",
+            "Enable required permissions with ZGAV creds",
+            "If exit kicks Mini to login screen: reboot, close session before it boots",
+          ],
+        },
+        {
+          id: "sequoia-hdmi",
+          title: "Sequoia + Zoom Rooms ≥ v6.5.5 breaks hardwired HDMI share",
+          severity: "high",
+          firstSeen: "2025-08-05",
+          lastSeen: "2025-08-05",
+          impact: "All Mac-based Zoom Rooms with HDMI capture lost sharing.",
+          summary:
+            "Olympic share issue traced to a specific combo: MacBook on Sequoia + Mac Mini on Sequoia + ZR ≥ 6.5.5 + any HDMI capture (Magewell or Inogeni).",
+          evidence: [
+            {
+              who: "Matt Cornick",
+              when: "Aug 5, 2025",
+              note: "Workaround: downgrade affected rooms to ZR v6.4.5 and disable Zoom Rooms auto-updates. Filed a ticket with Zoom; tracked rooms in Asana.",
+            },
+            {
+              who: "Andrew Spokes (via Patrick)",
+              when: "Aug 15, 2025",
+              note: "Sonoma support being dropped in September — forcing the Sequoia upgrade regardless.",
+            },
+          ],
+          workaround: [
+            "Downgrade Zoom Rooms to v6.4.5 on affected Mac Minis",
+            "Disable ZR auto-updates",
+            "Track downgraded rooms (Asana / now Jira)",
+          ],
+        },
+        {
+          id: "ndi-cams",
+          title: "NDI cameras black after Mac Mini reboot (Sequoia)",
+          severity: "med",
+          firstSeen: "2025-09-04",
+          lastSeen: "2025-09-04",
+          impact: "All Hands rooms lose camera feeds after reboot.",
+          summary:
+            "SFO-735 NDI cams return as black video after any Mac Mini reboot. Suspected Sequoia privacy/permissions regression.",
+          evidence: [
+            {
+              who: "Matt Cornick",
+              when: "Sep 4, 2025",
+              note: "Toggling 'Local Area Connection' permission for Zoom Rooms OFF then ON restores cameras without restarting the app or Mini.",
+            },
+          ],
+          workaround: [
+            "Toggle Zoom Rooms → Local Area Connection permission OFF then ON",
+            "Considered downgrade to Sonoma or swap to AVer Cam550s (heavier lift)",
+          ],
+        },
+        {
+          id: "permissions-set",
+          title: "Missing macOS permissions on every Mac Mini",
+          severity: "med",
+          firstSeen: "2025-03-07",
+          lastSeen: "2025-03-07",
+          impact: "Intermittent ZR failures until permissions enabled per-Mini.",
+          summary:
+            "A set of two permissions needed to be enabled with the ZGAV admin account on every Zoom Room and Digital Signage Mac Mini.",
+          evidence: [
+            {
+              who: "Matt Cornick",
+              when: "Mar 7, 2025",
+              note: "Walked through every Seattle Mini to enable the permissions; wrote a runbook for the team while traveling Monday.",
+            },
+          ],
+          workaround: [
+            "Remote in → Quit Zoom (do not sign out)",
+            "Reopen → enable both permissions with ZGAV creds",
+            "Quit & reopen Zoom; some Minis only need one",
+          ],
+        },
+        {
+          id: "wallpaper-collision",
+          title: "Mac laptop wallpaper = Zoom Rooms backdrop",
+          severity: "low",
+          firstSeen: "2025-04-03",
+          lastSeen: "2025-04-03",
+          impact: "Remote troubleshooting confusion — can't tell shared screen apart.",
+          summary:
+            "Presentation MacBooks ship with the same wallpaper as the stock Zoom Rooms backdrop, so an extended display share is visually identical to the Mini's own desktop during remote support.",
+          evidence: [
+            {
+              who: "Patrick Gilligan",
+              when: "Apr 3, 2025",
+              note: "'Out of all images in the universe, they have the same one… imagine how confusing this is to support remotely.' Flagged as an easy fix.",
+            },
+          ],
+          workaround: ["Change the MacBook wallpaper to anything other than the ZR backdrop"],
+        },
+        {
+          id: "share-workflow",
+          title: "Quarterly macOS share-workflow changes break training",
+          severity: "med",
+          firstSeen: "2025-04-03",
+          lastSeen: "2025-04-03",
+          impact: "Site leads/AV staff can't reliably share Google Slides w/ presenter notes.",
+          summary:
+            "Apple changes the macOS share workflow 'about once every other quarter' (Patrick). Stacey: confident on the basics, 'falls apart' on presenter notes; even basic share is tough on certain Macs.",
+          evidence: [
+            {
+              who: "Patrick Gilligan",
+              when: "Apr 3, 2025",
+              note: "Proposed a 1-hour working session with all site leads to walk through share workflows on PC, newer Mac, and older Mac.",
+            },
+          ],
+          workaround: [
+            "Run a working session across all site leads",
+            "Document Mac vs. PC vs. older-Mac share flows",
+          ],
+        },
+        {
+          id: "dual-hdmi",
+          title: "Podiums with 2× HDMI inputs misbehave on Mac",
+          severity: "low",
+          firstSeen: "2025-04-03",
+          lastSeen: "2025-04-03",
+          impact: "Presenters can't get the right combo of mirror + extend.",
+          summary:
+            "Rooms with 2× HDMI need mirror-one/extend-the-other; this is not the macOS default and trips up the whole team.",
+          evidence: [
+            {
+              who: "Patrick Gilligan",
+              when: "Apr 3, 2025",
+              note: "'We ALL need to learn this workflow — me, John, Cecil, Adali, Lu — anybody plugging a laptop into a 2-HDMI podium.'",
+            },
+          ],
+          workaround: ["Train all AV + Workplace staff on the mirror/extend combo for Mac and PC"],
+        },
+        {
+          id: "irv-stuck",
+          title: "IRV-802 stuck on Mac home screen mid-meeting",
+          severity: "low",
+          firstSeen: "2026-03-16",
+          lastSeen: "2026-03-16",
+          impact: "Camera preview shows the desktop while the room is 'in a meeting'.",
+          summary:
+            "Update likely left the Mini hung. Required pulling up the remote Zoom controller to confirm whether it was actually sharing.",
+          evidence: [
+            {
+              who: "Patrick Gilligan",
+              when: "Mar 16, 2026",
+              note: "Matt: 'Nope. I'm guessing it updated and is stuck there.'",
+            },
+          ],
+          workaround: ["Verify status via remote Zoom controller", "Reboot Mini if hung"],
+        },
+        {
+          id: "platform-debate",
+          title: "Cumulative Mac pain driving platform-replacement debate",
+          severity: "med",
+          firstSeen: "2026-05-14",
+          lastSeen: "2026-05-15",
+          impact: "Open question whether new/large rooms should leave Mac Mini behind.",
+          summary:
+            "Active discussion about Poly G62 / Windows NUCs for new builds. Mac Mini brings OS patches, Apple ID mgmt, background notifications, and 'random 9:00 AM updates that break the room.'",
+          evidence: [
+            {
+              who: "Mark Hampson",
+              when: "May 15, 2026",
+              note: "'Every room deployment we've rolled out is a Mac Mini… last year we decommissioned all PC appliances that were not laptops. It may be a tough sell.'",
+            },
+            {
+              who: "Cortney Eison",
+              when: "May 15, 2026",
+              note: "Floated Poly G62 (Android appliance) and even running Parallels on Macs as workarounds.",
+            },
+            {
+              who: "Cortney Eison",
+              when: "May 14, 2026",
+              note: "New QSYS Connect for Zoom Rooms only certified on Windows — pushes toward Windows NUCs for QSYS rooms.",
+            },
+          ],
+          workaround: [
+            "Evaluate Poly G62 for 45+ person rooms",
+            "Pilot Windows NUC for new QSYS Connect rooms",
+            "Keep Mac Mini for standard 30-person zRetreat",
+          ],
+        },
+      ];
+
+      const THEMES = [
+        {
+          icon: "🔁",
+          title: "macOS updates repeatedly break Zoom Rooms",
+          detail: "Auto-login fails, NDI permissions reset, HDMI share breaks. Each event requires manual remote work across many rooms.",
+        },
+        {
+          icon: "👀",
+          title: "No reliable monitoring",
+          detail: "Zoom Dashboard reports rooms as healthy even when they're sitting on the macOS login screen.",
+        },
+        {
+          icon: "🔑",
+          title: "Credential / permission management is manual",
+          detail: "Auto-login for zoomrooms, ZGAV permission popups, missed setup steps — discovered Minis still un-provisioned in 2026.",
+        },
+        {
+          icon: "📉",
+          title: "Version-pinning fire drills",
+          detail: "Forced ZR downgrades (6.5.5 → 6.4.5) and disabling auto-updates because of Sequoia incompatibility.",
+        },
+        {
+          icon: "🧩",
+          title: "UX / troubleshooting friction",
+          detail: "Mac wallpaper = ZR backdrop, quarterly Apple share changes, 2× HDMI behavior — all add up to lost meeting time.",
+        },
+      ];
+
+      const SEV_LABEL = { high: "High", med: "Medium", low: "Low" };
+      const SEV_CLASS = { high: "sev-high", med: "sev-med", low: "sev-low" };
+
+      function Chip({ severity, children }) {
+        return <span className={`chip ${SEV_CLASS[severity] || ""}`}>{children}</span>;
+      }
+
+      function TitleSlide() {
+        return (
+          <div className="h-full w-full flex flex-col justify-center items-center text-center px-12 slide-enter">
+            <div className="chip sev-low mb-6">Internal — #av-team</div>
+            <h1 className="text-5xl md:text-6xl font-bold tracking-tight leading-tight max-w-5xl">
+              Mac, Zoom & Login Issues
+              <br />
+              <span className="text-slate-400">slowing AV team productivity</span>
+            </h1>
+            <p className="mt-8 max-w-3xl text-lg text-slate-400">
+              A summary of recurring Mac Mini, macOS, Zoom Rooms, and credential issues raised in
+              the #av-team Slack channel between 2024 and 2026 — and the operational impact on the
+              team.
+            </p>
+            <div className="mt-12 flex items-center gap-6 text-sm text-slate-400">
+              <span>
+                Use <span className="kbd">←</span> <span className="kbd">→</span> or the buttons
+                below
+              </span>
+              <span>•</span>
+              <span>
+                Press <span className="kbd">F</span> for fullscreen
+              </span>
+            </div>
+          </div>
+        );
+      }
+
+      function OverviewSlide({ onPickIssue }) {
+        const counts = useMemo(() => {
+          const c = { high: 0, med: 0, low: 0 };
+          ISSUES.forEach((i) => (c[i.severity] += 1));
+          return c;
+        }, []);
+        return (
+          <div className="h-full w-full flex flex-col px-12 py-12 slide-enter">
+            <h2 className="text-3xl md:text-4xl font-semibold mb-2">At a glance</h2>
+            <p className="text-slate-400 mb-8">
+              {ISSUES.length} distinct issues identified in #av-team — click any card for detail.
+            </p>
+            <div className="grid grid-cols-3 gap-4 mb-8">
+              <div className="glass rounded-xl p-5">
+                <div className="text-4xl font-bold text-red-300">{counts.high}</div>
+                <div className="text-sm text-slate-400 mt-1">High severity</div>
+              </div>
+              <div className="glass rounded-xl p-5">
+                <div className="text-4xl font-bold text-yellow-200">{counts.med}</div>
+                <div className="text-sm text-slate-400 mt-1">Medium severity</div>
+              </div>
+              <div className="glass rounded-xl p-5">
+                <div className="text-4xl font-bold text-blue-200">{counts.low}</div>
+                <div className="text-sm text-slate-400 mt-1">Low severity</div>
+              </div>
+            </div>
+            <div className="grid md:grid-cols-3 gap-4 flex-1 overflow-auto pr-2">
+              {ISSUES.map((i) => (
+                <button
+                  key={i.id}
+                  onClick={() => onPickIssue(i.id)}
+                  className="glass rounded-xl p-5 text-left hover:bg-white/10 transition relative"
+                >
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <Chip severity={i.severity}>{SEV_LABEL[i.severity]}</Chip>
+                    <span className="text-xs text-slate-500">{i.firstSeen}</span>
+                  </div>
+                  <div className="font-semibold leading-snug">{i.title}</div>
+                  <div className="text-sm text-slate-400 mt-2 line-clamp-3">{i.impact}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      function IssueSlide({ issue }) {
+        const [tab, setTab] = useState("evidence");
+        return (
+          <div className="h-full w-full flex flex-col px-12 py-10 slide-enter">
+            <div className="flex items-center gap-3 mb-3">
+              <Chip severity={issue.severity}>{SEV_LABEL[issue.severity]} severity</Chip>
+              <span className="text-xs text-slate-500">
+                First seen {issue.firstSeen} • Last seen {issue.lastSeen}
+              </span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-semibold leading-tight max-w-5xl">
+              {issue.title}
+            </h2>
+            <p className="text-slate-300 mt-3 max-w-4xl">{issue.summary}</p>
+
+            <div className="glass rounded-lg px-4 py-3 mt-5 max-w-4xl">
+              <div className="text-xs uppercase tracking-wide text-slate-400 mb-1">
+                Productivity impact
+              </div>
+              <div className="text-slate-100">{issue.impact}</div>
+            </div>
+
+            <div className="mt-6 flex gap-2">
+              <TabBtn active={tab === "evidence"} onClick={() => setTab("evidence")}>
+                Evidence ({issue.evidence.length})
+              </TabBtn>
+              <TabBtn active={tab === "workaround"} onClick={() => setTab("workaround")}>
+                Workaround
+              </TabBtn>
+            </div>
+
+            <div className="mt-4 flex-1 overflow-auto pr-2">
+              {tab === "evidence" && (
+                <ul className="space-y-3">
+                  {issue.evidence.map((e, idx) => (
+                    <li key={idx} className="glass rounded-lg p-4">
+                      <div className="text-xs text-slate-400 mb-1">
+                        <span className="font-semibold text-slate-200">{e.who}</span> • {e.when}
+                      </div>
+                      <div className="text-slate-100 leading-relaxed">{e.note}</div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {tab === "workaround" && (
+                <ol className="space-y-2">
+                  {issue.workaround.map((w, idx) => (
+                    <li key={idx} className="glass rounded-lg p-3 flex gap-3">
+                      <div className="w-6 h-6 rounded-full bg-blue-500/30 text-blue-100 text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+                        {idx + 1}
+                      </div>
+                      <div>{w}</div>
+                    </li>
+                  ))}
+                </ol>
+              )}
+            </div>
+          </div>
+        );
+      }
+
+      function TabBtn({ active, onClick, children }) {
+        return (
+          <button
+            onClick={onClick}
+            className={`px-3 py-1.5 rounded-md text-sm border transition ${
+              active
+                ? "bg-white/10 border-white/20 text-white"
+                : "border-transparent text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            {children}
+          </button>
+        );
+      }
+
+      function TimelineSlide() {
+        const sorted = useMemo(() => [...ISSUES].sort((a, b) => a.firstSeen.localeCompare(b.firstSeen)), []);
+        return (
+          <div className="h-full w-full flex flex-col px-12 py-12 slide-enter">
+            <h2 className="text-3xl md:text-4xl font-semibold mb-2">Timeline</h2>
+            <p className="text-slate-400 mb-8">When each issue first hit the channel.</p>
+            <div className="relative flex-1 overflow-auto pr-2">
+              <div className="absolute left-[7px] top-1 bottom-1 w-px bg-white/15"></div>
+              <ul className="space-y-4">
+                {sorted.map((i) => (
+                  <li key={i.id} className="flex gap-4">
+                    <div
+                      className={`timeline-dot ${
+                        i.severity === "high"
+                          ? "bg-red-400"
+                          : i.severity === "med"
+                          ? "bg-yellow-300"
+                          : "bg-blue-300"
+                      }`}
+                    ></div>
+                    <div className="glass rounded-lg p-4 flex-1">
+                      <div className="flex items-center justify-between gap-3 mb-1">
+                        <div className="font-semibold">{i.title}</div>
+                        <Chip severity={i.severity}>{SEV_LABEL[i.severity]}</Chip>
+                      </div>
+                      <div className="text-xs text-slate-400">{i.firstSeen}</div>
+                      <div className="text-sm text-slate-300 mt-2">{i.summary}</div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        );
+      }
+
+      function ThemesSlide() {
+        return (
+          <div className="h-full w-full flex flex-col px-12 py-12 slide-enter">
+            <h2 className="text-3xl md:text-4xl font-semibold mb-2">Themes</h2>
+            <p className="text-slate-400 mb-8">What these incidents have in common.</p>
+            <div className="grid md:grid-cols-2 gap-4 flex-1 overflow-auto pr-2">
+              {THEMES.map((t, idx) => (
+                <div key={idx} className="glass rounded-xl p-5 flex gap-4">
+                  <div className="text-3xl leading-none">{t.icon}</div>
+                  <div>
+                    <div className="font-semibold mb-1">{t.title}</div>
+                    <div className="text-sm text-slate-400">{t.detail}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      function ClosingSlide() {
+        return (
+          <div className="h-full w-full flex flex-col justify-center items-center text-center px-12 slide-enter">
+            <h2 className="text-4xl md:text-5xl font-semibold mb-6">Open question</h2>
+            <p className="max-w-3xl text-xl text-slate-300 leading-relaxed">
+              Does the cumulative cost of these Mac-specific issues justify moving newer / larger
+              rooms onto Windows or Android-based appliances (e.g., Poly G62, Windows NUCs)?
+            </p>
+            <div className="mt-10 grid md:grid-cols-3 gap-4 max-w-4xl w-full text-left">
+              <div className="glass rounded-xl p-5">
+                <div className="font-semibold mb-1">Stay Mac</div>
+                <div className="text-sm text-slate-400">
+                  Aligns with Zillow IT standard. Best ZR feature support. Known fleet.
+                </div>
+              </div>
+              <div className="glass rounded-xl p-5">
+                <div className="font-semibold mb-1">Windows NUC</div>
+                <div className="text-sm text-slate-400">
+                  Required for new QSYS Connect for Zoom Rooms. Tough sell internally.
+                </div>
+              </div>
+              <div className="glass rounded-xl p-5">
+                <div className="font-semibold mb-1">Android appliance</div>
+                <div className="text-sm text-slate-400">
+                  Poly G62: locked-down, multi-platform, no 9 AM update surprises.
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      function App() {
+        const slides = useMemo(() => {
+          const out = [
+            { id: "title", render: () => <TitleSlide /> },
+            { id: "overview", render: (api) => <OverviewSlide onPickIssue={api.goToIssue} /> },
+          ];
+          ISSUES.forEach((i) => out.push({ id: i.id, render: () => <IssueSlide issue={i} /> }));
+          out.push({ id: "timeline", render: () => <TimelineSlide /> });
+          out.push({ id: "themes", render: () => <ThemesSlide /> });
+          out.push({ id: "closing", render: () => <ClosingSlide /> });
+          return out;
+        }, []);
+
+        const [idx, setIdx] = useState(0);
+
+        const go = useCallback(
+          (delta) => {
+            setIdx((curr) => Math.max(0, Math.min(slides.length - 1, curr + delta)));
+          },
+          [slides.length]
+        );
+
+        const goToIssue = useCallback(
+          (issueId) => {
+            const target = slides.findIndex((s) => s.id === issueId);
+            if (target >= 0) setIdx(target);
+          },
+          [slides]
+        );
+
+        useEffect(() => {
+          const onKey = (e) => {
+            if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") {
+              e.preventDefault();
+              go(1);
+            } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
+              e.preventDefault();
+              go(-1);
+            } else if (e.key === "Home") {
+              setIdx(0);
+            } else if (e.key === "End") {
+              setIdx(slides.length - 1);
+            } else if (e.key === "f" || e.key === "F") {
+              if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+              else document.exitFullscreen?.();
+            }
+          };
+          window.addEventListener("keydown", onKey);
+          return () => window.removeEventListener("keydown", onKey);
+        }, [go, slides.length]);
+
+        const slide = slides[idx];
+        const api = { goToIssue };
+
+        return (
+          <div className="h-full w-full flex flex-col">
+            <header className="flex items-center justify-between px-6 py-4">
+              <div className="flex items-center gap-3">
+                <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_12px_2px_rgba(52,211,153,0.6)]"></div>
+                <div className="text-sm text-slate-400">
+                  <span className="text-slate-200 font-medium">#av-team</span> — Mac findings
+                </div>
+              </div>
+              <div className="text-xs text-slate-500">
+                Slide {idx + 1} / {slides.length}
+              </div>
+            </header>
+
+            <main className="flex-1 min-h-0">{slide.render(api)}</main>
+
+            <footer className="flex items-center justify-between px-6 py-4 gap-4">
+              <button
+                onClick={() => go(-1)}
+                disabled={idx === 0}
+                className="px-4 py-2 rounded-lg glass disabled:opacity-30 hover:bg-white/10 transition text-sm"
+              >
+                ← Back
+              </button>
+              <div className="flex-1 flex items-center gap-1.5">
+                {slides.map((s, i) => (
+                  <button
+                    key={s.id}
+                    onClick={() => setIdx(i)}
+                    aria-label={`Go to slide ${i + 1}`}
+                    className={`h-1.5 rounded-full transition-all ${
+                      i === idx
+                        ? "bg-emerald-400 flex-[2]"
+                        : "bg-white/15 hover:bg-white/30 flex-1"
+                    }`}
+                  ></button>
+                ))}
+              </div>
+              <button
+                onClick={() => go(1)}
+                disabled={idx === slides.length - 1}
+                className="px-4 py-2 rounded-lg glass disabled:opacity-30 hover:bg-white/10 transition text-sm"
+              >
+                Next →
+              </button>
+            </footer>
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>
