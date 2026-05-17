@@ -932,6 +932,413 @@ export const RISKS = [
   "Are we forcing Zoom Room scheduler firmware updates on a cadence, or only when WAVE-16 forces our hand?",
 ];
 
+export interface QuestionItem {
+  text: string;
+  why?: string;
+  tags?: string[];
+}
+
+export interface QuestionGroup {
+  id: string;
+  title: string;
+  audience: "Matt" | "Mark" | "Stacey" | "Team / WAVE sync" | "Multiple";
+  context: string;
+  description?: string;
+  questions: QuestionItem[];
+}
+
+export const QUESTIONS: QuestionGroup[] = [
+  {
+    id: "tuesday-matt",
+    title: "Tuesday meeting with Matt — Mac Mini / G62 / standards",
+    audience: "Matt",
+    context: "Scheduled 1:1, Tuesday May 19",
+    description:
+      "Reset Friday's G62 thread. Lead with questions, not pitches. Build credibility on the current standard before proposing alternatives.",
+    questions: [
+      {
+        text: "Can you walk me through the current Mac Mini + Q-Sys reference design end-to-end so I understand what 'normal' looks like for Zillow?",
+        why: "Establishes you're learning the existing system before proposing changes.",
+        tags: ["Mac Mini", "Standards"],
+      },
+      {
+        text: "What's the actual Mac management story — is CE pushing a Jamf profile? What breaks when an OS update slips through, and how often does it happen?",
+        why: "Surfaces the Sequoia/Apple Intelligence incident on Matt's terms. Lets him show you the scars.",
+        tags: ["Mac Mini", "Operations"],
+      },
+      {
+        text: "Of the 50+ rooms we manage today, which ones cause us the most tickets, and is the root cause hardware, OS, network, or user?",
+        why: "Grounds the conversation in real data, not vendor marketing.",
+        tags: ["Mac Mini", "Data"],
+      },
+      {
+        text: "Where does the team feel pain that the current standard doesn't solve?",
+        why: "This is where G62 (or any alternative) earns its place.",
+        tags: ["Standards"],
+      },
+      {
+        text: "Stacey landed on 'Tier 3 large/complex rooms' as the place new options could live. Is there an upcoming room — India, NYC-1204, the SEA Library, the dev space — where we have permission to pilot something off-standard?",
+        why: "Reframes G62 as a contained pilot, not a fleet replacement.",
+        tags: ["G62", "Tier 3", "Pilot"],
+      },
+      {
+        text: "If we wanted to pilot one G62 in the lab, what would success look like to you? What would convince you, and what would disqualify it?",
+        why: "Matt defines the criteria. You go build the case.",
+        tags: ["G62", "Pilot"],
+      },
+      {
+        text: "If Q-Sys Connect is the future of Q-Sys + Zoom Rooms control, what's our 18-month bet — do we lobby IT for a Windows appliance exception, or do we wait for QSC to support Mac, or do we move away from Q-Sys touch panels?",
+        why: "Strategic, forward-looking, and respects Mark's IT-politics framing.",
+        tags: ["Q-Sys Connect", "Strategy"],
+      },
+      {
+        text: "Mark mentioned Zillow IT decommissioned non-laptop PCs. Has anyone formally asked what an exception would take, or is that a known dead end?",
+        why: "If it's a dead end, the Windows path is closed and we plan accordingly.",
+        tags: ["Windows", "IT Politics"],
+      },
+      {
+        text: "Did you ever do an on-site tuning pass on the TCC2s in SFO All Hands, 3925, or 3829? I went through Slack history and didn't see one referenced.",
+        why: "Brings receipts. Opens the SEA-3925 commissioning win without grading Matt's work.",
+        tags: ["TCC2", "Audio"],
+      },
+      {
+        text: "What's one thing on your plate I can pick up this week so you have time to think about all this?",
+        why: "Matt is drowning. He'll remember this.",
+        tags: ["Bandwidth"],
+      },
+    ],
+  },
+  {
+    id: "monday-wave-sync",
+    title: "Monday WAVE sync — agenda items I'll add",
+    audience: "Team / WAVE sync",
+    context: "Stacey opens a Google Doc agenda every Monday. Drop these in proactively.",
+    description:
+      "Forcing-function topics. They show you're seeing the system, not just doing tickets.",
+    questions: [
+      {
+        text: "Recurring issue inventory — should we maintain a running list?",
+        why: "You can literally drop the /issues page in there.",
+        tags: ["Process"],
+      },
+      {
+        text: "Patrick's tooling — what's the ownership and documentation status? I'd like to propose I take 2 of his projects.",
+        why: "Establishes claim on Patrick's portfolio publicly.",
+        tags: ["Patrick handoff"],
+      },
+      {
+        text: "Tier 3 / large room standard — can we pilot the G62 in the lab or in NYC-1204 / dev space?",
+        why: "Reframes G62 as pilot, not replacement.",
+        tags: ["G62", "Tier 3"],
+      },
+      {
+        text: "USB-C adapter standard SKU — I can lab-test 3 candidates this week and lock in one part number.",
+        why: "Small, cheap, high-impact. Mark loves it.",
+        tags: ["Quick Win", "Procurement"],
+      },
+      {
+        text: "NV-21 / spare gear inventory & SN tracking process — I want to write a runbook for John/Adali.",
+        why: "Process win that closes a real gap.",
+        tags: ["Quick Win", "Process"],
+      },
+      {
+        text: "World Cup pop-up room scoping — want me to PM the 5-site rollout?",
+        why: "Volunteer before it becomes a fire drill.",
+        tags: ["World Cup"],
+      },
+      {
+        text: "NYC-1204 ceiling mic spec — picking up Mark's open question from Sept 3. I'll bring a one-page MXA920 vs TCC2 comparison for next sync.",
+        why: "Closes Mark's 8-month-old unanswered question.",
+        tags: ["Quick Win", "Audio"],
+      },
+    ],
+  },
+  {
+    id: "patrick-keys-code",
+    title: "Patrick handoff — code, tooling, accounts",
+    audience: "Matt",
+    context: "Claim, don't ask. These belong in the Tuesday meeting.",
+    description:
+      "Patrick's GitLab repos, custom UCIs, alerts bot, IP validator, plugins — your portfolio now.",
+    questions: [
+      {
+        text: "Where is Patrick's GitLab/CodeCommit repo for the Q-Sys files? I need contributor access to: Core Tech / Unified Communications / AV / SFO / san-francisco_q-sys; Core Tech / Unified Communications / AV / SEA / seattle_q-sys; any other regional Q-Sys repos (IRV, NYC).",
+        tags: ["GitLab", "Q-Sys"],
+      },
+      {
+        text: "Where does the single-page UCI Patrick deployed on SEA-3647 live? Was it pushed to other rooms? Is it the intended standard?",
+        tags: ["UCI", "Standards"],
+      },
+      {
+        text: "Where is the IP schedule / switch validator script? What runs it on a cadence? Who has prod access?",
+        tags: ["Tooling", "Network"],
+      },
+      {
+        text: "The daily alerts bot that posts per-site Slack messages — where's the code, what's the deployment, who has Slack API credentials?",
+        tags: ["Tooling", "Slack"],
+      },
+      {
+        text: "The Zoom version distribution dashboard Patrick built — same questions: source, deployment, credentials.",
+        tags: ["Tooling", "Zoom"],
+      },
+      {
+        text: "Outlook → meetings Slack integration — Kiel gave Patrick the API keys. Where are those stored?",
+        tags: ["Tooling", "Outlook"],
+      },
+      {
+        text: "Custom Q-Sys plugins (Zoom Room Controls, Sennheiser, projector PJ Link) — which are community downloads vs Patrick-authored? Where is the plugin source?",
+        tags: ["Q-Sys", "Plugins"],
+      },
+      {
+        text: "Q-Sys Discord / QSC beta group — what was Patrick's account, and how do I get added?",
+        tags: ["Vendor"],
+      },
+      {
+        text: "Xyte relationship — Patrick had a contact there. Who do I reach out to?",
+        tags: ["Vendor"],
+      },
+      {
+        text: "Inogeni / Sennheiser vendor follow-ups Mark mentioned — were those ever closed out?",
+        tags: ["Vendor"],
+      },
+    ],
+  },
+  {
+    id: "patrick-keys-access",
+    title: "Patrick handoff — access list (May 12 ask)",
+    audience: "Mark",
+    context: "You raised these May 12. Keep pushing until granted.",
+    description: "Access blockers preventing you from doing Patrick's job.",
+    questions: [
+      { text: "AWS, API Gateway, Secrets Manager access?", tags: ["Access"] },
+      { text: "Slack API for internal AV apps and bots?", tags: ["Access"] },
+      { text: "Code repository access (GitLab/CodeCommit)?", tags: ["Access"] },
+      { text: "Zoom Events / Production Suite access?", tags: ["Access"] },
+      { text: "Domotz access?", tags: ["Access"] },
+      { text: "Local firewall/router access where required (NAT/IP table changes)?", tags: ["Access"] },
+      {
+        text: "Local Keeper groups for room-level passwords (already got 3647 — claim the rest).",
+        tags: ["Access"],
+      },
+    ],
+  },
+  {
+    id: "patrick-keys-process",
+    title: "Patrick handoff — process and decision context",
+    audience: "Multiple",
+    context: "Foundational questions that close documentation gaps.",
+    questions: [
+      {
+        text: "Is there a documented post-install commissioning checklist anywhere?",
+        tags: ["Process"],
+      },
+      {
+        text: "Where are room as-builts stored? AV Eng > [Region] > All Drawings vs completed-project folders — which is the source of truth?",
+        tags: ["Documentation"],
+      },
+      {
+        text: "AOP 2026 — what's in flight that I should know about before scoping 2027 asks?",
+        tags: ["Budget", "AOP"],
+      },
+      {
+        text: "Vendor cadence — Patrick had recurring tech meetings with Q-Sys, Sennheiser, Shure, BirdDog, Raritan, GlobalCache, Zoom. Are those still on the calendar?",
+        tags: ["Vendor"],
+      },
+      {
+        text: "Asana → Jira migration — what's lost in translation? Any tickets that didn't make the move?",
+        tags: ["Process", "Jira"],
+      },
+      {
+        text: "Patrick's exit notes / handoff doc — does one exist?",
+        why: "Ask Stacey.",
+        tags: ["Patrick handoff"],
+      },
+    ],
+  },
+  {
+    id: "hdmi-share",
+    title: "HDMI share — before signing the Q-Sys NV PO",
+    audience: "Matt",
+    context: "Decision in principle was made April 17. NV platform has had 12 months of bumps.",
+    description: "Don't reopen the decision without evidence — but bring the lab test idea.",
+    questions: [
+      {
+        text: "Before we issue POs for Q-Sys NV endpoints, want me to bench-test source-side EDID forcing and direct USB capture as alternatives? Two weeks in the lab, no impact on production, gives us data to size the right investment.",
+        why: "Doesn't reopen the decision — runs a parallel data-gathering exercise that Matt can veto cheaply.",
+        tags: ["HDMI", "Lab", "Diagnostic"],
+      },
+      {
+        text: "Where did pricing land on the Q-Sys NV endpoints? Want me to pull a quote from Scott at QSC?",
+        tags: ["HDMI", "Procurement"],
+      },
+      {
+        text: "Which rooms still have VSI enc/dec? Can I build a list and propose a swap-out schedule tied to existing site visits?",
+        tags: ["HDMI", "Rollout"],
+      },
+      {
+        text: "Should we put together a 'known-good USB-C adapter' SKU and stock it at every site so we stop chasing adapter problems?",
+        tags: ["HDMI", "Quick Win"],
+      },
+      {
+        text: "For IRV-1216 specifically — has anyone confirmed whether the issue is the capture card, the adapter, or the Magewell sync? Want me to take that as a lab repro this week?",
+        tags: ["HDMI", "IRV-1216"],
+      },
+    ],
+  },
+  {
+    id: "sea-3647-audio",
+    title: "SEA-3647 audio — close the diagnostic this week",
+    audience: "Matt",
+    context: "Open as of May 15. You already got Keeper access Friday.",
+    questions: [
+      {
+        text: "I'd like to schedule 30 min in 3647 with someone onsite to do a walking talker test at the four corners. Who's the best person to coordinate that — Shelby? Derek?",
+        tags: ["3647", "Audio"],
+      },
+      {
+        text: "Can we get a Zoom Dashboard pull of all 3647 calls in the last 30 days and look at audio quality metrics for participants vs. remote attendees?",
+        tags: ["3647", "Data"],
+      },
+      {
+        text: "Mark mentioned a Dante license for the Core 8 to bring all mic channels to the DSP — is that still on the table as the option-1 fix? What would I need to scope that?",
+        tags: ["3647", "Dante"],
+      },
+      {
+        text: "Are there other MXA910 rooms with similar feedback pattern, or is this 3647 only? If it's broader, we may have a fleet problem, not a room problem.",
+        tags: ["MXA910", "Fleet"],
+      },
+      {
+        text: "For NYC-1204 — Mark asked Matt about MXA920 vs TCC2 and I didn't see an answer. Want me to put a quick spec comparison together for the AOP conversation?",
+        tags: ["NYC-1204", "Audio Spec"],
+      },
+    ],
+  },
+  {
+    id: "ui-standardization",
+    title: "UI standardization — claim Patrick's UCI work",
+    audience: "Mark",
+    context: "Mark proposed this roadmap session March 31. Never happened.",
+    questions: [
+      {
+        text: "You and Matt talked about a roadmap to simplify and standardize the room UIs back in March. Did that session happen? If not, want me to draft a strawman based on what's already in SEA-3647, IRV-802, NYC-1202, and SFO-735?",
+        tags: ["UCI", "Standards"],
+      },
+      {
+        text: "What's the matrix — which rooms need full manual controls (projector rooms), which can be a single-page Zoom Room with just on/off?",
+        tags: ["UCI", "Tier 1/2/3"],
+      },
+      {
+        text: "Where does projector + screen control live in the UCI today? Is the 'no source selected' behavior intentional or a Patrick easter egg we should expose properly?",
+        tags: ["UCI", "IRV-802"],
+      },
+    ],
+  },
+  {
+    id: "zoom-whiteboard",
+    title: "Zoom Whiteboard / Companion bug",
+    audience: "Matt",
+    context: "Three rooms workarounded. Ticket open with Zoom.",
+    questions: [
+      {
+        text: "Is the Zoom Support ticket on the Whiteboard companion issue still open? Want me to be the point of contact so it doesn't fall to you?",
+        tags: ["Zoom", "Support"],
+      },
+      {
+        text: "Do we have a written list of every room that got the 'New Whiteboard' workaround? It would be good to know which rooms are in workaround state vs. actually fixed.",
+        tags: ["Zoom", "Inventory"],
+      },
+      {
+        text: "Dashboard reports companions as disconnected even when online — is there a Zoom side configuration that fixes this, or is that a Zoom bug we just live with?",
+        tags: ["Zoom", "Dashboard"],
+      },
+    ],
+  },
+  {
+    id: "scheduler-wave-16",
+    title: "Scheduler / Calendar-only rooms (WAVE-16)",
+    audience: "Matt",
+    context: "Low-attention but high-pain issue. Ticket open with Zoom.",
+    questions: [
+      {
+        text: "What's the status of WAVE-16 with Zoom? Want me to take that ticket and run it down with their support?",
+        tags: ["WAVE-16", "Zoom"],
+      },
+      {
+        text: "Do we have a known list of schedulers stuck on v6.6.10, or are we discovering them reactively? Could be a good check to add to the daily alerts.",
+        tags: ["WAVE-16", "Alerts"],
+      },
+      {
+        text: "Are we forcing scheduler firmware updates on a cadence, or is it Andrew Spokes / CE driven?",
+        tags: ["WAVE-16", "CE"],
+      },
+    ],
+  },
+  {
+    id: "nv21-tracking",
+    title: "NV-21 SN tracking + process hygiene",
+    audience: "Mark",
+    context: "You already raised this May 8. Close the loop.",
+    questions: [
+      {
+        text: "Where in the Jira ticket template do we log SNs and MACs for swapped gear? Want me to write a short runbook so onsite teams (John, Adali) do this consistently?",
+        tags: ["NV-21", "Process"],
+      },
+      {
+        text: "Should we add a 'gear replacement' field or sub-task type in Jira so it's queryable later?",
+        tags: ["NV-21", "Jira"],
+      },
+      {
+        text: "What's our spare-parts inventory look like for NV-21s, NV-32s, PSUs, Phoenix blocks? Is there a doc, or is it tribal knowledge?",
+        tags: ["NV-21", "Inventory"],
+      },
+    ],
+  },
+  {
+    id: "world-cup",
+    title: "World Cup pop-up rooms (June 11)",
+    audience: "Mark",
+    context: "5 offices, 6 weeks. Going to be a fire drill if not scoped soon.",
+    questions: [
+      {
+        text: "Has any room been specifically committed at IRV, SFO, DEN, and MEX, or is that still TBD? Want me to coordinate with site leads to lock down rooms?",
+        tags: ["World Cup", "PM"],
+      },
+      {
+        text: "Encrypted content only works at SEA-3619 today. Has E&B confirmed which streaming service they're using? If it's any service that does HDCP enforcement, we have a problem at 4 of 5 sites.",
+        tags: ["World Cup", "HDCP"],
+      },
+      {
+        text: "What's the procurement story for the PlayStations, Xboxes, fire sticks/Apple TVs — are we buying or are they being shipped to us?",
+        tags: ["World Cup", "Procurement"],
+      },
+      {
+        text: "Mexico City — do we have any onsite AV presence there? Who's the remote hands?",
+        tags: ["World Cup", "MEX"],
+      },
+    ],
+  },
+  {
+    id: "india",
+    title: "India buildout — claim engineer-of-record",
+    audience: "Stacey",
+    context: "Stacey's pet project. Get in early.",
+    questions: [
+      {
+        text: "I saw the SOW Mark shared and the design you posted. Where in the project do you want me to plug in — design review, equipment sourcing, install QA, commissioning?",
+        tags: ["India"],
+      },
+      {
+        text: "For the India design, can I be the engineer of record on one of the spaces so I have full context end-to-end as my first solo project?",
+        tags: ["India", "Engineer of Record"],
+      },
+      {
+        text: "Is the 3-shift working model already factored into how we'll support those rooms after install? Who covers India hours?",
+        tags: ["India", "Operations"],
+      },
+    ],
+  },
+];
+
 export const TEAM = {
   Matt: {
     role: "Senior IC, Technical Gravity Well",

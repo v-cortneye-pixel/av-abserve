@@ -29,14 +29,14 @@ export default function DashboardPage() {
           <Link href="/tracker" className="z-btn-primary">
             Open interactive tracker
           </Link>
+          <Link href="/questions" className="z-btn-secondary">
+            Meeting questions
+          </Link>
           <Link href="/issues" className="z-btn-secondary">
             View all issues
           </Link>
           <Link href="/plan" className="z-btn-secondary">
             See 90-day plan
-          </Link>
-          <Link href="/handoff" className="z-btn-secondary">
-            Patrick handoff
           </Link>
         </div>
       </section>
