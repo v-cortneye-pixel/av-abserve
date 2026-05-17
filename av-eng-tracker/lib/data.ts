@@ -4837,6 +4837,259 @@ export const ACCESS_TILES = [
 ];
 
 // =========================================================================
+// SITES — per-office breakdown. Each site is a real Zillow office (or, in
+// zRetreat's case, an off-site / event-space tier). The room-prefix is how
+// we match Issues / UciIssues / NV / BirdDog / memory-leak rooms.
+// =========================================================================
+
+export interface Site {
+  id: string;
+  code: string;
+  name: string;
+  region: string;
+  description: string;
+  matchesPrefixes: string[]; // room prefix matches: "SEA-", "SEA ", etc
+  roomList: string[]; // explicit canonical room list (best-effort from Slack)
+  signature: string; // one-line headline for the site
+  knownProjects: { title: string; note: string }[];
+  innovationsHere: { title: string; note: string }[];
+}
+
+export const SITES: Site[] = [
+  {
+    id: "sea",
+    code: "SEA",
+    name: "Seattle",
+    region: "HQ",
+    description:
+      "Zillow HQ. Highest room density, most Q-Sys cores, the CTO incident room (SEA-3611), the proof-point single-page UCI (SEA-3647), and the bulk of Patrick's memory-leak refactor work. This is the campus where standards either land or die first.",
+    matchesPrefixes: ["SEA-", "SEA "],
+    roomList: [
+      "SEA-3611",
+      "SEA-3619",
+      "SEA-3626",
+      "SEA-3634 DWB 001",
+      "SEA-3647",
+      "SEA-3737",
+      "SEA-3829",
+      "SEA-3829 Dev Space",
+      "SEA-3912",
+      "SEA-3925",
+      "SEA-3932",
+      "SEA-3940",
+      "SEA-4000",
+    ],
+    signature:
+      "Where Patrick proved single-page UCI works (SEA-3647) and where it failed publicly (CTO incident, SEA-3611).",
+    knownProjects: [
+      {
+        title: "Memory-leak Main-script sweep",
+        note: "Patrick fixed Main scripts in SEA-3611, SEA-3619, SEA-3925. TP scripts NOT touched. Same leak, different file.",
+      },
+      {
+        title: "Rebuilds (Patrick + Matt, from scratch)",
+        note: "SEA-4000, SEA-3737, SEA-3829 — clean after rebuild.",
+      },
+      {
+        title: "Q-Sys Designer admin VM",
+        note: "Lives in AWS; SEA team's primary push-to-Core workstation. Out of HD space repeatedly.",
+      },
+      {
+        title: "Lifecycle tracker complete (per Mark's standup)",
+        note: "Seattle lifecycle tracker was a Mark Hampson Q1 deliverable. Confirm it's accurate after BirdDog phase-out.",
+      },
+    ],
+    innovationsHere: [
+      {
+        title: "SEA-3647 single-page UCI proof point",
+        note: "Patrick's argument for the entire UCI thesis lives here. Cortney inherits the source.",
+      },
+      {
+        title: "SEA-3829 Dev Space / sandbox core",
+        note: "Internal sandbox where Patrick tested Q-Sys Designer files before pushing to prod. Reuse it.",
+      },
+    ],
+  },
+  {
+    id: "sfo",
+    code: "SFO",
+    name: "San Francisco",
+    region: "West Coast",
+    description:
+      "SF office. Site of the All Hands BirdDog system (Patrick's stated next priority before he left), the iPad-low-battery pain point Matt flagged repeatedly, and the USB-extender / UVC camera-control experiments Patrick + Matt ran in SFO-716 and SFO-1027.",
+    matchesPrefixes: ["SFO-", "SFO "],
+    roomList: [
+      "SFO-07",
+      "SFO-716",
+      "SFO-726",
+      "SFO-735",
+      "SFO-1027",
+      "SFO All Hands",
+      "SFO podium (QR doc target)",
+    ],
+    signature:
+      "Lab for new ideas. USB-extender + UVC tests, iPad battery webhook, All Hands BirdDog rebuild — all SFO experiments.",
+    knownProjects: [
+      {
+        title: "SFO All Hands rebuild (Patrick's stated next priority)",
+        note: "Leaks memory. BirdDog used for cameras only (not transport). Candidate for NV-endpoint conversion — kill two birds.",
+      },
+      {
+        title: "iPad / scheduler low-battery webhook → Slack",
+        note: "Matt's open ask. Not yet built. Easy first ship for Cortney.",
+      },
+      {
+        title: "USB-extender / UVC camera-control test (SFO-716, SFO-1027)",
+        note: "Patrick + Matt tested replacing NDI camera control with USB-extender + native UVC. Worked. Decide whether to standardize.",
+      },
+      {
+        title: "Memory-leak Main-script sweep",
+        note: "SFO-735, SFO-726 fixed at Main level. TP scripts not touched.",
+      },
+    ],
+    innovationsHere: [
+      {
+        title: "Sandbox / dev core with public web certificate",
+        note: "Patrick (with ex-contractor Greg) set up a public web cert so all devices including iPads could hit the dev core. iPad-as-ZRC test ran here.",
+      },
+      {
+        title: "Podium QR-code AV onboarding doc",
+        note: "SFO podium has a QR that links to a Patrick-authored Google doc. Confirm it's current.",
+      },
+    ],
+  },
+  {
+    id: "irvine",
+    code: "IRV",
+    name: "Irvine",
+    region: "SoCal",
+    description:
+      "Irvine office. Critical commissioning bottleneck — IRV-1250 was Patrick's WAVE backlog blocker, IRV-802 is where Patrick removed projector/screen controls from the UCI and Matt had to roll screens up from QDS manually. Patrick wrote a formal RCA for an IRV outage (the doc still in Google Drive).",
+    matchesPrefixes: ["IRV-", "IRV "],
+    roomList: [
+      "IRV-802",
+      "IRV-805",
+      "IRV-825 (North Star)",
+      "IRV-851",
+      "IRV-1216",
+      "IRV-1223",
+      "IRV-1249",
+      "IRV-1250",
+    ],
+    signature:
+      "The site where Patrick's 'hide it' UI pattern hurt the team most (IRV-802) and where the only formal Patrick RCA was written.",
+    knownProjects: [
+      {
+        title: "IRV-802 UCI redesign (Matt + Mark open)",
+        note: "Patrick removed projector + screen controls. Hidden behind 'No source selected' gating. Matt asked: should this just be a simple Zoom Room? Open.",
+      },
+      {
+        title: "IRV-1250 commissioning (BirdDog P110 bad batch)",
+        note: "Patrick blocked here on the BirdDog 'bad batch' RMA. Cameras flapped in/out of NDI Virtual Input + Q-Sys plugin. Resolution status unclear.",
+      },
+      {
+        title: "Memory-leak Main-script sweep (IRV-1249, IRV-1250, IRV-851)",
+        note: "Patrick fixed Main scripts. TP scripts not touched.",
+      },
+      {
+        title: "Irvine planning (Mark's Q1 deliverable)",
+        note: "Network discussion, rack planning, COs (change orders). On Mark's standup for weeks.",
+      },
+      {
+        title: "Patrick's IRV RCA document",
+        note: "The most polished post-mortem Patrick ever produced. Inherit and reuse format for every P0/P1.",
+      },
+    ],
+    innovationsHere: [
+      {
+        title: "NDI Virtual Input + Q-Sys plugin pairing",
+        note: "IRV training session (per Patrick, Alana ran it) on adding NDI stream after a reboot. Find the doc.",
+      },
+    ],
+  },
+  {
+    id: "nyc",
+    code: "NYC",
+    name: "New York",
+    region: "East Coast",
+    description:
+      "NYC office. Home of the unsolved NYC-1250 memory-leak mystery (the only rebuilt room that still leaks), the NYC-1204 ceiling-mic spec question Mark never got an answer on, and the ZRC plugin 'kick' workaround at NYC-1202.",
+    matchesPrefixes: ["NYC-", "NYC "],
+    roomList: ["NYC-1202", "NYC-1204", "NYC-1227", "NYC-1250"],
+    signature:
+      "Open dragon: NYC-1250 memory leak. Solve it = trump card for the FTE conversion.",
+    knownProjects: [
+      {
+        title: "NYC-1250 memory-leak mystery (OPEN INVESTIGATION)",
+        note: "Rebuilt from scratch like NYC-1227 — but still leaks (slowly). Patrick's 'remove control links from parent core' theory didn't fix it. Diff against NYC-1227 line-by-line.",
+      },
+      {
+        title: "NYC-1204 ceiling mics: TCC2 vs MXA920 spec call",
+        note: "Mark asked Patrick which platform to standardize on for the event space. No answer. Tuning passes on existing TCC2 never happened.",
+      },
+      {
+        title: "NYC-1202 ZRC plugin 'kick' workaround",
+        note: "Manual fix Matt does. Scripting opportunity — automate the kick.",
+      },
+      {
+        title: "DHCP cutover travel (Mark + Patrick trip)",
+        note: "Stacey publicly thanked them for multitasking the NYC trip on a chaotic Friday outage. The NYC site has a recent DHCP cutover footprint.",
+      },
+    ],
+    innovationsHere: [
+      {
+        title: "NYC-1227 as the clean control room",
+        note: "It's NYC-1250's sibling that DOESN'T leak. Use it as the A/B baseline.",
+      },
+    ],
+  },
+  {
+    id: "zretreat",
+    code: "zRetreat",
+    name: "zRetreat (event spaces + off-sites)",
+    region: "Cross-site",
+    description:
+      "zRetreat covers the event spaces and off-site spaces Stacey + the team use for talent-success retreats and large gatherings. Standard is Neat Bar Pro + Mac Mini host. This is where the Mac-Mini-vs-Windows-Q-Sys-Connect conflict matters most — and where Cortney's G62-as-alternative argument lands.",
+    matchesPrefixes: ["zRetreat", "zretreat"],
+    roomList: [
+      "zRetreat fleet (Neat Bar Pro)",
+      "Founder's Suite",
+      "Talent Success retreat spaces",
+    ],
+    signature:
+      "Where the Mac Mini standard meets Q-Sys Connect's Windows-only reality. The architectural decision Patrick punted on lives here.",
+    knownProjects: [
+      {
+        title: "zRetreat Neat Bar Pro + Mac Mini standard",
+        note: "Stacey's current standard. Cortney's G62 pitch is the alternative — Android-based locked-down appliance, no macOS update breakage at 9 AM.",
+      },
+      {
+        title: "Mark's NYC Quickguide refresh (Lu DTO Oct)",
+        note: "Quickguides for visitor/exec usage of zRetreat-tier rooms. Living doc.",
+      },
+      {
+        title: "Founder's Suite monitoring/alert cleanup",
+        note: "On Matt's standup — Founder's Suite is in the zRetreat tier. Tie into Splunk re-key work.",
+      },
+      {
+        title: "Insights / talent-success retreat AV support",
+        note: "Stacey runs the Insights course retreats. AV team supports — known cadence is the week of 9/23 historically.",
+      },
+    ],
+    innovationsHere: [
+      {
+        title: "Stacey's AI-friend G62 comparison",
+        note: "Stacey ran the G62 vs Mac Mini comparison through an AI tool and posted the differentiators publicly. Cortney's G62 pitch already has wind in its sails.",
+      },
+      {
+        title: "Neat Center + AVIO Dante companion concept",
+        note: "Cortney proposed using AVIO to give Neat Center / Neat Board 'Dante speak' for ceiling-mic companions in open-space zRetreat rooms.",
+      },
+    ],
+  },
+];
+
+// =========================================================================
 // THE PLAYBOOK — friendly-prove-Matt-wrong + earn Stacey's trust + path
 // from contractor → FTE. Every move tied to a specific Slack-evidenced
 // behavior. No fluff, no calendar-time estimates, just sequenced moves.
