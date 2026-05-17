@@ -2,10 +2,11 @@ import Link from "next/link";
 
 const NAV_ITEMS = [
   { href: "/", label: "Dashboard" },
+  { href: "/tracker", label: "Tracker" },
   { href: "/issues", label: "Issues" },
   { href: "/mac-mini", label: "Mac Mini" },
   { href: "/hdmi", label: "HDMI Options" },
-  { href: "/handoff", label: "Patrick Handoff" },
+  { href: "/handoff", label: "Handoff" },
   { href: "/plan", label: "90-Day Plan" },
   { href: "/quick-wins", label: "Quick Wins" },
 ];

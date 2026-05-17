@@ -7,13 +7,25 @@ export interface Quote {
   channel?: string;
 }
 
+export type IssueStatus = "Open" | "Workaround" | "In Progress" | "Resolved";
+export type IssueCategory =
+  | "HDMI"
+  | "Mac"
+  | "Zoom"
+  | "Audio"
+  | "Hardware"
+  | "Process"
+  | "UI"
+  | "Network"
+  | "Other";
+
 export interface Issue {
   id: string;
   title: string;
   severity: Severity;
-  category: "HDMI" | "Mac" | "Zoom" | "Audio" | "Hardware" | "Process" | "UI" | "Network" | "Other";
+  category: IssueCategory;
   rooms: string[];
-  status: "Open" | "Workaround" | "In Progress" | "Resolved";
+  status: IssueStatus;
   owner: string;
   summary: string;
   rootCause: string;
@@ -21,6 +33,7 @@ export interface Issue {
   quotes: Quote[];
   currentState: string;
   cortneyAction: string;
+  steps: string[];
 }
 
 export const ISSUES: Issue[] = [
@@ -78,6 +91,17 @@ export const ISSUES: Issue[] = [
       "Q-Sys NV pricing not confirmed. No rollout schedule. USB-C adapter quality not addressed. See HDMI Innovation page for 6 alternative paths.",
     cortneyAction:
       "Propose lab bench-test of source-side EDID forcing + direct USB capture before committing capex to NV endpoint swap.",
+    steps: [
+      "Get Q-Sys NV endpoint pricing from QSC (via Scott)",
+      "Build list of every room currently using VSI enc/dec",
+      "Tuesday meeting: pitch 2-week lab bench-test before PO",
+      "Lab test Option D: source-side EDID forcing (Lightware EDID Lock)",
+      "Lab test Option B: direct USB capture path (Inogeni/Magewell USB)",
+      "Document pass/fail criteria for each test",
+      "Build USB-C adapter standard SKU recommendation in parallel",
+      "Bring data back to Matt + Mark with recommendation",
+      "Tie swap-out schedule to existing site visit calendar",
+    ],
   },
   {
     id: "zoom-whiteboard",
@@ -108,6 +132,14 @@ export const ISSUES: Issue[] = [
       "Three rooms in workaround state. Other companion-room sites untouched. No root cause from Zoom yet.",
     cortneyAction:
       "Take over the Zoom Support ticket. Build a list of every companion-room site and audit workaround status.",
+    steps: [
+      "Ask Matt to transfer the Zoom Support ticket ownership to me",
+      "Pull list of every Zoom Room with a companion device from Zoom Admin",
+      "Audit each companion-room site for current Whiteboard state (workaround applied / not)",
+      "Document the workaround steps in internal runbook",
+      "Follow up with Zoom Support weekly for root cause",
+      "Add a Whiteboard error detection check to the daily alerts bot",
+    ],
   },
   {
     id: "sea-3647-audio",
@@ -157,6 +189,16 @@ export const ISSUES: Issue[] = [
       "Cortney has Keeper access. Lobes confirmed in use with sufficient coverage. Awaiting in-room walking talker test.",
     cortneyAction:
       "Schedule onsite 30-min walking talker test at 4 corners w/ Shelby or John. Pull Zoom Dashboard audio metrics for last 30 days. Document root cause this week.",
+    steps: [
+      "Coordinate onsite assist with Shelby or John for 30-min test slot",
+      "Verify MXA910 mute states and Dante routing in Q-Sys Designer",
+      "Walking talker test: 4 corners + center, normal + quiet voice",
+      "Pull Zoom Dashboard audio metrics for last 30 days of 3647 calls",
+      "Check if 3647 echo issue (Sep 2025) ever had documented root cause",
+      "Document root cause + remediation in Jira ticket",
+      "Decide: tune existing 910s, swap to 920, or pull TCC2 from spares",
+      "Update Stacey with resolution + tie to fleet ceiling mic strategy",
+    ],
   },
   {
     id: "mac-mini",
@@ -236,6 +278,16 @@ export const ISSUES: Issue[] = [
       "Active architectural debate. Tuesday May 19 meeting scheduled between Cortney and Matt. Stacey landed on 'Tier 3 large/complex room standard' as the framing.",
     cortneyAction:
       "Tuesday meeting: lead with questions about current Mac standard, NOT pitches. Reframe G62 as a Tier 3 lab pilot. Quantify ticket-hours/year for OS-driven issues to back up any architectural proposal.",
+    steps: [
+      "Tuesday meeting w/ Matt: walk through existing Mac Mini + Q-Sys reference design",
+      "Get current Mac management story (Jamf push, OS update cadence, CE vs AV ownership)",
+      "Quantify ticket-hours/year for OS-driven Mac Mini issues over past 18 months",
+      "Ask Matt: what would success criteria look like for a Tier 3 lab pilot?",
+      "Investigate Zillow IT exception path for Windows AV appliances (with Mark)",
+      "Research: can Q-Sys touch panels work with Mac Mini long-term, or only via Windows now?",
+      "Confirm where Andrew Spokes' Sequoia push process can be intercepted before production rollout",
+      "By day 90: write 'Mac Mini retention vs Windows appliance' brief with data",
+    ],
   },
   {
     id: "scheduler-offline",
@@ -276,6 +328,14 @@ export const ISSUES: Issue[] = [
       "WAVE-16 still open. No proactive monitoring. New scheduler drift discovered reactively each time.",
     cortneyAction:
       "Take over WAVE-16. Add scheduler firmware version check to daily alerts bot. Build proactive list of v6.6.10 stragglers.",
+    steps: [
+      "Ask Matt for WAVE-16 ticket transfer to me + last touchpoint with Zoom",
+      "Pull all schedulers from Zoom Admin and report current firmware versions",
+      "Build a v6.6.10 'stragglers' list for proactive remediation",
+      "Add scheduler firmware version check to daily alerts bot",
+      "Document the panel-reboot workaround for onsite teams",
+      "Schedule weekly Zoom Support follow-up until root cause confirmed",
+    ],
   },
   {
     id: "ui-standardization",
@@ -314,6 +374,16 @@ export const ISSUES: Issue[] = [
     currentState: "Roadmap session never held. No documented Tier 1/2/3 UI standard.",
     cortneyAction:
       "Propose to Mark: take over the UI roadmap. Draft Tier 1/2/3 UCI standard strawman by mid-June. Continue Patrick's 3647 work as the Tier 1 template.",
+    steps: [
+      "Get Patrick's UCI source files from GitLab/CodeCommit",
+      "Get all custom Q-Sys plugins (community vs Patrick-authored) sourced",
+      "Audit every room's current UI to identify Tier 1 / 2 / 3 candidates",
+      "Draft Tier 1/2/3 UCI standards doc (strawman, not pitch)",
+      "Share with Mark + Matt for feedback",
+      "Pilot Tier 1 (single-page UCI from 3647) in one additional room",
+      "Build IRV-802-style projector room UI fix (expose controls properly)",
+      "Roll out approved standards across rooms by site visit cadence",
+    ],
   },
   {
     id: "nv21-tracking",
@@ -356,6 +426,15 @@ export const ISSUES: Issue[] = [
     currentState: "Fan replacement in motion. SN tracking process undocumented.",
     cortneyAction:
       "Write SN/MAC tracking runbook for onsite teams (John, Adali). Add to Jira ticket template. Build spare-parts inventory doc.",
+    steps: [
+      "Draft SN/MAC tracking runbook for onsite teams",
+      "Define Jira ticket template fields for gear replacements",
+      "Review draft with Mark for approval",
+      "Share with John (onsite SEA) and Adali (onsite IRV) for buy-in",
+      "Build spare-parts inventory doc (NV-21, NV-32, PSUs, Phoenix blocks, capture cards, UE1s)",
+      "Document NV-21 PSU + Phoenix block sourcing path (Phihong / Digikey)",
+      "Add inventory location tracking column",
+    ],
   },
   {
     id: "mxa-strategy",
@@ -414,6 +493,16 @@ export const ISSUES: Issue[] = [
       "TCC2s in fleet for 2.5+ years with no on-site tuning pass on record. Mark's NYC-1204 question still unanswered. 3925 HVAC issue still unmitigated.",
     cortneyAction:
       "Deliver MXA920 vs TCC2 one-pager with recommendation for NYC-1204 by next sync. Then propose TCC2 commissioning pass on existing rooms (SFO All Hands, SEA-3925, SEA-3829) — no CapEx win.",
+    steps: [
+      "Confirm NYC-1204 dimensions and ceiling height with Mark",
+      "Count actual TCC2 spare inventory (SFO 10th floor, Matt's stash, 3925)",
+      "Draft MXA920 vs TCC2 spec comparison one-pager",
+      "Include 'commissioning labor' row addressing the no-tuning pattern",
+      "Recommend a path (Shure consolidation vs Sennheiser consolidation vs mixed)",
+      "Share with Mark + Matt at next WAVE sync",
+      "Propose TCC2 commissioning sweep: SEA-3925 first (HVAC), then SFO All Hands, SEA-3829",
+      "Schedule 2027 AOP item for MXA910 retirement",
+    ],
   },
   {
     id: "usb-c-adapters",
@@ -441,6 +530,15 @@ export const ISSUES: Issue[] = [
     currentState: "No SKU standard. Each site sources independently.",
     cortneyAction:
       "Test 3 USB-C adapter SKUs in the lab this week. Lock in one part number. Ship to every site as standard kit. Document in Jira and runbook.",
+    steps: [
+      "Buy 3 candidate USB-C-to-HDMI adapters for lab testing",
+      "Test each on Mac + PC + iPad against current capture cards",
+      "Score adapters on: EDID stability, audio passthrough, hot-plug behavior",
+      "Lock in one part number as the standard",
+      "Get Mark to approve the SKU and place bulk order",
+      "Ship standard kit to every site (SEA, SFO, IRV, NYC, DEN, MEX)",
+      "Document the SKU + part number in the runbook",
+    ],
   },
   {
     id: "irv-802-projector",
@@ -477,6 +575,12 @@ export const ISSUES: Issue[] = [
     ],
     currentState: "Room operational. UI standardization session never happened.",
     cortneyAction: "Fold into the broader Tier 1/2/3 UCI standardization work.",
+    steps: [
+      "Document the existing IRV-802 UCI quirks (hidden projector controls)",
+      "Add IRV-802 to the Tier 1/2/3 UCI standardization scope",
+      "Expose projector + screen controls in the redesigned UCI",
+      "Pilot the new UCI in IRV-802 before fleet rollout",
+    ],
   },
   {
     id: "ip-drift",
@@ -509,6 +613,14 @@ export const ISSUES: Issue[] = [
     ],
     currentState: "Validator runs daily. No documentation. No backup owner if it breaks.",
     cortneyAction: "Claim the validator codebase. Document it. Add it to runbook.",
+    steps: [
+      "Find the IP/switch validator repo (GitLab or CodeCommit)",
+      "Get prod credentials / cron host access",
+      "Run the validator manually end-to-end to confirm it works",
+      "Document its inputs, outputs, dependencies, and known limitations",
+      "Add a runbook entry for what to do when it alerts",
+      "Set up a backup runner / failover plan",
+    ],
   },
   {
     id: "dwb-adoption",
@@ -535,6 +647,10 @@ export const ISSUES: Issue[] = [
     ],
     currentState: "DWBs being repurposed for World Cup pop-ups (June 11).",
     cortneyAction: "Not a Cortney problem to solve. Stay out of it.",
+    steps: [
+      "Monitor DWB performance during World Cup pop-up usage",
+      "Don't propose anything DWB-strategy related — cultural, not engineering",
+    ],
   },
   {
     id: "world-cup",
@@ -562,6 +678,16 @@ export const ISSUES: Issue[] = [
     currentState: "Rooms not locked. Console procurement TBD. MEX has no AV onsite.",
     cortneyAction:
       "Volunteer to PM the rollout. Confirm streaming service / HDCP requirements with E&B. Find remote hands in MEX.",
+    steps: [
+      "Volunteer to PM the World Cup rollout (tell Mark Monday)",
+      "Lock specific rooms at IRV, SEA, SFO, DEN by mid-June",
+      "Confirm streaming service + HDCP requirements with E&B",
+      "Identify remote hands in Mexico City for 6-week support window",
+      "Source PlayStations + Xboxes + fire sticks/Apple TVs",
+      "Schedule physical install / test day at each site before June 11",
+      "Verify DWB internal speakers meet audio expectation per location",
+      "Build a daily check during World Cup window into alerts bot",
+    ],
   },
 ];
 

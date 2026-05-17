@@ -26,7 +26,10 @@ export default function DashboardPage() {
           timestamps.
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
-          <Link href="/issues" className="z-btn-primary">
+          <Link href="/tracker" className="z-btn-primary">
+            Open interactive tracker
+          </Link>
+          <Link href="/issues" className="z-btn-secondary">
             View all issues
           </Link>
           <Link href="/plan" className="z-btn-secondary">
