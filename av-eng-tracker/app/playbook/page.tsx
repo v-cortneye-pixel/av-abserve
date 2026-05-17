@@ -1,9 +1,12 @@
 import Link from "next/link";
 import {
+  MATT_REBUTTAL_CARDS,
+  MATT_REBUTTAL_GUIDE,
   PLAYBOOK_ANTIPATTERNS,
   PLAYBOOK_MOVES,
   PLAYBOOK_PHASES,
   PLAYBOOK_THESIS,
+  type MattCard,
   type PlaybookMove,
 } from "@/lib/data";
 
@@ -170,6 +173,124 @@ export default function PlaybookPage() {
             </div>
           );
         })}
+      </section>
+
+      {/* MATT REBUTTAL CARDS — quick responses */}
+      <section id="matt-rebuttals">
+        <h2 className="z-h2 mb-1">Quick responses to Matt — territory-claim WITHOUT torching the relationship</h2>
+        <p className="mb-5 max-w-3xl text-sm text-zillow-slate">
+          Confident technical fluency + crediting Matt&apos;s craft in the same breath.
+          Each card pairs a likely Matt objection with a response that signals capability
+          AND keeps the door open. The goal is &ldquo;thank god Cortney is on this&rdquo; in
+          his next 1:1 with Stacey — not &ldquo;Cortney&apos;s hard to work with.&rdquo;
+        </p>
+
+        {/* Golden rules */}
+        <article className="z-card mb-5 border-l-4 border-zillow-blue bg-zillow-blue-light">
+          <div className="z-eyebrow">Golden rules — how to deliver these</div>
+          <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-zillow-ink">
+            {MATT_REBUTTAL_GUIDE.goldenRules.map((r) => (
+              <li key={r}>{r}</li>
+            ))}
+          </ol>
+        </article>
+
+        {/* Red flags */}
+        <article className="z-card mb-5 border-l-4 border-zillow-red bg-red-50">
+          <div className="z-eyebrow">Red flags — you&apos;re becoming Patrick</div>
+          <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-zillow-ink">
+            {MATT_REBUTTAL_GUIDE.redFlags.map((r) => (
+              <li key={r}>{r}</li>
+            ))}
+          </ul>
+        </article>
+
+        {/* Cards grouped by topic */}
+        {(() => {
+          const topics = Array.from(new Set(MATT_REBUTTAL_CARDS.map((c) => c.topic))) as MattCard["topic"][];
+          return topics.map((topic) => {
+            const cards = MATT_REBUTTAL_CARDS.filter((c) => c.topic === topic);
+            return (
+              <div key={topic} className="mb-8">
+                <h3 className="z-h3 mb-3">{topic}</h3>
+                <div className="space-y-3">
+                  {cards.map((c, idx) => (
+                    <article key={idx} className="z-card">
+                      <div className="rounded-md bg-red-50 px-4 py-3">
+                        <div className="text-xs font-semibold uppercase tracking-wider text-zillow-red">
+                          Matt
+                        </div>
+                        <p className="mt-1 text-sm italic leading-relaxed text-zillow-ink">
+                          &ldquo;{c.objection}&rdquo;
+                        </p>
+                      </div>
+                      <div className="mt-3 rounded-md bg-zillow-blue-light px-4 py-3">
+                        <div className="text-xs font-semibold uppercase tracking-wider text-zillow-blue">
+                          You
+                        </div>
+                        <p className="mt-1 text-sm leading-relaxed text-zillow-ink">
+                          &ldquo;{c.response}&rdquo;
+                        </p>
+                      </div>
+                      <div className="mt-3 grid gap-3 md:grid-cols-2">
+                        {c.fluencyTerms.length > 0 && (
+                          <div className="rounded-md bg-zillow-gray-light px-3 py-2">
+                            <div className="text-xs font-semibold uppercase tracking-wider text-zillow-slate">
+                              Fluency terms used
+                            </div>
+                            <div className="mt-1.5 flex flex-wrap gap-1.5">
+                              {c.fluencyTerms.map((t) => (
+                                <span
+                                  key={t}
+                                  className="rounded bg-white px-2 py-0.5 font-mono text-[11px] text-zillow-ink ring-1 ring-zillow-gray-border"
+                                >
+                                  {t}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        <div className="rounded-md bg-emerald-50 px-3 py-2">
+                          <div className="text-xs font-semibold uppercase tracking-wider text-emerald-700">
+                            Credit-Matt line (close with this)
+                          </div>
+                          <p className="mt-1.5 text-xs leading-relaxed text-zillow-ink">
+                            {c.creditMatt}
+                          </p>
+                        </div>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            );
+          });
+        })()}
+
+        {/* Fluency vocab cheat sheet */}
+        <article className="z-card bg-zillow-gray-light">
+          <h3 className="z-h3">Standing fluency vocab — confident, never gibberish</h3>
+          <p className="mt-2 text-sm leading-relaxed text-zillow-slate">
+            Terms you can drop in conversation that demonstrate capability without making
+            anyone feel small. Every term here is real and useful — none of it is jargon
+            for the sake of jargon.
+          </p>
+          <div className="mt-4 grid gap-2 md:grid-cols-2">
+            {MATT_REBUTTAL_GUIDE.fluencyVocab.map((v) => (
+              <div key={v.term} className="rounded-md bg-white p-3 ring-1 ring-zillow-gray-border">
+                <div className="font-mono text-xs font-semibold text-zillow-blue">{v.term}</div>
+                <div className="mt-1 text-xs leading-relaxed text-zillow-slate">{v.definition}</div>
+              </div>
+            ))}
+          </div>
+          <p className="mt-4 text-xs text-zillow-slate">
+            More definitions on{" "}
+            <Link href="/glossary" className="z-link">
+              /glossary
+            </Link>
+            .
+          </p>
+        </article>
       </section>
 
       {/* Anti-patterns */}

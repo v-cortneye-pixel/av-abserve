@@ -32,15 +32,26 @@ export default function QuickWinsPage() {
   return (
     <div className="space-y-10">
       <header>
-        <p className="z-eyebrow">Quick wins · 30 deliverables</p>
+        <p className="z-eyebrow">Quick wins · {QUICK_WINS.length} deliverables</p>
         <h1 className="z-h1 mt-2">Wins checklist by effort tier</h1>
         <p className="mt-4 max-w-3xl text-base leading-relaxed text-zillow-slate">
-          30 concrete deliverables to credibility-build through your first 90 days. Sized by
+          {QUICK_WINS.length} concrete deliverables to credibility-build through your first 90 days. Sized by
           effort: <span className="font-semibold text-zillow-green">Quick</span> for same-week
           execution, <span className="font-semibold text-zillow-orange">Medium</span> for
           bounded engineering work, <span className="font-semibold text-zillow-blue">Project</span>{" "}
           for the strategic anchors. Every one closes a real gap from #av-team history.
         </p>
+        <div className="z-card mt-4 border-l-4 border-zillow-blue bg-zillow-blue-light">
+          <div className="z-eyebrow">QW# — how the IDs work</div>
+          <p className="mt-2 text-sm leading-relaxed text-zillow-ink">
+            Every win has a stable ID — <strong>QW1</strong> through{" "}
+            <strong>QW{QUICK_WINS.length}</strong>. Use the IDs in Friday wins/challenges
+            emails to Stacey, in 1:1 agendas, and in Jira tickets so you don&apos;t have to
+            retype the title every time. &ldquo;Closed QW31 + QW34 this week, in flight on
+            QW33&rdquo; reads as disciplined; &ldquo;...did some things on the alerting
+            system&rdquo; reads as wandering.
+          </p>
+        </div>
       </header>
 
       {TIER_ORDER.map((tier) => {

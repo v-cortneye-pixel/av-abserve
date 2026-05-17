@@ -2162,6 +2162,26 @@ export const GLOSSARY: GlossaryTerm[] = [
     short: "Severity tiers. P0 is everything-on-fire, P3 is whenever-you-get-to-it.",
     long: "Used throughout this site and in the WAVE board. P0 = production rooms down or pipeline failing now; P1 = recurring user impact; P2 = annoying but not blocking; P3 = nice-to-have.",
   },
+  {
+    term: "QW# (e.g., QW1, QW33)",
+    category: "Process",
+    short: "Quick Win identifier. Stable IDs for each recommended action on /quick-wins.",
+    long: "QW1 is the USB-C Adapter Standard SKU, QW31 is Re-key Patrick's Lambdas with Matt, QW33 is the EDID + USB Capture Lab Bench-Test, QW37 is Solve the NYC-1250 Memory-Leak Mystery, QW42 is the iPad Low-Battery Webhook. 42 wins total. Use the IDs in 1:1s, Friday emails, and Jira so you don't have to retype the title every time.",
+    whyItMattersToCortney:
+      "Stacey skims the Friday wins email in 30 seconds. 'Closed QW31 + QW34 this week, in flight on QW33' reads as disciplined; '...did some things on the alerting system and the IRV-802 thing' reads as wandering. Use the IDs.",
+  },
+  {
+    term: "IAM principal",
+    category: "AV software",
+    short: "AWS term for an identity — a user or a service — that authenticates and can be authorized.",
+    long: "When Patrick's account was offboarded, the Lambdas that ran under his USER principal lost authentication. Re-keying = swapping a user principal for a SERVICE principal (a role with no human attached). The execution role + trust policy is the auth surface that needs to be intact for the function to run.",
+  },
+  {
+    term: "MR (merge request)",
+    category: "AV software",
+    short: "GitLab term for a pull request — proposed code change submitted for review.",
+    long: "Same concept as GitHub's PR. The mechanism that lets Matt or Mark veto a Cortney code change without having to read code in detail — they can ask questions in the MR thread.",
+  },
 ];
 
 // =========================================================================
@@ -5820,6 +5840,309 @@ export const ACCESS_TILES = [
     how: "Ask Scott at QSC (Patrick's contact) or Mark/Matt for the invite.",
   },
 ];
+
+// =========================================================================
+// MATT REBUTTAL CARDS — quick responses to likely Matt objections.
+// Organized by topic. Each card pairs Matt's likely objection with a
+// confident-but-friendly response that demonstrates technical fluency
+// AND credits Matt's craft. NOT intimidation talk — territory-claim
+// language with the door held open. Patrick's cautionary tale is the
+// reason this exists.
+// =========================================================================
+
+export interface MattCard {
+  topic:
+    | "Code & scripting"
+    | "Splunk & monitoring"
+    | "Q-Sys plugins"
+    | "HDMI / NV capex"
+    | "UCI / touch panels"
+    | "Mac Mini"
+    | "Network / IT politics"
+    | "Scope / role boundary"
+    | "Process / docs";
+  objection: string;
+  response: string;
+  fluencyTerms: string[]; // confident-vocabulary highlights — use these to signal capability
+  creditMatt: string; // the line that keeps the relationship intact
+}
+
+export const MATT_REBUTTAL_CARDS: MattCard[] = [
+  // ---------- Code & scripting ----------
+  {
+    topic: "Code & scripting",
+    objection: "Just keep the scripts how they are. If it works, leave it.",
+    response:
+      "Totally agree — I won't touch anything that works. What I will do is wrap each Lambda with structured logging and a CloudWatch alarm so when it fails next time, you don't have to debug — the alarm tells you which line. Same code, less midnight ambiguity.",
+    fluencyTerms: ["Lambda", "CloudWatch alarm", "structured logging"],
+    creditMatt:
+      "Your read on which rooms actually FAIL is the data I need for the alarm thresholds — happy to set them based on what you've actually seen.",
+  },
+  {
+    topic: "Code & scripting",
+    objection: "I don't want to learn AWS.",
+    response:
+      "You shouldn't have to. Every Lambda I touch gets a one-page runbook so when an alert fires, you read the page and run two commands max. The AWS console is my problem, not yours.",
+    fluencyTerms: ["one-page runbook"],
+    creditMatt:
+      "You know how Patrick's stack feels in the room better than anyone — keep flagging what feels broken and I'll wrap it in alerting.",
+  },
+  {
+    topic: "Code & scripting",
+    objection: "Why are you re-keying the Lambdas?",
+    response:
+      "They were running under Patrick's IAM principal. When his account was deactivated, the execution role lost its trust policy so the function couldn't authenticate. I'm moving every function to a service principal so the next offboarding can't kill alerting again.",
+    fluencyTerms: ["IAM principal", "execution role", "trust policy", "service principal"],
+    creditMatt:
+      "You caught the alerts-down on day 1 — that was the canary. Want to do this screenshare together so you've seen the auth path?",
+  },
+  {
+    topic: "Code & scripting",
+    objection: "Cortney, I don't follow what you just said.",
+    response:
+      "My bad — let me ground it. Patrick's monitoring script logged into AWS as Patrick. When Patrick was offboarded, AWS deleted that login, so the script can't log in anymore. I'm switching it to a shared service login that doesn't belong to a person, so the next offboarding doesn't break it. Did that land better?",
+    fluencyTerms: ["service login (plain-English IAM)"],
+    creditMatt:
+      "Always tell me when I'm getting too deep in the weeds — I'd rather slow down than lose you on a tooling thing.",
+  },
+
+  // ---------- Splunk & monitoring ----------
+  {
+    topic: "Splunk & monitoring",
+    objection: "We don't need more dashboards.",
+    response:
+      "Agreed — I'm not adding panels, I'm auditing existing HEC tokens to make sure nothing's silently dark since Patrick was deactivated. Catch-up on what we have before adding anything new.",
+    fluencyTerms: ["HEC token audit"],
+    creditMatt:
+      "If a dashboard is more noise than signal in your view, kill it — I'm not married to anything Patrick built.",
+  },
+  {
+    topic: "Splunk & monitoring",
+    objection: "Reflect is too noisy.",
+    response:
+      "100%, Patrick said the same. The fix is the re-poll pattern he built — Lambda fires, waits 30 seconds, hits the Reflect API again, only THEN alerts. I'm extending that pattern to Domotz so #av-alerts stays meaningful.",
+    fluencyTerms: ["re-poll pattern", "Reflect API"],
+    creditMatt:
+      "Patrick's noise-vs-signal discipline is the thing on his stack I'm NOT changing — he was right about that.",
+  },
+  {
+    topic: "Splunk & monitoring",
+    objection: "Why are we still getting alerts at 3am?",
+    response:
+      "Probably an alert rule with no quiet hours window. I'll audit the alert routing this week, add 9am–7pm gates on non-P0 categories, and put P0s on a separate channel so the night noise stops.",
+    fluencyTerms: ["alert routing", "quiet-hours gates"],
+    creditMatt:
+      "If you can tell me which alert you most often want to mute at 3am, I'll start there.",
+  },
+
+  // ---------- Q-Sys plugins ----------
+  {
+    topic: "Q-Sys plugins",
+    objection: "I don't know if Patrick wrote that plugin or got it from the community.",
+    response:
+      "That's the gap I'm closing. I'm walking each plugin in Designer and tagging the source in the metadata header — license, support contact, version. By month-end every plugin has provenance and you can answer Mark's question instantly.",
+    fluencyTerms: ["plugin provenance", "metadata header"],
+    creditMatt:
+      "You flagged this exact concern in the IRV-802 thread — closing the loop on that one.",
+  },
+  {
+    topic: "Q-Sys plugins",
+    objection: "Lua looks like Greek to me.",
+    response:
+      "It's one of the easier scripting languages — closures, tables, simple loops. I can run a 30-min screenshare and have you reading the Main script. Or leave it on me and you'll never have to. Either works.",
+    fluencyTerms: ["closures", "tables", "loops"],
+    creditMatt:
+      "Your hardware-side knowledge is what makes the Lua decisions sensible — Patrick's plugins were divorced from the actual room, that's part of the problem.",
+  },
+  {
+    topic: "Q-Sys plugins",
+    objection: "Don't replace the plugin without telling me.",
+    response:
+      "Every plugin change goes in a Q-Sys MR with you tagged as reviewer. You veto, it doesn't merge. If you don't want to read MR diffs, I'll just walk the change with you in person — same outcome.",
+    fluencyTerms: ["MR (merge request)", "reviewer tag"],
+    creditMatt:
+      "You'll catch room-level regressions I won't — that's exactly the review value.",
+  },
+
+  // ---------- HDMI / NV capex ----------
+  {
+    topic: "HDMI / NV capex",
+    objection: "We already decided on NV.",
+    response:
+      "Not reopening the decision — I'm running two weeks of parallel lab data so we size the NV PO right. Worst case we have receipts for Mark; best case we save the budget for somewhere it matters more.",
+    fluencyTerms: ["parallel data", "right-size the PO"],
+    creditMatt:
+      "Your USB-extender test with Patrick at SFO-716 is literally the same family of approach — building on that, not contradicting it.",
+  },
+  {
+    topic: "HDMI / NV capex",
+    objection: "I don't want to manage another vendor for $500 of test gear.",
+    response:
+      "On me — I'll expense it. The capex-hygiene argument is exactly why I'm doing this part personally.",
+    fluencyTerms: ["expense (OpEx)", "capex hygiene"],
+    creditMatt:
+      "You shouldn't have to babysit lab orders on top of everything else you're already carrying.",
+  },
+  {
+    topic: "HDMI / NV capex",
+    objection: "What if your lab test is a waste of two weeks?",
+    response:
+      "Runs in parallel with my P0 list — not blocking anything. Even a 'fail' is data: it tells us the problem is upstream and NV alone won't fix it.",
+    fluencyTerms: ["parallel critical path"],
+    creditMatt:
+      "Your gut on which room to test in matters more than my methodology — pick the one you'd most like to see settled.",
+  },
+
+  // ---------- UCI / touch panels ----------
+  {
+    topic: "UCI / touch panels",
+    objection: "Patrick had a reason for the single-page UCI.",
+    response:
+      "He absolutely did — the CTO incident at SEA-3611. He was right that the failure mode was 'too many controls.' Where I disagree is the answer was tuning, not amputation. Single-page works as the Tier 2 default; the IRV-802 fix is to add a settings tab, not remove the whole panel.",
+    fluencyTerms: ["Tier 2 default", "settings tab gating"],
+    creditMatt:
+      "You had to roll the screens up manually from QDS because of that decision — your experience IS the case for the redesign.",
+  },
+  {
+    topic: "UCI / touch panels",
+    objection: "Don't take controls away from operators.",
+    response:
+      "Totally aligned. I'm proposing we add system mute, source-route, and display-power back, but gated behind a long-press or PIN. Hidden from the meeting user, available to you and to a Zoom rep when a meeting goes sideways.",
+    fluencyTerms: ["gated controls", "long-press / PIN"],
+    creditMatt:
+      "Your Zoom-rep recovery scenario is the one I'm designing around — that's the use case Patrick missed.",
+  },
+  {
+    topic: "UCI / touch panels",
+    objection: "Just leave the UCIs alone.",
+    response:
+      "For rooms that work, yes — I won't touch them. For the rooms where you're already manually working around the UCI (IRV-802 being the obvious one), I'm fixing it with you watching. If you don't like the fix, we don't ship it.",
+    fluencyTerms: ["preserve working systems", "incremental fix"],
+    creditMatt:
+      "You're the one who's been carrying the workarounds — you know which rooms need the fix most.",
+  },
+
+  // ---------- Mac Mini ----------
+  {
+    topic: "Mac Mini",
+    objection: "The Mac Mini is the Zillow standard.",
+    response:
+      "And I want to keep it where it works. The wedge is that Q-Sys Connect for Zoom Rooms is Windows-only — so the standard already has a hole on the roadmap. I'm not pitching ripping out Macs; I'm pitching ONE Windows appliance pilot in ONE Tier 3 room with measurable success criteria. If it fails, Mac wins on data.",
+    fluencyTerms: ["one-room pilot", "measurable success criteria"],
+    creditMatt:
+      "You've installed more Mac Minis than anyone here — your read on what would break is the most important input.",
+  },
+  {
+    topic: "Mac Mini",
+    objection: "We've already spent a fortune on Mac Minis.",
+    response:
+      "Sunk cost — the existing fleet stays. This is about whether the NEXT buildout (India, future zRetreat spaces) gets locked into the same architecture or whether we have an option. One room, one quarter, then a decision.",
+    fluencyTerms: ["sunk cost", "next-buildout architecture"],
+    creditMatt:
+      "Nothing changes for any room you're currently supporting — the pilot is additive, not subtractive.",
+  },
+
+  // ---------- Network / IT politics ----------
+  {
+    topic: "Network / IT politics",
+    objection: "Zillow IT will never approve a Windows appliance.",
+    response:
+      "Mark mentioned an exception path — he's worked with Andrew Spokes before. I'll write the one-pager; Mark drives the IT conversation. You and I stay focused on the AV side.",
+    fluencyTerms: ["exception path", "one-pager memo"],
+    creditMatt:
+      "IT politics is Mark's lane, not yours — I'm not asking you to fight that battle.",
+  },
+  {
+    topic: "Network / IT politics",
+    objection: "VLANs and ACLs aren't your job.",
+    response:
+      "100% agreed — Zillow IT owns the network. I'll only ever flag when an AV problem traces to a network behavior, and even then I'll tag the network team rather than touching it myself. Patrick's 'swim lanes' rule is the one I'm keeping.",
+    fluencyTerms: ["swim lanes", "trace-to-flag"],
+    creditMatt:
+      "You've defended those swim lanes for years — I'm not breaking them.",
+  },
+
+  // ---------- Scope / role boundary ----------
+  {
+    topic: "Scope / role boundary",
+    objection: "That's a contractor doing engineer-level scoping work.",
+    response:
+      "It's literally the role Stacey scoped. The Lambda re-keying, the runbook docs, the lab tests are all in the contractor spec she signed off on. I'll keep you in the loop on every step — and if anything crosses into territory that needs your call, I'll DM you first before posting.",
+    fluencyTerms: ["scoped deliverable", "DM-first escalation"],
+    creditMatt:
+      "Your veto is real — I'll never go public on anything you've privately disagreed with.",
+  },
+  {
+    topic: "Scope / role boundary",
+    objection: "You're moving too fast.",
+    response:
+      "Tell me what feels too fast and I'll slow that thread. The Lambda re-key is P0 because alerts are currently failing; everything else can flex on cadence with you.",
+    fluencyTerms: ["P0 vs flexible cadence"],
+    creditMatt:
+      "You have right of first refusal on every initiative — that's not lip service.",
+  },
+  {
+    topic: "Scope / role boundary",
+    objection: "Patrick promised that too and never delivered.",
+    response:
+      "Fair flag. The difference is mine ships on a date. If I miss the date I tell you and Stacey both, in writing, before the Friday wins email. No 'eventually I will' — every commitment is in Jira with a due date.",
+    fluencyTerms: ["Jira due date", "Friday wins discipline"],
+    creditMatt:
+      "Patrick's 'eventually' pattern is exactly what I'm trying not to repeat — call me on it if you ever see it.",
+  },
+
+  // ---------- Process / docs ----------
+  {
+    topic: "Process / docs",
+    objection: "We don't need more documentation.",
+    response:
+      "We need different documentation. Patrick's docs lived in his head — you couldn't troubleshoot from them. Mine will be one-page-per-Lambda runbooks that you can act on without me. Less Patrick-style sprawl, more 'what do I do when this breaks.'",
+    fluencyTerms: ["runbook-per-component", "actionable docs"],
+    creditMatt:
+      "If a page isn't useful to you specifically, it's useless — I'll iterate until it works for the person who has to use it at 2am.",
+  },
+  {
+    topic: "Process / docs",
+    objection: "Jira is fine the way it is.",
+    response:
+      "Agreed — not changing the WAVE board. I'm just adding due dates to my own commitments so you can hold me accountable. No process change for you.",
+    fluencyTerms: ["personal-accountability layer"],
+    creditMatt:
+      "Your WAVE-board hygiene has kept the team going post-Patrick — I'm building on it, not replacing it.",
+  },
+];
+
+// Pattern guide — how to deliver these without sounding like Patrick.
+export const MATT_REBUTTAL_GUIDE = {
+  goldenRules: [
+    "Always pair a technical term with a plain-English re-explanation if Matt's face shifts.",
+    "Always credit Matt's hardware / room-floor / vendor / on-site judgment in the same sentence.",
+    "Never use a term to demonstrate that you know one — only to demonstrate that you can FIX one.",
+    "Patrick's failure mode was 'anybody who can program would have a nice time jumping in' — never imply Matt should be able to do code. Imply you're saving him from having to.",
+    "If Matt says 'I don't follow,' that's a gift — slow down, re-explain in plain English, thank him for flagging.",
+  ],
+  redFlags: [
+    "If you find yourself reaching for jargon to win a public Slack thread — STOP. Move it to DM.",
+    "If you start sentences with 'Well actually…' you're losing him. Replace with 'Totally — and…'.",
+    "If you describe Patrick's work as 'wrong' or 'bad' publicly, you're indicting Matt by association. Use 'half-standard' or 'open' instead.",
+    "If Mark says 'pretend I'm a new guy' (his Mar 13 phrase) — that's the SAME tone to bring to Matt.",
+  ],
+  // Standing fluency vocab Cortney can use confidently
+  fluencyVocab: [
+    { term: "IAM principal / service principal", definition: "AWS identity. 'Principal' = the thing that's authenticated. Switching from a user-principal to a service-principal = role survives offboarding." },
+    { term: "Execution role", definition: "The IAM role a Lambda assumes when it runs. Carries the permissions the function needs." },
+    { term: "Trust policy", definition: "The IAM rule that says which principals can assume a role. The thing that broke when Patrick's user was deleted." },
+    { term: "HEC token", definition: "Splunk's HTTP Event Collector token — what authenticates a Lambda's POST to Splunk." },
+    { term: "Re-poll pattern", definition: "Patrick's signal-vs-noise design — alert fires, wait, re-check, only THEN escalate to Slack." },
+    { term: "MR (merge request)", definition: "GitLab's term for pull request. The mechanism that lets Matt veto a code change without reading code." },
+    { term: "Provenance", definition: "Where a plugin / piece of code came from — author, license, support contact." },
+    { term: "Quiet-hours gating", definition: "Alert rule that only fires during business hours unless P0." },
+    { term: "Tier 2 default UCI", definition: "The single-page UCI Patrick built — the team's standard for most conference rooms." },
+    { term: "Capex hygiene", definition: "Validating cheap before issuing a big PO. Mark + Stacey both love it." },
+    { term: "One-pager memo", definition: "The unit of architectural decision-making at Zillow AV. Short, scannable, sign-off-friendly." },
+    { term: "Swim lanes", definition: "Patrick's term — AV stays out of IT's lane, AV defends its lane back. Matt loves this concept." },
+  ],
+};
 
 // =========================================================================
 // SITES — per-office breakdown. Each site is a real Zillow office (or, in
