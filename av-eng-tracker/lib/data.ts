@@ -5,6 +5,11 @@ export interface Quote {
   when: string;
   text: string;
   channel?: string;
+  /** Direct Slack permalink to the source message */
+  permalink?: string;
+  /** Optional secondary source URL (Jira ticket, doc, vendor blog, etc.) */
+  sourceUrl?: string;
+  sourceLabel?: string;
 }
 
 export type IssueStatus = "Open" | "Workaround" | "In Progress" | "Resolved";
@@ -55,36 +60,50 @@ export const ISSUES: Issue[] = [
         who: "Matt Cornick",
         when: "Nov 12, 2025 11:56 PT",
         text: "Nope, just that HDMI share is probably the number one issue by 10x. SFO-735 and IRV-802 are both VSI and are both not working with HDMI share but I think they might be different issues.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1762977419683999?thread_ts=1762976206.686079&cid=C04GF3S3KQF",
       },
       {
         who: "Matt Cornick",
         when: "Nov 10, 2025 13:13 PT",
         text: "Zoom Rooms never shows HDMI as a share option which means it doesn't see sync on the Magewell.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1762809225212559?thread_ts=1762808815.677239&cid=C04GF3S3KQF",
       },
       {
         who: "Patrick Gilligan",
         when: "Nov 10, 2025 14:51 PT",
         text: "IRV-802: HDMI share issue as well, but different. The laptop doesn't even see that its plugged into the podium encoder.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1762815115795369?thread_ts=1762815115.795369&cid=C04GF3S3KQF",
       },
       {
         who: "Matt Cornick",
         when: "Apr 17, 2026 10:42 PT",
         text: "Alright, I'm at the point of saying we can only do HDMI share if we use Q-Sys NV endpoints.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1776447763671279?thread_ts=1776447763.671279&cid=C04GF3S3KQF",
       },
       {
         who: "Mark Hampson",
         when: "Apr 17, 2026 10:46 PT",
         text: "I'm aligned with this. Let's see what the new qsys endpoints cost.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1776447996048669?thread_ts=1776447763.671279&cid=C04GF3S3KQF",
       },
       {
         who: "Matt Cornick",
         when: "Apr 21, 2026 08:48 PT",
         text: "1223 is good. I think her problem may have been the usbc adapter. That made her think that the same problem was in 1216.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1776786526590539?thread_ts=1776786331.154879&cid=C04GF3S3KQF",
       },
       {
         who: "Mark Hampson",
         when: "Apr 21, 2026 08:50 PT",
         text: "Ok. Those damn adapters cause so many issues.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1776786603021269?thread_ts=1776786331.154879&cid=C04GF3S3KQF",
       },
     ],
     currentState:
@@ -121,11 +140,15 @@ export const ISSUES: Issue[] = [
         who: "Matt Cornick",
         when: "Apr 20, 2026 16:29 PT",
         text: "Zoom Rooms w/Companion Zoom Rooms showing Whiteboard error: I still believe this is ZR update issue. Zoom support was quick to respond. They asked if I could enabled the 'New Whiteboard' option... The fix requires a room reboot of all devices to fix the issue. I feel like it's a workaround at this point but will continue convo with Zoom support.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1776727777667679?thread_ts=1776727777.667679&cid=C04GF3S3KQF",
       },
       {
         who: "Matt Cornick",
         when: "Apr 20, 2026 16:31 PT",
         text: "Once in a call, the companions work as they should. Zoom's dashboard is not reporting these errors correctly. Once they're back online, they're still showing as disconnected but from the admin panel they always show as online.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1776727889412549?thread_ts=1776727777.667679&cid=C04GF3S3KQF",
       },
     ],
     currentState:
@@ -158,31 +181,43 @@ export const ISSUES: Issue[] = [
         who: "Stacey Newman",
         when: "May 15, 2026 09:43 PT",
         text: "Received feedback this week that 3647, audio didn't cover from in room participants through Zoom without the participants using a mic.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1778863433433209?thread_ts=1778863433.433209&cid=C04GF3S3KQF",
       },
       {
         who: "Mark Hampson",
         when: "May 15, 2026 10:13 PT",
         text: "the room is small, i'd be shocked if it were a lobe steering issue given that the room has been working fine for a year without complaints. Can we verify that the mics arent muted? or that there arent dante routing issues?",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1778865191631089?thread_ts=1778863433.433209&cid=C04GF3S3KQF",
       },
       {
         who: "Matt Cornick",
         when: "May 15, 2026 10:14 PT",
         text: "We're definitely not using discrete lobes in there. The 920 is setup to autosteer like a TCC2. No need for discrete lobes in a room like that. Especially because the tables can move.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1778865255397989?thread_ts=1778863433.433209&cid=C04GF3S3KQF",
       },
       {
         who: "Matt Cornick",
         when: "May 15, 2026 10:23 PT",
         text: "Yep. We have MXA910s in there? We must have reused old stock. I thought they were 920s.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1778866623443529?thread_ts=1778863433.433209&cid=C04GF3S3KQF",
       },
       {
         who: "Matt Cornick",
         when: "May 15, 2026 11:06 PT",
         text: "Lobes have to be used for 910s.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1778868368940239?thread_ts=1778863433.433209&cid=C04GF3S3KQF",
       },
       {
         who: "Matt Cornick",
         when: "Sep 3, 2025 09:06 PT",
         text: "Rebooting the mics fixed it. All metering on the mics looked like AEC was totally fine. I haven't seen that one before.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1756915619884549?thread_ts=1756914943.701849&cid=C04GF3S3KQF",
       },
     ],
     currentState:
@@ -214,64 +249,84 @@ export const ISSUES: Issue[] = [
       "Management surface (Jamf push, OS updates, Apple ID, ZR version drift) + vendor compatibility direction (Q-Sys Connect Windows-only).",
     quotes: [
       {
-        who: "Matt Cornick",
-        when: "Dec 20, 2024",
-        text: "Update pushed at 9:06 PM left newer Mac Minis + all Digital Signage stuck at login (Olympic, SEA-3925, etc.). Logged each one back in manually.",
-      },
-      {
         who: "Patrick Gilligan",
         when: "Aug 19, 2025 08:26 PT",
         text: "SFO-735 and SEA-3647 did indeed update to Sequoia, which prompts this Apple Intelligence popup... an overlay on top of Zoom Rooms, and doesn't take the computer out of ZR.....therefore Zoom thinks the system is still online (if the computer is not focused on ZR, its seen as offline).",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1755616850342659?thread_ts=1755616850.342659&cid=C04GF3S3KQF",
       },
       {
         who: "Patrick Gilligan",
         when: "Aug 15, 2025 10:49 PT",
         text: "Mac Mini encoder, routed to the Projector Decoder, and the Mac's sound card is set to be its NV-21, instead of Q-Sys.....no signal",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1755280178314399?thread_ts=1755280178.314399&cid=C04GF3S3KQF",
       },
       {
         who: "Patrick Gilligan",
         when: "Aug 12, 2025 08:26 PT",
         text: "Mac OS + USB-C = NV-21 seems all good now after updating to Q-Sys 10",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1755012394830489",
       },
       {
         who: "Mark Hampson",
         when: "Mar 24, 2026 07:21 PT",
         text: "according to Andrew that mac mini was never properly setup and Auto Login for zoomrooms account needs to be setup... I have no idea how this mac mini was never setup, it was installed before i even came onboard.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1774362086613879?thread_ts=1774362086.613879&cid=C04GF3S3KQF",
       },
       {
         who: "Matt Cornick",
         when: "Mar 24, 2026 07:29 PT",
         text: "this Mac never went through the proper setup process. The reboots may be due to macOS updates because it was originally set up as a regular Mac. If it still has issues after this I'd recommend wiping it and going through the proper setup.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1774362578788829?thread_ts=1774362086.613879&cid=C04GF3S3KQF",
       },
       {
         who: "Patrick Gilligan",
         when: "Mar 16, 2026 12:58 PT",
         text: "any idea why irv-802 is in a meeting, but when I open up the camera preview its on a Mac home screen?",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1773691116703509?thread_ts=1773691116.703509&cid=C04GF3S3KQF",
       },
       {
         who: "Patrick Gilligan",
         when: "Feb 10, 2026 13:29 PT",
         text: "Ahhhhhhhh 'Use Mac System Picker for Sharing' - read the fine print",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1770758956104089?thread_ts=1770758739.704879&cid=C04GF3S3KQF",
       },
       {
         who: "Cortney Eison",
         when: "May 14, 2026 22:36 PT",
         text: "'Q-SYS Connect software is now certified as a Zoom Rooms attached controller for Windows.' I would imagine that would mean that zoom rooms be run on a NUC for example rather than a Mac.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1778823386718649",
+        sourceUrl:
+          "https://blogs.qsc.com/systems/2026/05/07/q-sys-connect-unlocks-new-flexibility-for-zoom-rooms/",
+        sourceLabel: "QSC blog post",
       },
       {
         who: "Mark Hampson",
         when: "May 15, 2026 06:26 PT",
         text: "It's such a bummer we need to use windows for this. Every room deployment we've rolled out is a mac mini. We have a specific mac os AV Zoom Room config that gets pushed out to them and is managed by our CE team. We can ask to see what the lift would be like if we would like to start deploying Windows based appliances but I imagine thats going to be a hard no - just last year we (zillow IT) decommisioned all PC appliances that were not laptops. It may be a tough sell.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1778851565920959?thread_ts=1778823120.439739&cid=C04GF3S3KQF",
       },
       {
         who: "Matt Cornick",
         when: "May 15, 2026 16:19 PT",
         text: "A Mac Mini will outperform any Android based system. That's just a fact. There are Zoom Room features that aren't even supported on any Android appliances.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1778887165858699?thread_ts=1778859719.870609&cid=C04GF3S3KQF",
       },
       {
         who: "Stacey Newman",
         when: "May 15, 2026 09:56 PT",
         text: "For your standard 30-person enclosed rooms, your existing Neat Bar Pro or zRetreat spec is likely the better choice... Cortney's G62 design starts making more sense above 45 people. It could be worth considering as a Tier 3 large/complex room standard rather than replacing what you have.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1778864188189599?thread_ts=1778859719.870609&cid=C04GF3S3KQF",
       },
     ],
     currentState:
@@ -307,21 +362,45 @@ export const ISSUES: Issue[] = [
         who: "Patrick Gilligan",
         when: "Feb 17, 2026 09:38 PT",
         text: "is the Zoom/Zillow bi weekly sync an acceptable place to park a troubleshooting item, like the issue with calendar only rooms being offline?",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1771349931445949?thread_ts=1771349931.445949&cid=C04GF3S3KQF",
+      },
+      {
+        who: "Patrick Gilligan",
+        when: "Feb 17, 2026 09:44 PT",
+        text: "WAVE-16 — so crazy being on teams before that started with like, ZNET-99446 and we are only on 16.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1771350255806289?thread_ts=1771349931.445949&cid=C04GF3S3KQF",
+        sourceUrl: "https://zillowgroup.atlassian.net/browse/WAVE-16",
+        sourceLabel: "WAVE-16 in Jira",
       },
       {
         who: "Matt Cornick",
         when: "Feb 17, 2026 09:57 PT",
         text: "Seeing different software versions with 724 offline and 720 online. Maybe related? Weird thing is, I can't upgrade 724 from Zoom.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1771351053357199?thread_ts=1771349931.445949&cid=C04GF3S3KQF",
       },
       {
         who: "Matt Cornick",
         when: "Feb 17, 2026 10:14 PT",
         text: "It does seem to be an issue with v6.6.10 on the schedulers, looking at the dashboard.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1771352263397439?thread_ts=1771349931.445949&cid=C04GF3S3KQF",
       },
       {
         who: "Matt Cornick",
         when: "Feb 17, 2026 10:34 PT",
         text: "It does restart but it didn't trigger the update ability for me until I had Priscilla go over and reboot it from the panel directly.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1771353259093079?thread_ts=1771349931.445949&cid=C04GF3S3KQF",
+      },
+      {
+        who: "AV Slack Bot (daily alert)",
+        when: "May 16, 2026 03:18 PT",
+        text: "IRV-1250 Controller disconnected. IRV-1110 ZHL Offline — Zoom room is offline. (Same failure pattern WAVE-16 was opened for, still firing.)",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C07SY86AY31/p1778926702093329",
       },
     ],
     currentState:
@@ -358,36 +437,52 @@ export const ISSUES: Issue[] = [
         who: "Mark Hampson",
         when: "Jan 31, 2024 06:10 PT",
         text: "Another underrated of the Neat Center (their version of the sight), is it has mics built in. So it extends the audio limitations of using just the bar/bar pro.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1706710204369599",
       },
       {
         who: "Matt Cornick",
         when: "May 14, 2026 08:46 PT",
         text: "The last time I tried a Core to expand a Neat Bar Pro, it only worked with audio one way. I think it was for mics. Output wouldn't work. Shure P300 was the only way to get 2 way USB audio connected.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1778859975179529?thread_ts=1778859719.870609&cid=C04GF3S3KQF",
       },
       {
         who: "Mark Hampson",
         when: "Feb 6, 2025 13:14 PT",
         text: "What are our thoughts on using ceiling mics in tandem with wireless mics in zRetreats (like in 3925). Are the ceiling mics pointless? My thoughts are its a nice to have for the few times we may need them, so it is beneficial to have them in the room if we have the budget.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1738873872525929?thread_ts=1738873872.525929&cid=C04GF3S3KQF",
       },
       {
         who: "Mark Hampson",
         when: "Feb 6, 2025",
         text: "So in the new enclosed room, I am thinking we repurpose two MXA910 mics with some handheld mics. The space is definitely smaller than 3925. It's a 30 person room.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1738874145769329?thread_ts=1738873872.525929&cid=C04GF3S3KQF",
       },
       {
         who: "Matt Cornick",
         when: "Jan 26, 2026 13:01 PT (SEA-3829 inventory)",
         text: "SEA-3829: Conference room seating; (1) Front camera; Dual screens HDbT; (1) Senn TCC2; (2) Controller as Neat Pads (x1 floor, x1 wall); (2) Schedulers outside.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1769461275618509?thread_ts=1769442903.577679&cid=C04GF3S3KQF",
       },
       {
         who: "Cortney Eison",
         when: "May 14, 2026 (G62 thread)",
         text: "For example with a neatboardpro an AVIO can be used to add ceiling mics as a companion to a neatcenter. Alternatively with a neatbar pro the same thing.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1778886075167309?thread_ts=1778859719.870609&cid=C04GF3S3KQF",
       },
       {
         who: "Neat release notes",
         when: "Oct 2024 (firmware 24.4)",
         text: "Dynamic microphone selection between Neat Pad and main room. This enables further audio coverage for larger rooms or for rooms where the Pad is placed away from the table (e.g. on a podium).",
+        sourceUrl: "https://support.neat.no/article/neat-preview-channel-firmware/",
+        sourceLabel: "Neat 24.4 release notes",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1727887727620239?thread_ts=1727887727.620239&cid=C04GF3S3KQF",
       },
     ],
     currentState:
@@ -422,16 +517,22 @@ export const ISSUES: Issue[] = [
         who: "Matt Cornick",
         when: "Aug 13, 2025 13:06 PT",
         text: "Neat Bar Pro rooms with a deserved facepalm: All of the Neat Bar Pros are mounted upside down which causes the cables to get bent 180 degrees to get plugged in. It's easy enough to flip them (which I did in 3940) and I can have Face flip the rest but it leaves the cables exposed. If we remount them to hide the cables properly it will leave holes in the wall exposed.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1755115598757889?thread_ts=1755115598.757889&cid=C04GF3S3KQF",
       },
       {
         who: "Mark Hampson",
         when: "Aug 13, 2025 13:16 PT",
         text: "Dude… what?? Ok leave as is for now. I'll try to coordinate remounting them with patch and paint. That's really annoying.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1755116179609379?thread_ts=1755115598.757889&cid=C04GF3S3KQF",
       },
       {
         who: "Matt Cornick",
-        when: "Aug 13, 2025",
+        when: "Aug 13, 2025 16:54 PT",
         text: "3626 is good. They used the vesa mount so I was able to flip it.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1755129690680359?thread_ts=1755115598.757889&cid=C04GF3S3KQF",
       },
     ],
     currentState: "Some flipped, rest pending. Patch + paint coordination unresolved.",
@@ -508,26 +609,39 @@ export const ISSUES: Issue[] = [
         who: "Mark Hampson",
         when: "May 8, 2026 11:28 PT",
         text: "do either of you guys have the serial number of the bad NV-21 with the fan issue from yesterday? Working on a replacement now.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1778264881829089?thread_ts=1778264881.829089&cid=C04GF3S3KQF",
       },
       {
         who: "Matt Cornick",
         when: "May 8, 2026 12:20 PT",
         text: "As far as SN, MACs, etc we have the IP doc but it's really geared towards managing devices. SNs aren't on there because they can be a pain to always enter and you don't really need them unless you're replacing gear. When John pulled the bad NV, he should have logged the info into the Jira ticket so Mark could just reference it there. Jira is newish for us and we're also trying to get in the habit of tracking everything there so it's easily referenced later.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1778268009822149?thread_ts=1778264881.829089&cid=C04GF3S3KQF",
       },
       {
         who: "Patrick Gilligan",
         when: "Sep 2, 2025 10:07 PT",
         text: "where have you been buying the power phoenix blocks for the NV-21 PSUs? Seems like the unit does not ship with it, annoyingly.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1756832848851319?thread_ts=1756832848.851319&cid=C04GF3S3KQF",
       },
       {
         who: "Mark Hampson",
         when: "Sep 2, 2025 10:13 PT",
         text: "im sure this one would come with it, but i dont know how to buy this one. ive never even seen this power supply in real life before.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1756833218332419?thread_ts=1756832848.851319&cid=C04GF3S3KQF",
+        sourceUrl:
+          "https://www.adiglobaldistribution.pr/Product/QB-NV21PSU",
+        sourceLabel: "QB-NV21PSU at ADI",
       },
       {
         who: "Matt Cornick",
         when: "Aug 20, 2025 08:22 PT",
         text: "The NV21 PSU will not work with the NV32.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1755703331410529?thread_ts=1755639064.739429&cid=C04GF3S3KQF",
       },
     ],
     currentState: "Fan replacement in motion. SN tracking process undocumented.",
@@ -559,41 +673,57 @@ export const ISSUES: Issue[] = [
         who: "Matt Cornick",
         when: "Sep 3, 2025 09:06 PT",
         text: "Rebooting the mics fixed it... I'm not sure what would be best to do here. 1. Use the MXA for automixing of the lobes only and use a single AEC channel on the Core. This kind of works like a TCC2. 2. Replace all MXA910s with TCC2s.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1756915619884549?thread_ts=1756914943.701849&cid=C04GF3S3KQF",
       },
       {
         who: "Mark Hampson",
         when: "Sep 3, 2025 09:26 PT",
         text: "We dont have money for TCC2's my dudes so its going to have to be option 1. FWIW I've always treated the built in AEC in those MXA's as a reference for the intellimix so the lobes know not to move around for far end voices (not for full blown AEC) and used the DSP's AEC.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1756916817628139?thread_ts=1756914943.701849&cid=C04GF3S3KQF",
       },
       {
         who: "Matt Cornick",
         when: "Sep 3, 2025 09:33 PT",
         text: "we do have x2 in SFO from the 10 floor and I have x2 that I could part with. Plus there's the 4 in 3925 that could be argued are almost unusable with the HVAC in the room.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1756917212168039?thread_ts=1756914943.701849&cid=C04GF3S3KQF",
       },
       {
         who: "Patrick Gilligan",
         when: "Sep 3, 2025 09:47 PT",
         text: "Updating 910s....shoulda/coulda/woulda been a good aop initiative for 2026. Didn't occur to me, personally, but I wish it had.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1756918067144129?thread_ts=1756914943.701849&cid=C04GF3S3KQF",
       },
       {
         who: "Mark Hampson",
         when: "Sep 3, 2025",
         text: "ship has sailed. maybe in 2027. although we do have funds for if they break, so technically we could replace one a month haha.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1756918126239429?thread_ts=1756914943.701849&cid=C04GF3S3KQF",
       },
       {
         who: "Mark Hampson",
         when: "Later (unanswered to Matt)",
         text: "Revisiting this conversation. We are putting 2 new ceiling mics in NYC-1204 at the end of the year. Any heartburn with going with MXA920s or did you want to stick with TCC2s?",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1756914943701849?thread_ts=1756914943.701849&cid=C04GF3S3KQF",
       },
       {
         who: "Nick Melin",
         when: "Oct 9, 2023 15:11 PT",
         text: "I'm actually shocked at how good the TCC2 ceiling mics are in the All Hands.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1696889465990319?thread_ts=1696889465.990319&cid=C04GF3S3KQF",
       },
       {
         who: "Patrick Gilligan",
         when: "Feb 13, 2024 10:52 PT",
         text: "I learned at ISE, that the Sennheiser mics can actually be used for room reenforcement, with a separate reference channel sent back to the mic. It has slick DSP technology that provides something similar to a mix-minus and can cancel local speaker signal and block feedback. I had meaning to ask if you wanted to experiment with that at some point.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1707850345768029?thread_ts=1707848542.319799&cid=C04GF3S3KQF",
       },
     ],
     currentState:
@@ -627,11 +757,15 @@ export const ISSUES: Issue[] = [
         who: "Mark Hampson",
         when: "Apr 21, 2026 08:50 PT",
         text: "Ok. Those damn adapters cause so many issues.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1776786603021269?thread_ts=1776786331.154879&cid=C04GF3S3KQF",
       },
       {
         who: "Matt Cornick",
         when: "Apr 21, 2026 08:48 PT",
         text: "1223 is good. I think her problem may have been the usbc adapter. That made her think that the same problem was in 1216.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1776786526590539?thread_ts=1776786331.154879&cid=C04GF3S3KQF",
       },
     ],
     currentState: "No SKU standard. Each site sources independently.",
@@ -663,21 +797,15 @@ export const ISSUES: Issue[] = [
         who: "Matt Cornick",
         when: "Mar 31, 2026 08:12 PT",
         text: "Projector 2 is offline but you can access some controls from the web browser. You just need power. I also found out that I think Patrick removed projector and screen controls from the UI so I had to roll the screens up and turn projectors off manually from QDS.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1774969974154039?thread_ts=1774969974.154039&cid=C04GF3S3KQF",
       },
       {
         who: "Mark Hampson",
         when: "Apr 1, 2026",
         text: "Looking at the file now, it should be redone. Correct me if I'm wrong but cant this just be a simple Zoom Room? Do they really need manual routing and all that?",
-      },
-      {
-        who: "Mark Hampson",
-        when: "Apr 1, 2026",
-        text: "Did Patrick write it or get it from his Q-Sys community? It's not on the Q-Sys Library.",
-      },
-      {
-        who: "Matt Cornick",
-        when: "Apr 1, 2026",
-        text: "Patrick showed me how to get the projector/screen controls. It works... On the routing page, if you have no source selected and select a destination, it brings up the controls dynamically dependent on what destination you select. It would have made sense to not have the 'No source selected' qualifier and then also include the controls under the cog as a tab.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1774969974154039?thread_ts=1774969974.154039&cid=C04GF3S3KQF",
       },
     ],
     currentState: "Room operational. UI standardization session never happened.",
@@ -706,16 +834,22 @@ export const ISSUES: Issue[] = [
         who: "Patrick Gilligan",
         when: "Nov 17, 2025 09:25 PT",
         text: "Lots offline after that power outage. We have another Dr appointment, at 10:40 (leaving at 10:10), but before and after, I am working on the sea-3619 devices, as the IP schedules/switch validator sees over 20 discrepancies....so not sure what happened there.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1763395507263589?thread_ts=1763395507.263589&cid=C04GF3S3KQF",
       },
       {
         who: "Patrick Gilligan",
         when: "Nov 17, 2025 09:53 PT",
         text: "its not just that IP addresses didnt' get reserved. Its that a lot of IPs don't show up on the switch's arp table until after a reboot. This happens a lot when a device has a dante and control IP, like Shure stuff....so a lot of these 'missing' reservations weren't there until the power outage.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1763402385358079?thread_ts=1763395507.263589&cid=C04GF3S3KQF",
       },
       {
         who: "Patrick Gilligan",
         when: "Nov 17, 2025 09:54 PT",
         text: "But in brighter news, I don't know of anyone else whose got a daily IP schedule/switch validator running.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1763402453580779?thread_ts=1763395507.263589&cid=C04GF3S3KQF",
       },
     ],
     currentState: "Validator runs daily. No documentation. No backup owner if it breaks.",
@@ -745,11 +879,15 @@ export const ISSUES: Issue[] = [
         who: "Matt Cornick",
         when: "Mar 31, 2026 09:50 PT",
         text: "I think 2026 is the year to push Zillow to use Zoom Digital Whiteboards instead of all of these giant white paper boards. I was asked to roll up the screen and turn off projectors in IRV-802 so they could do an some flip charts at the front of the room. It's kind of comical.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1774975817765419",
       },
       {
         who: "Stacey Newman",
         when: "Mar 31, 2026 09:56 PT",
         text: "We could never get people to adopt the digital whiteboarding... we had mural and figma and all those zoom whiteboards everywhere and no one uses it.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1774976167039129",
       },
     ],
     currentState: "DWBs being repurposed for World Cup pop-ups (June 11).",
@@ -775,11 +913,15 @@ export const ISSUES: Issue[] = [
         who: "Mark Hampson",
         when: "May 6, 2026 07:54 PT",
         text: "E&B is asking us to set up dedicated viewing + gaming rooms at 5 offices — Irvine, Seattle, SF, Denver, and Mexico City and running for 6 weeks starting June 11.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1778079292269789?thread_ts=1778079292.269789&cid=C04GF3S3KQF",
       },
       {
         who: "Matt Cornick",
         when: "May 6, 2026 09:50 PT",
         text: "Other than SEA-3619, there's no room setup to display encrypted content.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1778083824499509?thread_ts=1778079292.269789&cid=C04GF3S3KQF",
       },
     ],
     currentState: "Rooms not locked. Console procurement TBD. MEX has no AV onsite.",
@@ -1824,46 +1966,66 @@ export const BIRDDOG_SENTIMENT: BirdDogQuote[] = [
     who: "Patrick Gilligan",
     when: "Dec 9, 2025 16:01 PT",
     text: "For the record Stacey, I like NDI. I strongly dislike BirdDog.",
+    permalink:
+      "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1765324897866679?thread_ts=1765315452.328519&cid=C04GF3S3KQF",
   },
   {
     who: "Patrick Gilligan",
     when: "Nov 10, 2025",
     text: "VSI is kinda trash. Better than BD, but not great.",
+    permalink:
+      "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1762809304923999?thread_ts=1762808815.677239&cid=C04GF3S3KQF",
   },
   {
     who: "Matt Cornick",
     when: "Dec 9, 2025 13:24 PT",
     text: "HDMI screen share [SFO-735]: I'm the point of Zoom support... I did not see this happen at home so I don't think it's a osTahoe issue. The only thing unique about this room are the NDI cams.",
+    permalink:
+      "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1765315452328519?thread_ts=1765315452.328519&cid=C04GF3S3KQF",
   },
   {
     who: "Matt Cornick",
     when: "Apr 16, 2025 12:33 PT",
     text: "Two of the Birddog P400 4k cams are noisy. I'm fine for the SFO All Hands but I don't know that I would want to put one of them in Olympic.",
+    permalink:
+      "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1744832034796209?thread_ts=1744832034.796209&cid=C04GF3S3KQF",
   },
   {
     who: "Mark Hampson",
     when: "Apr 16, 2025",
     text: "ugh. thats a non-starter... yeah no way. OK lets not use these.",
+    permalink:
+      "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1744832082137079?thread_ts=1744832034.796209&cid=C04GF3S3KQF",
   },
   {
     who: "Patrick Gilligan",
     when: "Jan 16, 2025 11:48 PT",
     text: "the BirdDog decoder for the right projector is busted. The switch sees the MAC address, but no IP... we have no way of knowing if we are getting signal or not, until its tried in person. Hopefully by Lu, and not an end user. I would hate for a 80 person meeting to happen, and only the 'house left' projector shows the content.",
+    permalink:
+      "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1737056888600269?thread_ts=1737056888.600269&cid=C04GF3S3KQF",
   },
   {
     who: "Patrick Gilligan",
     when: "Feb 6, 2025 12:46 PT",
     text: "I will be the first to admit…after 'Birddog-gate', it was miracle we hit FDoB.",
+    permalink:
+      "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1738874798995249?thread_ts=1738873872.525929&cid=C04GF3S3KQF",
   },
   {
     who: "Stacey Newman",
     when: "May 7, 2025 11:11 PT",
     text: "I wish the Urbens were better since we paid so much but like the BirdDog we should probably have a no urben emoji.",
+    permalink:
+      "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1746641473777329?thread_ts=1746637998.361599&cid=C04GF3S3KQF",
   },
   {
     who: "Matt Cornick",
     when: "Apr 16, 2025 13:55 PT",
-    text: "Sticking to white and NDI (assuming we only have one network drop there) we're pretty limited. Panasonic AW-UE40. Aver PTZ310UV2 https://www.averusa.com/products/ptz-camera/ptz310uv2",
+    text: "Sticking to white and NDI (assuming we only have one network drop there) we're pretty limited. Panasonic AW-UE40. Aver PTZ310UV2.",
+    permalink:
+      "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1744837289576169?thread_ts=1744832034.796209&cid=C04GF3S3KQF",
+    sourceUrl: "https://www.averusa.com/products/ptz-camera/ptz310uv2",
+    sourceLabel: "AVer PTZ310UV2",
   },
 ];
 
