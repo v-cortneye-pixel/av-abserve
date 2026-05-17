@@ -49,7 +49,8 @@ export default function ChannelsPage() {
           <h2 className="z-h2 mb-1">New findings from the channel comb</h2>
           <p className="max-w-3xl text-sm text-zillow-slate">
             Items pulled out of the AV-adjacent channels that aren&apos;t yet on the issues /
-            wins / Jira boards. Triage these first.
+            wins / Jira boards. Triage these first. Click &ldquo;View in Slack&rdquo; for full
+            thread context.
           </p>
         </div>
         <div className="space-y-3">
@@ -58,6 +59,16 @@ export default function ChannelsPage() {
               <div className="flex flex-wrap items-center gap-2">
                 <span className={`z-chip ${SEV_STYLE[f.severity]}`}>{f.severity}</span>
                 <span className="text-xs text-zillow-slate">{f.source}</span>
+                {f.sourcePermalink && (
+                  <a
+                    href={f.sourcePermalink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="z-link inline-flex items-center gap-1 text-xs"
+                  >
+                    View full thread in Slack ↗
+                  </a>
+                )}
               </div>
               <h3 className="z-h3 mt-2">{f.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-zillow-ink">{f.description}</p>
@@ -106,11 +117,30 @@ export default function ChannelsPage() {
                 </div>
                 <div className="md:col-span-2">
                   <div className="text-xs font-semibold uppercase tracking-wider text-zillow-slate">
-                    Findings
+                    Findings (click &ldquo;View in Slack&rdquo; for full thread context)
                   </div>
-                  <ul className="mt-2 space-y-1 pl-4 text-xs leading-relaxed text-zillow-ink list-disc">
+                  <ul className="mt-2 space-y-2 text-xs leading-relaxed text-zillow-ink">
                     {c.findings.map((f, i) => (
-                      <li key={i}>{f}</li>
+                      <li
+                        key={i}
+                        className="rounded-md border border-zillow-gray-border bg-white px-3 py-2"
+                      >
+                        <p>{f.text}</p>
+                        <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[10px] text-zillow-slate">
+                          {f.who && <span className="font-semibold text-zillow-ink">— {f.who}</span>}
+                          {f.when && <span className="font-mono">{f.when}</span>}
+                          {f.permalink && (
+                            <a
+                              href={f.permalink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="z-link inline-flex items-center gap-1 font-medium"
+                            >
+                              View full thread in Slack ↗
+                            </a>
+                          )}
+                        </div>
+                      </li>
                     ))}
                   </ul>
                 </div>

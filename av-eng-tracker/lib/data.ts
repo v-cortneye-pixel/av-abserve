@@ -5847,46 +5847,98 @@ export const ACCESS_TILES = [
 // for the issues/wins/jira boards.
 // =========================================================================
 
+export interface SlackFinding {
+  text: string;
+  permalink?: string;
+  who?: string;
+  when?: string;
+}
+
 export interface SlackChannelEntry {
   name: string; // e.g. "#av-team"
+  channelId?: string; // Slack channel ID, useful for crafting permalinks
   purpose: string;
   watchValue: "Critical" | "High" | "Medium" | "Low";
   whatItIs: string;
   keyPeople: string[];
-  findings: string[]; // surfaced new findings Cortney should know
+  findings: SlackFinding[]; // surfaced new findings Cortney should know
   cortneyAction: string;
 }
 
 export const SLACK_CHANNELS: SlackChannelEntry[] = [
   {
     name: "#av-team",
+    channelId: "C04GF3S3KQF",
     purpose: "Main AV-team workspace (Cortney, Matt, Mark, Stacey, Patrick).",
     watchValue: "Critical",
     whatItIs:
       "The primary channel. All escalations, standup green-circles, internal architecture conversations, vendor pings, and team-banter. The richest source of context in the entire workspace.",
     keyPeople: ["Stacey Newman", "Mark Hampson", "Matt Cornick", "Patrick Gilligan (gone)", "Cortney Eison"],
     findings: [
-      "Already deeply combed — every quote on this site originates here or from a referenced channel.",
-      "Cortney is already posting in-channel as a recognized teammate as of May 2026.",
+      {
+        text: "The Mar 13, 2026 thread where Patrick wrote the handoff doc and Mark + Matt picked it apart in real time — the single richest piece of context for the role.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04GF3S3KQF/p1773425550031039?thread_ts=1773342215.611929&cid=C04GF3S3KQF",
+        who: "Patrick / Mark / Matt",
+        when: "Mar 13, 2026",
+      },
+      {
+        text: "Cortney is already posting in-channel as a recognized teammate as of May 2026.",
+      },
     ],
     cortneyAction:
       "Keep posting Monday green-circles + Friday wins. Reply within an hour during business hours — that's the social contract.",
   },
   {
     name: "#av-alerts",
+    channelId: "C07SY86AY31",
     purpose: "Patrick's signal-only alerts channel — daily AV digest + Lambda-triggered anomalies.",
     watchValue: "Critical",
     whatItIs:
-      "AV Slack Bot posts a daily 'Good Morning! Here is your daily AV update!' with quick-links: Q-Sys Reflect Dashboard, Zoom Offline Rooms, Domotz Portal, Splunk Dashboard, IP Schedule. Also posts MAC-address mismatches with SSH-into instructions (e.g., ny1-12b-avi-001.net.zillowgroup.net). The IP-drift validator IS the bot.",
-    keyPeople: ["AV Slack Bot (Patrick's Lambda)", "Matt Cornick", "Mark Hampson"],
+      "AV Slack Bot posts a daily 'Good Morning! Here is your daily AV update!' with quick-links: Q-Sys Reflect Dashboard, Zoom Offline Rooms, Domotz Portal, Splunk Dashboard, IP Schedule. The bot now reports per-site stats including Q-Sys Core health %, script errors auto-fixed by reboot, Zoom Room issues, and live IP Schedule validation with switch/port discrepancies + SSH targets.",
+    keyPeople: ["AV Slack Bot (Patrick's Lambda)", "Matt Cornick", "Mark Hampson", "Fabio Pontual (Networking debug)"],
     findings: [
-      "BOT IS STILL ALIVE post-Patrick — but if it dies, this is where you'd see it first. Confirm the Lambda's IAM identity ASAP.",
-      "Bot posts an MAC-address + SSH target when it finds an IP-drift anomaly: '0 34 00:18:1a:11:84:d0 10.15.104.137 AVerMedia Information Inc.' on ny1-12b-avi-001.net.zillowgroup.net.",
-      "Matt is actively managing the IP list: 'I need to spend some time updating the IP list. That should take care of a lot of the errors.'",
-      "Mark openly uses Claude in this channel: 'by me I mean Claude...' — AI tooling is socially accepted by Mark.",
+      {
+        text: "BOT IS STILL ALIVE post-Patrick — full daily digest with KCY / SEA / IRV sections, Q-Sys CPU%, IP Schedule diffs, and SSH targets. If it dies, you'd see it first here. Confirm Lambda IAM identity ASAP.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C07SY86AY31/p1753175435930069?thread_ts=1753175435.930069&cid=C07SY86AY31",
+        who: "AV Slack Bot",
+        when: "Sample daily digest — Jul 22, 2025",
+      },
+      {
+        text: "BIG: bot output reveals a 6th office — KCY (Kansas City). KCY-1 Whiteboard 001 and KCY-1207 Focus appear offline in the digest. Not in any /sites/ page yet.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C07SY86AY31/p1753175435930069?thread_ts=1753175435.930069&cid=C07SY86AY31",
+      },
+      {
+        text: "IP Schedule validation is LIVE in the bot: detects switch port vs sheet discrepancies + posts SSH targets like ric-38a-avi-002.net.zillowgroup.net. This IS Patrick's IP-drift validator running in production.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C07SY86AY31/p1753175435930069?thread_ts=1753175435.930069&cid=C07SY86AY31",
+      },
+      {
+        text: "Matt is actively managing the IP list: 'I need to spend some time updating the IP list. That should take care of a lot of the errors.'",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C07SY86AY31/p1778684491449389?thread_ts=1778581051.581359&cid=C07SY86AY31",
+        who: "Matt Cornick",
+        when: "May 13, 2026",
+      },
+      {
+        text: "Mark openly uses Claude in this channel: 'I can dig into it later if you havent (by me I mean Claude..)' — AI tooling is socially accepted by Mark.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C07SY86AY31/p1778590471637419?thread_ts=1778581051.581359&cid=C07SY86AY31",
+        who: "Mark Hampson",
+        when: "May 12, 2026",
+      },
+      {
+        text: "Networking-side debug presence: Fabio Pontual digs into AV traffic — 'I could see traffic from the device to our DNS servers (10.35) and to its AWS home. Looks normal. Something I did not understand, is why it is marking 172.22.24.63 as Mist AP (they should be in 172.22.2.x range) or why it is listing 3 MACs to the same IP.'",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C07SY86AY31/p1762278639416699?thread_ts=1762215334.230199&cid=C07SY86AY31",
+        who: "Fabio Pontual (Networking)",
+        when: "Nov 4, 2025",
+      },
     ],
     cortneyAction:
-      "P0 — verify the bot's underlying Lambda is NOT running under Patrick's IAM identity. If it is, re-key TODAY. This is the team's daily signal.",
+      "P0 — verify the bot's Lambda is NOT under Patrick's IAM identity. Then add KCY to the /sites/ map. The IP-schedule validator is the most valuable Patrick legacy artifact alive.",
   },
   {
     name: "#sea-av",
@@ -5896,9 +5948,18 @@ export const SLACK_CHANNELS: SlackChannelEntry[] = [
       "AV Slack Bot posts 'Good Morning, SEA!' daily with status per room. References https://docs.google.com/spreadsheets/d/1h57WezGBw0MSdFIZmpaV7zZc330Fla7wunTy8N5vlXQ as 'Common AV Errors' reference. John Gifford III responds with actions.",
     keyPeople: ["AV Slack Bot", "John Gifford III (onsite SEA)", "Cortney Eison (already in-channel)"],
     findings: [
-      "Recurring offline / disconnect: SEA-3829 controller, SEA-3737 audio test failed, SEA-4003 zRetreat offline, SEA-3950, SEA-3830, SEA-3916 (DTEN went bad — replaced), SEA-3619 All Hands controller.",
-      "Common AV Errors reference doc: https://docs.google.com/spreadsheets/d/1h57WezGBw0MSdFIZmpaV7zZc330Fla7wunTy8N5vlXQ",
-      "John Gifford does the operational walk: 'controller didn't have zoom open / DTEN went bad. Replaced. Updated Orbit/Zoom.'",
+      {
+        text: "Recurring offline / disconnect: SEA-3829 controller, SEA-3737 audio test failed, SEA-4003 zRetreat offline, SEA-3950, SEA-3830, SEA-3916 (DTEN went bad — replaced), SEA-3619 All Hands controller.",
+      },
+      {
+        text: "John Gifford does the operational walk: '3950 - had the same network error. Rebooted device and works now.' / 'DTEN went bad. Replaced. Updated Orbit/Zoom.' Match this cadence.",
+        who: "John Gifford III",
+      },
+      {
+        text: "Common AV Errors reference doc Cortney can claim.",
+        permalink:
+          "https://docs.google.com/spreadsheets/d/1h57WezGBw0MSdFIZmpaV7zZc330Fla7wunTy8N5vlXQ",
+      },
     ],
     cortneyAction:
       "Match the John Gifford response pattern. If the bot flags a SEA room, reply with action taken — same cadence John has set.",
@@ -5911,10 +5972,22 @@ export const SLACK_CHANNELS: SlackChannelEntry[] = [
       "Per-day room health report for IRV. Persistent offline state for IRV-1110 ZHL — a room nobody seems to be actively un-blocking.",
     keyPeople: ["AV Slack Bot", "Adali Talavera (onsite IRV)", "Mark Hampson"],
     findings: [
-      "IRV-1110 ZHL has been OFFLINE every single morning the bot has posted recently. This is a stale 'always red' alert nobody acts on — the worst form of monitoring drift.",
-      "IRV-1250 controller disconnects recurring (separate from the BirdDog P110 RMA).",
-      "IRV-802 All Hands controller disconnect appears here (the room with the hidden projector controls).",
-      "Adali Talavera is the IRV onsite contact for packages, vendor coordination, and floor work. Already known to Stacey.",
+      {
+        text: "IRV-1110 ZHL has been OFFLINE every single morning the bot has posted recently. Stale 'always red' alert nobody acts on — the worst form of monitoring drift.",
+      },
+      {
+        text: "IRV-1250 controller disconnects recurring (separate from the BirdDog P110 RMA).",
+      },
+      {
+        text: "IRV-802 All Hands controller disconnect appears here (the room with the hidden projector controls).",
+      },
+      {
+        text: "Adali got a Friday High-Five for the entire Irvine commissioning — 'partnering closely with the Projects team, keeping stakeholders informed, managing vendor questions and access, commissioning the entire space, and skillfully navigating shifting event needs within an active construction environment.'",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04N9U9HURY/p1770413574076409",
+        who: "Shelby Burse",
+        when: "Feb 6, 2026",
+      },
     ],
     cortneyAction:
       "Day-1 win: investigate IRV-1110 ZHL — either remove it from monitoring (decommissioned room?) or restore it. Closes a stale alert + earns immediate Mark credit.",
@@ -5927,15 +6000,22 @@ export const SLACK_CHANNELS: SlackChannelEntry[] = [
       "Bot posts NYC daily status. Mostly green (NYC is the cleanest fleet right now). Occasional HDMI-share back-and-forth between John Gifford + Grace Oh.",
     keyPeople: ["AV Slack Bot", "John Gifford III", "Grace Oh"],
     findings: [
-      "NYC fleet currently the cleanest — most days are 'All Zoom Rooms Operating Normally.'",
-      "Grace Oh is the NYC onsite contact for room availability + checks.",
-      "Mark's NYC All Hands AV upgrade is complete (per /org-channel-cloud-hq-experience): newer endpoints, wired podium input, control panel UI to current standards.",
+      {
+        text: "NYC fleet currently the cleanest — most days are 'All Zoom Rooms Operating Normally.'",
+      },
+      {
+        text: "Grace Oh is the NYC onsite contact for room availability + checks.",
+      },
+      {
+        text: "Mark's NYC All Hands AV upgrade is complete (per /org-channel-cloud-hq-experience): newer endpoints, wired podium input, control panel UI to current standards.",
+      },
     ],
     cortneyAction:
       "Use NYC as the 'clean control' baseline when measuring SEA / SFO / IRV regressions. NYC-1227 is also the clean-sibling room for the NYC-1250 memory-leak diff.",
   },
   {
     name: "#av_networking",
+    channelId: "C05UGQ0REM6",
     purpose: "AV team × Network team operational coordination.",
     watchValue: "High",
     whatItIs:
@@ -5947,16 +6027,30 @@ export const SLACK_CHANNELS: SlackChannelEntry[] = [
       "Cortney Eison (active)",
     ],
     findings: [
-      "Cortney is the SFO floor presence for networking: helped diagnose UPS failure on sfo-zit-u07-002 (NEMA twist-lock 30A plug).",
-      "Service Express (SE) is the network gear vendor. Legacy UPS NOT covered → had to file a new SE ticket for a similar replacement.",
-      "Switch hostnames follow a pattern: ny1-12b-avi-001.net.zillowgroup.net, sfo-zit-u07-002, etc.",
-      "Matt's standing offer: 'Let me know about the timing of the replacement. I can most likely meet the vendor there if that would be helpful.'",
+      {
+        text: "Cortney's UPS-replacement thread with Danny + Jon (sfo-zit-u07-002, NEMA twist-lock 30A). Service Express was the vendor; legacy UPS NOT covered; new SE ticket filed for similar replacement.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C05UGQ0REM6/p1778617069525529?thread_ts=1778604630.869839&cid=C05UGQ0REM6",
+        who: "Cortney Eison",
+        when: "May 12, 2026",
+      },
+      {
+        text: "Matt: 'I'm hosting the all hands from here so I need the other switches connected :grimacing:' — Zall Hall depends on the SFO switch fabric the team is trying to fix in parallel.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C05UGQ0REM6/p1778603697023919",
+        who: "Matt Cornick",
+        when: "May 12, 2026",
+      },
+      {
+        text: "Switch hostnames follow a pattern: ny1-12b-avi-001 (NYC), ric-38a-avi-001/002 (Irvine/Richardson?), sfo-zit-u07-002 (SFO).",
+      },
     ],
     cortneyAction:
       "Stay active here — Cortney already has trust with Danny + Jon. Adjacent network knowledge is a multiplier on the AV role.",
   },
   {
     name: "#founders-suite-av-support",
+    channelId: "C054SPG1LDB",
     purpose: "Olympic boardroom + Founder's Suite AV escalations.",
     watchValue: "High",
     whatItIs:
@@ -5971,29 +6065,63 @@ export const SLACK_CHANNELS: SlackChannelEntry[] = [
       "Matt Cornick",
     ],
     findings: [
-      "Olympic AV upgrade COMPLETE (per Mark): newer switch, AV processor replaced (was EOL), intermittent table HDMI fixed, simplified iPad UI — all in Zoom app, no more switching between Q-Sys + Zoom.",
-      "John Gifford confirmed to Humberto: 'Controls will live within the Zoom app now for Olympic.'",
-      "Humberto recently reported: 'we are testing Olympic and the Q-SYS app is not showing any options.' — the post-upgrade Q-Sys app appears empty by design.",
-      "Open exec ask from Humberto: 'pressing the Share button does not turn the TV unless HDMI is connected.' Mark: 'I'll talk to Matt about this. Basically the display should be turning on when the Zoom Room is awake.'",
-      "Olympic short-jumper-cable culprit: 100Mbps only requires 4 pins to function, while 1Gbps uses all 8. Matt root-caused the intermittent table HDMI 1/2 encoder dropping to 100Mbps.",
+      {
+        text: "Olympic AV upgrade COMPLETE (Mark's full announcement): upgraded switch, AV processor replaced (was EOL), intermittent table HDMI fixed, simplified iPad UI (everything in Zoom app), removed unused Mersive wireless share + Crestron controllers. Quick guide forthcoming.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C054SPG1LDB/p1777584156928919?thread_ts=1777584156.928919&cid=C054SPG1LDB",
+        who: "Mark Hampson",
+        when: "Apr 30, 2026",
+      },
+      {
+        text: "John Gifford to Humberto: 'Controls will live within the Zoom app now for Olympic.' — the post-upgrade Q-Sys app appears empty by design.",
+      },
+      {
+        text: "Open exec ask from Humberto: 'pressing the Share button does not turn the TV unless HDMI is connected.' Mark: 'I'll talk to Matt about this. Basically the display should be turning on when the Zoom Room is awake.'",
+      },
     ],
     cortneyAction:
       "Treat Olympic as Tier 0 — any issue here lands at Stacey AND on the org-channel-cloud-hq-experience high-five board. Don't touch Olympic without Matt's blessing.",
   },
   {
     name: "#fs_zeus_ex-sup-team_and_av-team",
+    channelId: "C05PVF65A2F",
     purpose: "AV team × Executive Support (Zeus) team — joint exec-AV-issues channel.",
     watchValue: "High",
     whatItIs:
       "Where Exec Support flags Olympic / Founder's Suite issues. Humberto Reyes drives the exec-side reporting. John + Matt run point on remediation.",
     keyPeople: ["Humberto Reyes (Zeus / Exec Support)", "Matt Cornick", "John Gifford III", "Mark Hampson"],
     findings: [
-      "Olympic HDMI sharing was broken recently: 'Zoom Rooms was not detecting HDMI input from either encoder. Both Mac and PC test devices detected the encoders and began mirroring their displays however Zoom continued to behave as though HDMI was not connected.'",
-      "Root cause traced by Matt + John: the Mac Mini was running sluggish — '10+ seconds to start a meeting and sometimes spins when ending a meeting.' Swapped for spare M2 Mac Mini (8GB RAM).",
-      "Decoder flap on HDMI share (NOT wireless share): 'the decoder still would flap. This only occurred when we were using hdmi share with the encoders.'",
+      {
+        text: "Olympic HDMI sharing was broken Apr 6, 2026: full debug walk by Humberto — Zoom not detecting HDMI even though Mac + PC mirrored. Magewell passes via QuickTime; Q-Sys local share works; reboots / reinstall didn't fix it.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C05PVF65A2F/p1775497815530919?thread_ts=1775497815.530919&cid=C05PVF65A2F",
+        who: "Humberto Reyes",
+        when: "Apr 6, 2026",
+      },
+      {
+        text: "Earlier Olympic HDMI mystery (Jul 14, 2025): same pattern — Mac Mini spinning, Zoom controller frozen. 33 replies in the thread. This pattern preceded the eventual Mac Mini M2 swap.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C05PVF65A2F/p1752508873827219?thread_ts=1752508873.827219&cid=C05PVF65A2F",
+        who: "Humberto Reyes",
+        when: "Jul 14, 2025",
+      },
+      {
+        text: "John Gifford: 'After rebooting, the decoder still would flap. This only occurred when we were using hdmi share with the encoders. The problem followed from hdmi input 2 to hdmi input 3 on a different encoder. When using wireless share, the decoder did not experience this.'",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C05PVF65A2F/p1774887258751979?thread_ts=1774885970.919239&cid=C05PVF65A2F",
+        who: "John Gifford III",
+        when: "Mar 30, 2026",
+      },
+      {
+        text: "Matt's 100Mbps-vs-1Gbps root cause: 'I am pretty confident I found the source of the intermittent issues with the table HDMI 1/2 encoder dropping to 100Mbps... 100Mbps only requires 4 pins to function, while 1Gbps uses all 8. The short jumper cable seemed to be the culprit.' Use this when arguing for the lab-test approach.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C05PVF65A2F/p1775601393160279",
+        who: "Matt Cornick",
+        when: "Apr 7, 2026",
+      },
     ],
     cortneyAction:
-      "This is the Olympic Mac-Mini argument made for you in real time. When you make the Mac-vs-Windows memo, cite THIS exact thread as primary evidence.",
+      "This is the Olympic Mac-Mini argument made for you in real time. When you write the Mac-vs-Windows memo, cite these exact threads as primary evidence.",
   },
   {
     name: "#av-workplace",
@@ -6010,9 +6138,16 @@ export const SLACK_CHANNELS: SlackChannelEntry[] = [
       "Cortney Eison (active)",
     ],
     findings: [
-      "Workplace team does NOT have a standard shared-password store. Matt asked. Most use Keeper for personal, Google for work, or just memorize. That's an audit gap.",
-      "'Companion Zoom Rooms disconnected' alert is a known Zoom bug — Matt: 'it will be fixed in the next minor update soon.' Don't chase phantom alerts.",
-      "Carly Veazey works on getting Zall Hall into the All Hands space.",
+      {
+        text: "Workplace team does NOT have a standard shared-password store. Matt asked; team uses Keeper for personal, Google for work, or just memorize. That's a foundation-lift gap.",
+      },
+      {
+        text: "'Companion Zoom Rooms disconnected' alert is a known Zoom bug — Matt: 'it will be fixed in the next minor update soon.' Don't chase phantom alerts.",
+        who: "Matt Cornick",
+      },
+      {
+        text: "Carly Veazey works on getting Zall Hall into the All Hands space.",
+      },
     ],
     cortneyAction:
       "Map every onsite room ticket through this channel before it hits #av-team. Workplace usually flags the room issue before the daily bot does.",
@@ -6030,12 +6165,20 @@ export const SLACK_CHANNELS: SlackChannelEntry[] = [
       "Matt Cornick (AV producer)",
     ],
     findings: [
-      "Security: NO dial-in, NO meeting-ID/password joining. Authenticated Zillow only + general access link OR presenter-specific email links. Cite this when HR asks why call-in isn't an option.",
-      "Matt produces Zall Hall while juggling SFO network outages. Recent Zall Hall: 'SFO had a network outage that I had to assist with shortly before I finished setting up for Zall Hall... involved bypassing a hardware failure.' The video upload didn't finish; placeholder went up first.",
-      "Matt does post-Zall-Hall attendee list + recording sharing for HR.",
+      {
+        text: "Security: NO dial-in, NO meeting-ID/password joining. Authenticated Zillow only + general access link OR presenter-specific email links. Cite when HR asks why call-in isn't an option.",
+        who: "Matt Cornick",
+      },
+      {
+        text: "Matt produced last Zall Hall while juggling a SFO network outage: 'SFO had a network outage that I had to assist with shortly before I finished setting up for Zall Hall... involved bypassing a hardware failure.' The video upload didn't finish; placeholder went up first.",
+        who: "Matt Cornick",
+      },
+      {
+        text: "Matt does post-Zall-Hall attendee list + recording sharing for HR.",
+      },
     ],
     cortneyAction:
-      "Offer to be the backup AV producer for the NEXT Zall Hall. Matt cannot keep doing this solo + handling SFO network outages simultaneously. This is a high-visibility offer.",
+      "Offer to be the backup AV producer for the NEXT Zall Hall. Matt cannot keep doing this solo + handling SFO network outages simultaneously. High-visibility offer.",
   },
   {
     name: "#zall-alerts",
@@ -6045,7 +6188,9 @@ export const SLACK_CHANNELS: SlackChannelEntry[] = [
       "Ryan Shepardson posts Slack / Zoom platform-level incidents. NOT AV-team-authored.",
     keyPeople: ["Ryan Shepardson (ZGIM)"],
     findings: [
-      "Cross-reference here when AV alerts spike — sometimes the underlying cause is a platform-level Slack or Zoom incident, not your room.",
+      {
+        text: "Cross-reference here when AV alerts spike — sometimes the underlying cause is a platform-level Slack or Zoom incident, not your room.",
+      },
     ],
     cortneyAction: "Subscribe. Don't post here unless ZGIM asks.",
   },
@@ -6063,9 +6208,16 @@ export const SLACK_CHANNELS: SlackChannelEntry[] = [
       "Ruri Maharani Redis",
     ],
     findings: [
-      "Active zRetreats: Legal & Compliance, Dapper, Rentals Advisory Board.",
-      "Rentals PEMD zRetreat went Zoom-enabled for the first time ever — Michelle Rollery publicly credited the AV team for making every breakout Zoom-enabled.",
-      "Shelley Hamlett executed two zRetreats in Las Vegas (the SF 10th-floor closure forced an off-site move).",
+      {
+        text: "Active zRetreats: Legal & Compliance, Dapper, Rentals Advisory Board.",
+      },
+      {
+        text: "Rentals PEMD zRetreat went Zoom-enabled for the first time ever — Michelle Rollery publicly credited the AV team for making every breakout Zoom-enabled.",
+        who: "Michelle Rollery",
+      },
+      {
+        text: "Shelley Hamlett executed two zRetreats in Las Vegas (the SF 10th-floor closure forced an off-site move).",
+      },
     ],
     cortneyAction:
       "Visibility lever — zRetreat AV support is direct Stacey-adjacent work. Show up to one in person if you can.",
@@ -6078,14 +6230,19 @@ export const SLACK_CHANNELS: SlackChannelEntry[] = [
       "Patrick set this up as the 'monitor only the Olympic room' channel since Olympic is exec-critical. Reference: 'my webhooks channel that specifically monitors the Olympic room.'",
     keyPeople: ["Patrick Gilligan (gone)", "AV Slack Bot"],
     findings: [
-      "Lower priority post-upgrade. Olympic's iPad UI now lives entirely in the Zoom app — the channel's signal value has dropped.",
-      "But the WEBHOOK SOURCE is still firing. Audit whether the destination is still useful.",
+      {
+        text: "Lower priority post-upgrade. Olympic's iPad UI now lives entirely in the Zoom app — the channel's signal value has dropped.",
+      },
+      {
+        text: "But the WEBHOOK SOURCE is still firing. Audit whether the destination is still useful.",
+      },
     ],
     cortneyAction:
       "Audit + decide: keep, archive, or merge into #av-alerts. Closes a Patrick-era one-off.",
   },
   {
     name: "#org-channel-cloud-hq-experience",
+    channelId: "C04N9U9HURY",
     purpose: "Org-wide channel — Steve Bennett's Cloud HQ Experience org. AV is a sub-team.",
     watchValue: "High",
     whatItIs:
@@ -6099,14 +6256,32 @@ export const SLACK_CHANNELS: SlackChannelEntry[] = [
       "Shelley Hamlett",
     ],
     findings: [
-      "Matt got a public Friday High-Five from Mark for the Olympic upgrade: 'one of our most visible and important rooms' — done 'down an engineer, AND while handling the Google Migration.'",
-      "Adali got a public Friday High-Five for Irvine commissioning during active construction.",
-      "Org tracks: Zall Hall, Zall Q&A, NASDAQ broadcast, Mgr+, Dir+. NASDAQ broadcast is an AV-supported event you didn't know about.",
-      "Mark's NYC All Hands upgrade announcement landed here — that's where exec visibility for Patrick's BirdDog→NV-style work happens.",
-      "Steve Bennett occasionally moves Org All Hands to async + sends a deck instead. AV team status appears as one of the slides.",
+      {
+        text: "Matt's public Friday High-Five from Mark for the Olympic upgrade: 'one of our most visible and important rooms... pulled this off down an engineer, AND while handling the Google Migration.' This is the artifact you want to match.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04N9U9HURY/p1778250498022089?thread_ts=1778250498.022089&cid=C04N9U9HURY",
+        who: "Mark Hampson",
+        when: "May 8, 2026",
+      },
+      {
+        text: "MAJOR: Steve Bennett's Friday High-Five to STACEY for the Bangalore office — 'flown across the world twice, gotten to know all new stakeholders... brought the Bangalore employee experience to life so quickly.' The India BOMs Mark routed to you ARE the Bangalore office.",
+        permalink:
+          "https://zillowgroup.slack.com/archives/C04N9U9HURY/p1778890419763979?thread_ts=1778890419.763979&cid=C04N9U9HURY",
+        who: "Steve Bennett",
+        when: "May 15, 2026",
+      },
+      {
+        text: "Adali's Friday High-Five for Irvine commissioning during active construction — and Mark traveled to Irvine twice in a month, personally installed Zoom Room devices across multiple rooms.",
+        permalink: "https://zillowgroup.slack.com/archives/C04N9U9HURY/p1770413574076409",
+        who: "Shelby Burse",
+        when: "Feb 6, 2026",
+      },
+      {
+        text: "Org tracks: Zall Hall, Zall Q&A, NASDAQ broadcast, Mgr+, Dir+. NASDAQ broadcast is an AV-supported event you didn't know about.",
+      },
     ],
     cortneyAction:
-      "Read every Friday High-Five Mark sends. Then make sure YOUR closed wins are the next one. The High-Five email is the FTE-conversion preview.",
+      "Read every Friday High-Five Mark + Steve send. Then make sure YOUR closed wins are the next one. The High-Five email IS the FTE-conversion preview.",
   },
 ];
 
@@ -6334,6 +6509,7 @@ export interface NewFinding {
   title: string;
   severity: "P0" | "P1" | "P2" | "P3";
   source: string;
+  sourcePermalink?: string;
   description: string;
   cortneyAction: string;
 }
@@ -6344,10 +6520,36 @@ export const NEW_FINDINGS_FROM_CHANNELS: NewFinding[] = [
     title: "Verify the AV Slack Bot Lambda is NOT under Patrick's IAM identity",
     severity: "P0",
     source: "#av-alerts — bot is still posting daily after Patrick's deactivation, but IAM origin unconfirmed",
+    sourcePermalink:
+      "https://zillowgroup.slack.com/archives/C07SY86AY31/p1753175435930069?thread_ts=1753175435.930069&cid=C07SY86AY31",
     description:
-      "The daily AV bot (Reflect + Splunk + Zoom + Domotz digest poster) survived Patrick's offboarding. Either someone re-keyed it or it's running on borrowed time. Confirm Lambda execution role TODAY.",
+      "The daily AV bot (Reflect + Splunk + Zoom + Domotz digest poster + LIVE IP-schedule validation against switch reality) survived Patrick's offboarding. Either someone re-keyed it or it's running on borrowed time. Confirm Lambda execution role TODAY.",
     cortneyAction:
       "Open AWS Lambda console. Find the function backing the daily AV update. Read its execution role. If it's a Patrick-user-tied role, re-key immediately. WAVE-CT-001 covers this.",
+  },
+  {
+    id: "nf-kcy-site",
+    title: "KCY (Kansas City) is a 6th office we don't have on /sites/",
+    severity: "P1",
+    source: "#av-alerts — daily bot reports KCY-1 Whiteboard 001 + KCY-1207 Focus as offline",
+    sourcePermalink:
+      "https://zillowgroup.slack.com/archives/C07SY86AY31/p1753175435930069?thread_ts=1753175435.930069&cid=C07SY86AY31",
+    description:
+      "The bot reports stats for KCY (Kansas City) alongside SEA / IRV / NYC / SFO / zRetreat. KCY isn't in our per-office breakdown yet and the rooms appearing in the digest are persistently offline. Add KCY to the /sites/ map and triage the rooms.",
+    cortneyAction:
+      "Add KCY as a 6th site on /sites/. Find an onsite contact (ask Mark or Shelby). Triage KCY-1 Whiteboard 001 and KCY-1207 Focus offline state.",
+  },
+  {
+    id: "nf-bangalore-stacey",
+    title: "MAJOR — Bangalore IS the India buildout. Stacey is the lead. Steve gave her a High-Five.",
+    severity: "P1",
+    source: "#org-channel-cloud-hq-experience — Steve Bennett's High-Five to Stacey",
+    sourcePermalink:
+      "https://zillowgroup.slack.com/archives/C04N9U9HURY/p1778890419763979?thread_ts=1778890419.763979&cid=C04N9U9HURY",
+    description:
+      "Steve Bennett publicly thanked Stacey for the Bangalore office — she's flown there TWICE, gotten to know all new stakeholders, navigated culture and business norms on the fly. The 'India BOMs' Mark routed to you ARE the Bangalore BOMs. This is Stacey's signature initiative. Don't treat it like onboarding busywork.",
+    cortneyAction:
+      "Read the BOMs cover-to-cover. Ask 3 substantive questions in the next 1:1 with Stacey that show you understand the cultural + technical constraints she's navigating.",
   },
   {
     id: "nf-irv-1110",
@@ -6355,7 +6557,7 @@ export const NEW_FINDINGS_FROM_CHANNELS: NewFinding[] = [
     severity: "P1",
     source: "#irvine-av — every daily bot post shows IRV-1110 ZHL Offline",
     description:
-      "The Irvine Zoom Hot Lab (1110 ZHL) has been red in the daily digest for many consecutive days. Either the room is decommissioned (alert is noise) or it actually needs fixing. Either way, the bot is teaching the team to ignore alerts — which is exactly the noise-vs-signal failure Patrick was fighting.",
+      "The Irvine Zoom Hot Lab (1110 ZHL) has been red in the daily digest for many consecutive days. Either decommissioned (alert is noise) or actually needs fixing. Either way, the bot is teaching the team to ignore alerts — exactly the noise-vs-signal failure Patrick was fighting.",
     cortneyAction:
       "Confirm with Adali whether IRV-1110 ZHL is in service. If yes → fix or replace. If no → remove from the bot's monitoring set. Day-1 win.",
   },
@@ -6363,7 +6565,9 @@ export const NEW_FINDINGS_FROM_CHANNELS: NewFinding[] = [
     id: "nf-olympic-share-button",
     title: "Olympic: 'Share Content' button doesn't wake the display unless HDMI is connected",
     severity: "P1",
-    source: "#fs_zeus_ex-sup-team_and_av-team — Humberto Reyes, exec request",
+    source: "#fs_zeus_ex-sup-team_and_av-team — Humberto Reyes, exec request via Lloyd",
+    sourcePermalink:
+      "https://zillowgroup.slack.com/archives/C05PVF65A2F/p1775497815530919?thread_ts=1775497815.530919&cid=C05PVF65A2F",
     description:
       "Lloyd (exec) tried to share content wirelessly without joining a Zoom meeting. The TV doesn't turn on for wireless share — only for HDMI. Open exec ask. Mark: 'I'll talk to Matt about this.'",
     cortneyAction:
@@ -6385,8 +6589,9 @@ export const NEW_FINDINGS_FROM_CHANNELS: NewFinding[] = [
     severity: "P2",
     source: "#org-channel-cloud-hq-experience — Steve Bennett's org-all-hands recap deck",
     description:
-      "AV team supports NASDAQ broadcast (likely Zillow earnings days?). Q1 recap listed Zall Hall, Zall Q&A, NASDAQ broadcast, Mgr+, Dir+. Not previously surfaced in #av-team. Ask Stacey for the runbook on NASDAQ broadcast support.",
-    cortneyAction: "Ask Stacey: 'I noticed NASDAQ broadcast in the Q1 recap — is there a runbook I should claim?'",
+      "AV team supports NASDAQ broadcast (likely Zillow earnings days?). Q1 recap listed Zall Hall, Zall Q&A, NASDAQ broadcast, Mgr+, Dir+. Not previously surfaced in #av-team.",
+    cortneyAction:
+      "Ask Stacey: 'I noticed NASDAQ broadcast in the Q1 recap — is there a runbook I should claim?'",
   },
   {
     id: "nf-workplace-password",
