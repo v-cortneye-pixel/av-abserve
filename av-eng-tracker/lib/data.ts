@@ -1339,6 +1339,345 @@ export const QUESTIONS: QuestionGroup[] = [
   },
 ];
 
+// --- NV fleet (Q-Sys NV-21 / NV-32) ---
+
+export type NvModel = "NV-21" | "NV-32";
+export type NvRole = "Encoder" | "Decoder" | "Encoder + Decoder" | "Spare" | "Dev / Lab";
+export type NvHealth = "Healthy" | "Watch" | "Faulty" | "RMA / Replaced" | "Unknown";
+
+export interface NvDevice {
+  id: string;
+  room: string;
+  site: string;
+  model: NvModel;
+  role: NvRole;
+  health: NvHealth;
+  firmware?: string;
+  powerMethod: "PoE+" | "External PSU" | "90W Injector" | "Unknown";
+  notes: string;
+  knownIssueIds?: string[];
+}
+
+export const NV_DEVICES: NvDevice[] = [
+  {
+    id: "sea-3925-enc",
+    room: "SEA-3925",
+    site: "SEA",
+    model: "NV-21",
+    role: "Encoder",
+    health: "Watch",
+    powerMethod: "External PSU",
+    notes:
+      "Patrick's Aug 15, 2025 test: Mac Mini encoder routed to Projector Decoder, sound card set to NV-21 instead of Q-Sys → no signal. Resolved by Q-Sys 10 upgrade.",
+    knownIssueIds: ["nv-usbc-audio-pre10"],
+  },
+  {
+    id: "sea-3925-dec",
+    room: "SEA-3925",
+    site: "SEA",
+    model: "NV-32",
+    role: "Decoder",
+    health: "Healthy",
+    powerMethod: "External PSU",
+    notes: "Projector decoder. Paired with the Mac Mini encoder above.",
+  },
+  {
+    id: "olympic-dec",
+    room: "Olympic",
+    site: "SEA",
+    model: "NV-32",
+    role: "Decoder",
+    health: "Watch",
+    powerMethod: "90W Injector",
+    notes:
+      "Aug 20, 2025: PSU failure. John tried NV-21 PSU which won't work. Mark shipped 90W PoE+ injector — confirmed back online.",
+    knownIssueIds: ["nv-psu-mismatch"],
+  },
+  {
+    id: "founders-dec-main",
+    room: "Founder's Suite",
+    site: "SEA",
+    model: "NV-32",
+    role: "Decoder",
+    health: "Watch",
+    powerMethod: "Unknown",
+    notes:
+      "Jul 8, 2025: Patrick reported main decoder loses a packet every few seconds. Founders refresh completed May 1, 2026 — verify status post-refresh.",
+    knownIssueIds: ["nv-packet-loss"],
+  },
+  {
+    id: "nyc-ah-pair",
+    room: "NYC All Hands",
+    site: "NYC",
+    model: "NV-21",
+    role: "Encoder + Decoder",
+    health: "Healthy",
+    powerMethod: "PoE+",
+    notes:
+      "Original BirdDog system replaced with VSI-style routing using NV pair. PoE injector standard.",
+  },
+  {
+    id: "irv-851",
+    room: "IRV-851",
+    site: "IRV",
+    model: "NV-21",
+    role: "Encoder + Decoder",
+    health: "Healthy",
+    firmware: "Q-Sys 10",
+    powerMethod: "External PSU",
+    notes:
+      "Aug 15, 2025: Patrick updated IRV-851 — was the last system using NV-21 not on v10. Now on Q-Sys 10.",
+  },
+  {
+    id: "sfo-failed-fan",
+    room: "SFO (unknown)",
+    site: "SFO",
+    model: "NV-21",
+    role: "Encoder",
+    health: "Faulty",
+    powerMethod: "External PSU",
+    notes:
+      "May 7, 2026: fan failure. Mark working on replacement. SN/MAC NOT logged in Jira when John pulled it — process gap.",
+    knownIssueIds: ["nv-fan-failure", "nv-sn-tracking"],
+  },
+  {
+    id: "patrick-dev",
+    room: "Patrick's home lab",
+    site: "Remote",
+    model: "NV-21",
+    role: "Dev / Lab",
+    health: "Unknown",
+    powerMethod: "External PSU",
+    notes:
+      "Originally Patrick's dev unit for serial-control testing. Status post-handoff unknown — verify whether it should come back to Zillow inventory.",
+  },
+  {
+    id: "sea-4-incoming",
+    room: "SEA new rooms (ordered)",
+    site: "SEA",
+    model: "NV-21",
+    role: "Spare",
+    health: "Unknown",
+    powerMethod: "PoE+",
+    notes: "Apr 1, 2026: Mark ordered 4x NV-21s for Seattle. Verify arrival, log SNs at receive.",
+  },
+  {
+    id: "dev-4-incoming",
+    room: "Dev Space (ordered)",
+    site: "SEA",
+    model: "NV-21",
+    role: "Spare",
+    health: "Unknown",
+    powerMethod: "PoE+",
+    notes: "Apr 1, 2026: Mark ordered 4x NV-21s for Dev space. Same process gap to close.",
+  },
+];
+
+export interface NvKnownIssue {
+  id: string;
+  title: string;
+  severity: "P0" | "P1" | "P2";
+  firstSeen: string;
+  affectsModels: NvModel[];
+  symptom: string;
+  cause: string;
+  workaround: string;
+  permanentFix?: string;
+  evidence: Quote[];
+}
+
+export const NV_KNOWN_ISSUES: NvKnownIssue[] = [
+  {
+    id: "nv-fan-failure",
+    title: "NV-21 fan failure",
+    severity: "P1",
+    firstSeen: "2026-05-07",
+    affectsModels: ["NV-21"],
+    symptom: "Fan stops, unit eventually overheats. Audible from rack.",
+    cause: "Hardware failure — unit-level. Unclear if a batch issue.",
+    workaround: "Swap with spare. Maintain hot-spare inventory.",
+    permanentFix:
+      "RMA with QSC. Track SN + failure date in Jira to detect any batch pattern.",
+    evidence: [
+      {
+        who: "Mark Hampson",
+        when: "May 8, 2026 11:28 PT",
+        text: "do either of you guys have the serial number of the bad NV-21 with the fan issue from yesterday? Working on a replacement now.",
+      },
+    ],
+  },
+  {
+    id: "nv-usbc-audio-pre10",
+    title: "Mac OS + USB-C → NV-21 audio path: no signal (Q-Sys 9)",
+    severity: "P1",
+    firstSeen: "2025-08-15",
+    affectsModels: ["NV-21"],
+    symptom:
+      "When Mac Mini sound card is set to NV-21 (instead of Q-Sys) as audio destination, no audio passes from encoder to decoder.",
+    cause: "Q-Sys 9 firmware bug in USB-C audio handling on NV-21.",
+    workaround: "Use Q-Sys as the audio destination, not the NV-21 sound card directly.",
+    permanentFix: "Upgrade Q-Sys Core to v10 (resolved Aug 12, 2025).",
+    evidence: [
+      {
+        who: "Patrick Gilligan",
+        when: "Aug 15, 2025 10:49 PT",
+        text: "Mac Mini encoder, routed to the Projector Decoder, and the Mac's sound card is set to be its NV-21, instead of Q-Sys.....no signal",
+      },
+      {
+        who: "Patrick Gilligan",
+        when: "Aug 12, 2025 08:26 PT",
+        text: "Mac OS + USB-C = NV-21 seems all good now after updating to Q-Sys 10",
+      },
+    ],
+  },
+  {
+    id: "nv-psu-mismatch",
+    title: "NV-21 PSU does NOT work with NV-32",
+    severity: "P2",
+    firstSeen: "2025-08-20",
+    affectsModels: ["NV-21", "NV-32"],
+    symptom: "Swapping PSUs between models — unit fails to power up or runs underpowered.",
+    cause:
+      "NV-21 and NV-32 have different power requirements. PSUs are not interchangeable despite similar form factor.",
+    workaround:
+      "Use 90W PoE+ injector for either model in a pinch. Label PSUs clearly by model.",
+    permanentFix:
+      "Maintain separate spare PSU inventory by model. Document on the spare parts SKU reference.",
+    evidence: [
+      {
+        who: "Matt Cornick",
+        when: "Aug 20, 2025 08:22 PT",
+        text: "The NV21 PSU will not work with the NV32.",
+      },
+      {
+        who: "Mark Hampson",
+        when: "Aug 20, 2025",
+        text: "he has a 90 watt injector hes plugging in",
+      },
+    ],
+  },
+  {
+    id: "nv-phoenix-block-not-included",
+    title: "NV-21 PSU does not ship with the Phoenix terminal block",
+    severity: "P2",
+    firstSeen: "2025-09-02",
+    affectsModels: ["NV-21"],
+    symptom:
+      "External PSU arrives without the 2-conductor Phoenix block. Cannot wire to the NV-21 input.",
+    cause: "Vendor (QSC / Phihong) does not include the connector in standard packaging.",
+    workaround:
+      "Source separately from Phoenix Contact / Digikey. Or order the QSC OEM PSU (QB-NV21PSU) which includes it (but harder to source).",
+    permanentFix:
+      "Order Phoenix blocks in bulk with every NV-21 PO. Stock as a standard spare.",
+    evidence: [
+      {
+        who: "Patrick Gilligan",
+        when: "Sep 2, 2025 10:07 PT",
+        text: "where have you been buying the power phoenix blocks for the NV-21 PSUs? Seems like the unit does not ship with it, annoyingly.",
+      },
+      {
+        who: "Mark Hampson",
+        when: "Sep 2, 2025 10:13 PT",
+        text: "I get them from Phihong or Digikey. I have no idea how to get any PSU for the NV units that actually come with that phoenix block",
+      },
+      {
+        who: "Mark Hampson",
+        when: "Sep 2, 2025 10:16 PT",
+        text: "if you need to buy the phoenix for the nv-21 here is the part https://www.digikey.com/en/products/detail/phoenix-contact/5452235/5187331",
+      },
+    ],
+  },
+  {
+    id: "nv-packet-loss",
+    title: "AVoIP packet loss on NV decoder (Founder's Suite)",
+    severity: "P2",
+    firstSeen: "2025-07-08",
+    affectsModels: ["NV-32"],
+    symptom: "Main decoder drops a packet every few seconds. Shows up consistently in dashboard.",
+    cause:
+      "Suspected: separate VLANs on Founder's switch (not yet collapsed). Matt: 'makes me not fully trust that network.'",
+    workaround:
+      "Tolerate the drop. Most users don't perceive it on a single-source feed.",
+    permanentFix:
+      "Consolidate Founder's Suite into the single AV VLAN per the post-refresh plan.",
+    evidence: [
+      {
+        who: "Patrick Gilligan",
+        when: "Jul 8, 2025",
+        text: "the main decoder for the founder's suite loses a packet every few seconds, maybe once a minute. And, strange that its the only one doing that. But it might have to do with what is routed to it.",
+      },
+      {
+        who: "Matt Cornick",
+        when: "Jul 8, 2025",
+        text: "That switch still has the separate VLANs which makes me not fully trust that network. Especially since I had problems with NDI in there.",
+      },
+    ],
+  },
+  {
+    id: "nv-sn-tracking",
+    title: "Serial number / MAC tracking gap on RMA",
+    severity: "P2",
+    firstSeen: "2026-05-08",
+    affectsModels: ["NV-21", "NV-32"],
+    symptom:
+      "Failed NV unit pulled from rack but SN/MAC not captured in Jira. Cannot reference SN for QSC RMA.",
+    cause:
+      "No documented process. Asset tracking was Patrick-era tribal knowledge. Jira is new.",
+    workaround: "Stop the onsite tech before they leave; ask for a photo of the label.",
+    permanentFix:
+      "Runbook for onsite (John, Adali): log SN + MAC + room + symptoms in Jira before disposing of failed unit.",
+    evidence: [
+      {
+        who: "Matt Cornick",
+        when: "May 8, 2026 12:20 PT",
+        text: "When John pulled the bad NV, he should have logged the info into the Jira ticket so Mark could just reference it there. Jira is newish for us and we're also trying to get in the habit of tracking everything there so it's easily referenced later.",
+      },
+    ],
+  },
+];
+
+export interface NvSparePart {
+  name: string;
+  partNumber: string;
+  source: string;
+  notes: string;
+  url?: string;
+}
+
+export const NV_SPARES: NvSparePart[] = [
+  {
+    name: "NV-21 OEM PSU (includes Phoenix block)",
+    partNumber: "QB-NV21PSU",
+    source: "ADI Global Distribution / QSC reseller",
+    notes:
+      "The 'right' PSU but rarely in stock and not always shipped with the connector. Mark: 'I dont know how to buy this one. ive never even seen this power supply in real life before.'",
+    url: "https://www.adiglobaldistribution.pr/Product/QB-NV21PSU",
+  },
+  {
+    name: "External PSU (12V) — Phihong",
+    partNumber: "AA120U-120B-R",
+    source: "Digikey",
+    notes:
+      "Mark's go-to. Does not include the Phoenix block — order separately.",
+    url: "https://www.digikey.com/en/products/detail/phihong-usa/AA120U-120B-R/21358452",
+  },
+  {
+    name: "Phoenix Contact 2-conductor terminal block",
+    partNumber: "5452235",
+    source: "Digikey",
+    notes:
+      "The actual connector that mates with the NV-21 power input. Required if using a non-OEM PSU.",
+    url: "https://www.digikey.com/en/products/detail/phoenix-contact/5452235/5187331",
+  },
+  {
+    name: "90W PoE+ Injector",
+    partNumber: "TBD — confirm with Mark",
+    source: "Standard AV vendor",
+    notes:
+      "Field replacement for failed PSU on either NV-21 or NV-32. Mark used one to get Olympic back online Aug 20, 2025.",
+  },
+];
+
 export const TEAM = {
   Matt: {
     role: "Senior IC, Technical Gravity Well",
