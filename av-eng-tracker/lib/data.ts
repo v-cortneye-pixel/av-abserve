@@ -1302,7 +1302,476 @@ export const QUICK_WINS: QuickWin[] = [
     owner: "Cortney",
     notes: "First solo end-to-end project. Stacey's pet initiative. Strong career investment.",
   },
+  // ---------- POST-PLAYBOOK WINS (qw31-qw42) ----------
+  {
+    id: "qw31",
+    title: "Re-key Patrick's Lambdas to a Service Account (with Matt watching)",
+    tier: "Quick",
+    topic: "Tooling",
+    effort: "Low",
+    visibility: "High",
+    estimatedTime: "60-min screenshare with Matt",
+    owner: "Cortney",
+    notes:
+      "The day-1 alerting-failed problem Matt is carrying. Drive AWS console, narrate in plain English, make Matt 2nd-in-line owner. He sends the green-circle Monday update so HE gets the credit.",
+  },
+  {
+    id: "qw32",
+    title: "GitLab Notification + AWS SNS + Splunk Recipient Audit (the 'Member vs Owner' trap)",
+    tier: "Quick",
+    topic: "Tooling",
+    effort: "Low",
+    visibility: "Medium",
+    estimatedTime: "3–4 hours audit + one-pager",
+    owner: "Cortney",
+    notes:
+      "Patrick discovered Matt was a GitLab 'Member' not 'Owner' so he wasn't getting pipeline-failure emails. Same trap likely exists across AWS SNS / Splunk / Domotz. Audit + before/after table. Email to team — Matt forwards to Stacey unprompted.",
+  },
+  {
+    id: "qw33",
+    title: "EDID + USB-Capture Lab Bench-Test (before HDMI/NV capex)",
+    tier: "Medium",
+    topic: "HDMI",
+    effort: "Medium",
+    visibility: "High",
+    estimatedTime: "2 weeks lab, ~$500 test gear",
+    owner: "Cortney",
+    notes:
+      "The capex-hygiene win. $500 of Lightware EDID Lock + Inogeni/Magewell USB capture in the lab before Mark POs $20k+ of Q-Sys NV. Doesn't reopen the decision — runs parallel data so we size the right NV investment. See /hdmi for full proposal + Matt-rebuttal talking points.",
+  },
+  {
+    id: "qw34",
+    title: "IRV-802 Hidden-Controls Fix + Demo to Matt and Mark Together",
+    tier: "Medium",
+    topic: "UCI",
+    effort: "Medium",
+    visibility: "High",
+    estimatedTime: "Half-day in Designer + demo",
+    owner: "Cortney",
+    notes:
+      "Re-add projector + screen controls under a visible settings tab. Demo WITH Matt so HE owns the explanation to John. Closes a Patrick eye-roll item that's been festering.",
+  },
+  {
+    id: "qw35",
+    title: "One-Pager Per Lambda (the Patrick-promised Monitoring Runbook)",
+    tier: "Project",
+    topic: "Documentation",
+    effort: "High",
+    visibility: "High",
+    estimatedTime: "2–3 weeks, ship by day 30",
+    owner: "Cortney",
+    notes:
+      "Stacey's annual 'operational excellence' goal that Patrick never shipped. Cursor + Claude translate code into plain English. Each Lambda gets: what triggers, where logs go, how to silence, how to debug, owner. Ship before any new initiative.",
+  },
+  {
+    id: "qw36",
+    title: "Cursor Pairing Session with Matt (one tiny demo, <20 min)",
+    tier: "Quick",
+    topic: "Tooling",
+    effort: "Low",
+    visibility: "Medium",
+    estimatedTime: "20–30 min on a tiny Slack ask Matt mentioned",
+    owner: "Cortney",
+    notes:
+      "Mark is already doing 'Claude testing.' Matt is NOT — he's the most threatened by code becoming a black box. Pick a tiny ask, open Cursor with him watching, narrate, ship in <20 min. Demystifies the AI tooling.",
+  },
+  {
+    id: "qw37",
+    title: "Solve NYC-1250 Memory-Leak Mystery (the open dragon)",
+    tier: "Project",
+    topic: "Architecture",
+    effort: "High",
+    visibility: "High",
+    estimatedTime: "Multi-week, paced with Splunk dashboard data",
+    owner: "Cortney",
+    notes:
+      "Patrick's open investigation. Diff against clean sibling NYC-1227 line-by-line. Watch both rooms in the memory-examination dashboard for a week. Closing this is the trump card for FTE conversion.",
+  },
+  {
+    id: "qw38",
+    title: "Mac-Mini vs Q-Sys-Connect-Windows Decision Memo",
+    tier: "Medium",
+    topic: "Architecture",
+    effort: "Medium",
+    visibility: "High",
+    estimatedTime: "1–2 days writing + circulation",
+    owner: "Cortney",
+    notes:
+      "Patrick's 4-year unforced loss. One-page memo: status quo cost, roadmap conflict, proposed pilot (one room, Windows appliance), success criteria, decision needed by date. To Matt + Mark + Stacey. Whichever way it goes, FORCING the decision is the FTE-level move.",
+  },
+  {
+    id: "qw39",
+    title: "SFO All Hands Rebuild as BirdDog → NV Conversion (two birds)",
+    tier: "Project",
+    topic: "Architecture",
+    effort: "High",
+    visibility: "High",
+    estimatedTime: "Multi-week, paced with capex window",
+    owner: "Cortney",
+    notes:
+      "Patrick's stated next priority. Leaks memory + uses BirdDog for cameras only (not transport). Rebuild AND swap BirdDog for NV camera transport in one project. See /sites/sfo + /birddog.",
+  },
+  {
+    id: "qw40",
+    title: "TP-Script Memory-Leak Sweep (8 rooms Patrick left)",
+    tier: "Medium",
+    topic: "Architecture",
+    effort: "Medium",
+    visibility: "Medium",
+    estimatedTime: "1–2 weeks, 8 rooms",
+    owner: "Cortney",
+    notes:
+      "Patrick explicitly said: 'I hadn't thought of the touch panel scripts, for the larger rooms.' Apply the same Lua refactor patterns to TP scripts in SEA-3611/3619/3925, IRV-1249/1250/851, SFO-735/726.",
+  },
+  {
+    id: "qw41",
+    title: "Q-Sys Lua Style Guide (the 5 bad patterns documented)",
+    tier: "Quick",
+    topic: "Documentation",
+    effort: "Low",
+    visibility: "Medium",
+    estimatedTime: "2–3 hours",
+    owner: "Cortney",
+    notes:
+      "Capture the 5 Lua patterns Patrick learned from QSC community: closures capturing controls, self-re-registering timers, re-bound event handlers, string concat in loops, unbounded table inserts in coroutines. Plus the safe replacements. Live in GitLab + linked from /splunk.",
+  },
+  {
+    id: "qw42",
+    title: "iPad / Scheduler Low-Battery Webhook → Slack (Matt's open ask)",
+    tier: "Quick",
+    topic: "Tooling",
+    effort: "Low",
+    visibility: "Medium",
+    estimatedTime: "4–6 hours with Cursor",
+    owner: "Cortney",
+    notes:
+      "Matt has flagged dead-iPad-at-SFO-07 multiple times: 'easy lift that I've seen done at other sites.' Patrick acknowledged and never shipped. AI-author the Lambda; route to #av-alerts. Closes a Matt ask without any code review drama.",
+  },
 ];
+
+// =========================================================================
+// GLOSSARY — every acronym / industry term that shows up in #av-team or
+// in this site. So you can pull up a definition mid-conversation without
+// asking Matt "what's capex?"
+// =========================================================================
+
+export interface GlossaryTerm {
+  term: string;
+  category: "Finance" | "AV hardware" | "AV software" | "Network" | "Process" | "Audio" | "Video";
+  short: string;
+  long: string;
+  whyItMattersToCortney?: string;
+}
+
+export const GLOSSARY: GlossaryTerm[] = [
+  {
+    term: "CapEx",
+    category: "Finance",
+    short: "Capital Expenditure — big-ticket gear purchases that go on the balance sheet and depreciate over years.",
+    long: "Things like Q-Sys NV endpoints, racks, cameras, Cores, AV switches, BirdDog cameras. Requires a PO, budget approval, often Mark + Stacey + Zillow Finance sign-off. Capitalized on the balance sheet and depreciated typically over 3–5 years.",
+    whyItMattersToCortney:
+      "When you propose 'lab-test before committing capex,' you're saying spend $500 in test gear before Mark issues a $20k+ PO. Mark is allergic to wasted capex; Stacey owns operational excellence — this framing wins both.",
+  },
+  {
+    term: "OpEx",
+    category: "Finance",
+    short: "Operating Expenditure — ongoing costs that hit the P&L every month.",
+    long: "AWS bills (~$250/mo for the Q-Sys Designer VM), Splunk Cloud license, Domotz subscription, your contractor labor. Doesn't require capex approval but does show up in monthly budget reviews.",
+    whyItMattersToCortney:
+      "Your contractor pay is OpEx. FTE conversion moves you from OpEx contractor line to FTE headcount — which is a different budget category Stacey has to fight for separately.",
+  },
+  {
+    term: "PO",
+    category: "Finance",
+    short: "Purchase Order — the document Mark issues to buy capex.",
+    long: "Approval flow: spec → vendor quote → Mark builds PO → Zillow Procurement / Finance approval → vendor ships → receiving + asset tagging.",
+  },
+  {
+    term: "BOM",
+    category: "Process",
+    short: "Bill of Materials — the per-room gear list with part numbers and quantities.",
+    long: "Every new buildout needs a BOM. Mark is the BOM owner; he asked Stacey to share the India BOMs with you, so you can read + comment on real production specs.",
+    whyItMattersToCortney:
+      "Mark's standup Aug 2024: 'AI Hackathon task - Automate BOM creation (roughly 2 - 6 hours).' He's already automating BOM generation. Land on that team.",
+  },
+  {
+    term: "EDID",
+    category: "Video",
+    short: "Extended Display Identification Data — the handshake protocol between an HDMI source and an HDMI sink.",
+    long: "When you plug a laptop into a TV/encoder/projector, the SINK tells the SOURCE what resolutions, refresh rates, color depths, and audio formats it supports. The source picks one and starts sending. If the EDID is malformed, blocked, or 'lost' on a long cable run, you get black screen, dropped audio, or 'no signal.' Most fleet-wide HDMI failures trace back to EDID handshake drama, not the cables or the encoders themselves.",
+    whyItMattersToCortney:
+      "EDID forcing (Lightware EDID Lock, ~$100) sits between source and encoder and feeds a pre-baked EDID profile. It solves a huge percentage of HDMI complaints WITHOUT replacing the AV switch. That's the wedge for the capex argument.",
+  },
+  {
+    term: "HDCP",
+    category: "Video",
+    short: "High-bandwidth Digital Content Protection — DRM over HDMI.",
+    long: "Sources (especially streaming devices, sometimes laptops) refuse to output unless the entire signal chain is HDCP-compliant. Older AV switches or USB capture devices can fail HDCP negotiation = black screen.",
+  },
+  {
+    term: "UCI",
+    category: "AV software",
+    short: "Universal Control Interface — Q-Sys touch panel UI.",
+    long: "The Lua/visual interface that sits on the wall-mount or table-mount panel. Authored in Q-Sys Designer. Patrick's 'no touch panel' thesis is on /uci.",
+  },
+  {
+    term: "TP scripts",
+    category: "AV software",
+    short: "Touch Panel scripts — Lua scripts that run on the touch panel (vs. Main scripts that run on the Core).",
+    long: "Patrick fixed memory leaks in MAIN scripts but explicitly said 'I hadn't thought of the touch panel scripts, for the larger rooms.' Same leak patterns, different file, untouched in 8 rooms.",
+  },
+  {
+    term: "NV-21 / NV-32",
+    category: "AV hardware",
+    short: "Q-Sys network video endpoints — AV-over-IP encoders/decoders.",
+    long: "QSC's replacement for the legacy VSI encoder fleet. NV-21 is a 2-in-1-out endpoint, NV-32 is a 3-in-2-out. Carries video, audio, and control over a 1G/10G network. The capex-heavy alternative the team is considering for HDMI reliability.",
+  },
+  {
+    term: "VSI",
+    category: "AV hardware",
+    short: "The legacy AV encoder/decoder fleet currently deployed.",
+    long: "What the NV endpoints would replace. Failing intermittently on HDMI handshake — but that might be EDID, not the encoder hardware itself. That's what the lab bench-test is supposed to determine.",
+  },
+  {
+    term: "NDI",
+    category: "Video",
+    short: "Network Device Interface — IP-based video transport protocol.",
+    long: "What BirdDog cameras use. Low-latency, royalty-free video over standard Ethernet. The team is phasing BirdDog out (see /birddog), partly because of NDI flap issues.",
+  },
+  {
+    term: "UVC",
+    category: "Video",
+    short: "USB Video Class — the USB standard for camera devices.",
+    long: "Native USB camera support. Patrick + Matt tested USB extenders + UVC camera control in SFO-716/SFO-1027 — worked well. The same family of approach Cortney's HDMI USB-capture proposal builds on.",
+  },
+  {
+    term: "Reflect",
+    category: "AV software",
+    short: "Q-Sys Reflect — QSC's cloud monitoring product.",
+    long: "Each Q-Sys Core emits events on plugin error, script error, device offline. Reflect is the cloud receiver. Patrick's Lambda subscribes to the Reflect API + applies the re-poll pattern before alerting.",
+  },
+  {
+    term: "Lambda",
+    category: "AV software",
+    short: "AWS Lambda — serverless function on a trigger.",
+    long: "Patrick's alerting pipeline lives in Lambda. Each function gets an HTTP endpoint or scheduled trigger, runs short code, posts to Slack or writes to Splunk. Cheap, simple — but Patrick's ran under HIS IAM identity, so they failed the morning he was deactivated.",
+  },
+  {
+    term: "HEC",
+    category: "AV software",
+    short: "HTTP Event Collector — how Lambdas push structured events INTO Splunk.",
+    long: "Splunk endpoint + token. Each Lambda has an HEC token to authenticate. If a token was tied to Patrick's identity, the corresponding panel may be dark right now.",
+  },
+  {
+    term: "Splunk",
+    category: "AV software",
+    short: "Zillow's log + dashboard platform — where Patrick's monitoring lives.",
+    long: "App: zgav (zgav_non-prod view). Dashboards: Q-Sys plugin status, core temp/memory, Zoom offline events, daily digest, memory-leak examination panel. See /splunk for the full pipeline + access path.",
+  },
+  {
+    term: "Q-Sys Core",
+    category: "AV hardware",
+    short: "The QSC DSP appliance at the heart of every Q-Sys room.",
+    long: "Runs Lua scripts (Main + TP), exposes Named Controls API, hosts plugins, drives the touch panel. The thing that throws 'Critical Value' errors when memory leaks fill RAM.",
+  },
+  {
+    term: "ZRC",
+    category: "AV software",
+    short: "Zoom Rooms Controller — the iPad app that pairs to a Zoom Room.",
+    long: "Where users start meetings + share content + control the camera. The 'ZRC plugin kick' at NYC-1202 is the manual workaround when the iPad ↔ host pairing goes stale.",
+  },
+  {
+    term: "Domotz",
+    category: "Network",
+    short: "Network device monitoring platform — pings every AV device.",
+    long: "Feeds the av-alerts pipeline. Patrick wanted to route Domotz INTO Splunk so the noisy Slack channel could die. Open-task on Cortney's inherited list.",
+  },
+  {
+    term: "Inogeni / Magewell",
+    category: "AV hardware",
+    short: "HDMI → USB capture devices.",
+    long: "Cheap converter boxes (~$200–$400) that turn an HDMI input into a USB webcam for Zoom. Bypasses the AV switch entirely in a Mac-Mini Zoom Room. Useful for HDMI lab diagnostics + for room kits where USB is preferred over network video.",
+  },
+  {
+    term: "Lightware EDID Lock",
+    category: "AV hardware",
+    short: "Inline HDMI device that forces a known-good EDID profile.",
+    long: "~$100 box. Plug it between the source and the encoder, pre-program the EDID profile you want, and the source ALWAYS sees the same EDID. Kills handshake drama for cheap.",
+  },
+  {
+    term: "AVIO",
+    category: "Audio",
+    short: "Shure AVIO — Dante-to-analog (or AVIO USB) audio adapter.",
+    long: "Cortney's pitch for Neat Center / Neat Board open-space rooms: AVIO USB lets the Neat device 'speak Dante,' so you can companion-mic it with ceiling mics on a Q-Sys Core.",
+  },
+  {
+    term: "Dante",
+    category: "Audio",
+    short: "Audinate Dante — pro audio over IP standard.",
+    long: "The de-facto audio-over-IP standard in pro AV. Q-Sys Cores speak Dante natively; Neat doesn't, which is why AVIO matters for Cortney's open-space concept.",
+  },
+  {
+    term: "TCC2",
+    category: "Audio",
+    short: "Sennheiser TeamConnect Ceiling 2 — ceiling array mic with auto-steering.",
+    long: "What's installed at NYC-1204 and a few SEA rooms. Auto-steers a single beam to the active talker. Less granular than the MXA920 lobe-control approach. Mark's open spec question: TCC2 vs MXA920 for new event spaces.",
+  },
+  {
+    term: "MXA910 / MXA920",
+    category: "Audio",
+    short: "Shure ceiling-array mics. 910 is lobed; 920 added auto-steer.",
+    long: "MXA910 has 8 fixed pickup lobes you manually tune. MXA920 (newer) does auto-steer like the TCC2 but on Shure's stack. The competing platform for the TCC2 spec question.",
+  },
+  {
+    term: "ServiceNow",
+    category: "Process",
+    short: "Zillow's IT request system. Where you file access tiles.",
+    long: "Splunk access, AWS access, GitLab, VPN — all go through ServiceNow. The link Patrick shared for Splunk access is in /splunk.",
+  },
+  {
+    term: "WAVE board / WAVE-XX",
+    category: "Process",
+    short: "The AV team's Jira board. Tickets are tagged WAVE-XX (e.g., WAVE-16).",
+    long: "Migrated from Asana mid-2024. Sprint cadence + backlog. WAVE-16 is the prematurely-closed ticket on the open-issues list.",
+  },
+  {
+    term: "DTO",
+    category: "Process",
+    short: "Doing The Office — Zillow's hot-desk / in-office day program.",
+    long: "Mark's Aug 2024 standup: 'Refresh NYC Quickguide in preparation for Lu DTO in Oct.' When execs DTO at a non-home office, AV gets more scrutiny.",
+  },
+  {
+    term: "P0/P1/P2/P3",
+    category: "Process",
+    short: "Severity tiers. P0 is everything-on-fire, P3 is whenever-you-get-to-it.",
+    long: "Used throughout this site and in the WAVE board. P0 = production rooms down or pipeline failing now; P1 = recurring user impact; P2 = annoying but not blocking; P3 = nice-to-have.",
+  },
+];
+
+// =========================================================================
+// HDMI LAB PROPOSAL — the "what to propose" detail for the bench-test
+// before any HDMI/NV capex commitment. Includes the Matt-rebuttal flow.
+// =========================================================================
+
+export const HDMI_LAB_PROPOSAL = {
+  oneLinePitch:
+    "Before we issue POs for Q-Sys NV endpoints to replace the VSI fleet, let me bench-test two cheap alternatives in the lab — source-side EDID forcing with a Lightware EDID Lock, and direct USB capture with an Inogeni or Magewell. Two weeks, no production impact, ~$500 in test gear, and we'll know if NV is actually the right answer or if a $100 EDID box solves it.",
+
+  whyItMatters: [
+    {
+      headline: "The HDMI problem might not need a $20k+ network-video replacement.",
+      detail:
+        "Most fleet-wide HDMI failures trace to EDID handshake drama, not encoder hardware. An EDID lock forces a known-good profile so the source sees the same handshake every time. If a $100 device on each encoder makes VSI behave, we don't need NV at all.",
+    },
+    {
+      headline: "USB capture is parallel diagnostic value.",
+      detail:
+        "Inogeni / Magewell convert HDMI → USB. In a Mac-Mini Zoom Room you can feed Zoom directly via USB and bypass the AV switch. Tells us whether the failure is at the source, in the switch, or in EDID negotiation — diagnostic gold even if we end up buying NV.",
+    },
+    {
+      headline: "Risk to Matt is zero.",
+      detail:
+        "Lab tests don't touch production. If they fail, we still buy NV. If they pass, we save tens of thousands and avoid a rip-and-replace project Matt would have to install.",
+    },
+    {
+      headline: "Speed isn't a tradeoff.",
+      detail:
+        "Lightware + Inogeni arrive in under a week. NV procurement is months — QSC quote → PO → Zillow IT review → delivery → install. Even if we end up buying NV, testing first costs nothing on the calendar.",
+    },
+    {
+      headline: "Patrick + Matt already half-validated this path.",
+      detail:
+        "Their USB-extender + native UVC tests in SFO-716 / SFO-1027 proved this family of approach works. Use Matt's own positive result as the wedge.",
+    },
+    {
+      headline: "Capex hygiene for Mark + Stacey.",
+      detail:
+        "Mark is allergic to custom one-offs. Stacey owns operational excellence. Spending $500 to validate before $20k+ is the textbook operational-excellence move — frame it back to her exactly that way.",
+    },
+  ],
+
+  // The test gear shopping list
+  testBom: [
+    {
+      part: "Lightware HDMI20-OPTC / EDID Lock",
+      qty: 2,
+      approxCost: "$100–$150 each",
+      role: "Source-side EDID forcing. One on a clean room, one on a flaky room for A/B.",
+    },
+    {
+      part: "Inogeni Share2 OR Magewell USB Capture Plus HDMI",
+      qty: 2,
+      approxCost: "$200–$350 each",
+      role: "HDMI → USB capture. Test direct Zoom ingestion bypassing the AV switch.",
+    },
+    {
+      part: "Known-good HDMI cables + 2x test laptops (one Mac, one Windows)",
+      qty: "—",
+      approxCost: "Existing inventory",
+      role: "Reproducible source signals.",
+    },
+    {
+      part: "(Optional) Murideo Six-G HDMI generator or similar",
+      qty: 1,
+      approxCost: "Borrow from QSC or rent",
+      role: "Pristine HDMI signal source for baseline. Skip if budget is tight.",
+    },
+  ],
+
+  // Pass/fail criteria for each option
+  passFailCriteria: [
+    {
+      test: "Option D — Source-side EDID forcing (Lightware)",
+      pass: "Flaky room shows zero 'no signal' / dropped audio events across 5 reboots + 3 laptop swaps + 2 resolution changes. Tested on Mac and Windows.",
+      fail: "EDID forcing helps but still gets dropouts on resolution change or hot-plug. Means EDID is partial cause, NV (or NV + EDID lock) still likely needed.",
+    },
+    {
+      test: "Option B — Direct USB capture (Inogeni/Magewell)",
+      pass: "Zoom ingests the HDMI source via USB cleanly for 1 hour. No audio drift, no resolution flicker. Mac and Windows both work.",
+      fail: "USB capture drops or stutters. Means the failure is upstream (source or cable), and replacing the switch (with NV) won't help either.",
+    },
+  ],
+
+  // The Matt-rebuttal flow
+  mattRebuttals: [
+    {
+      objection: "\"We already decided on NV.\"",
+      response:
+        "Totally fair — I'm not asking to reopen the decision. I'm asking for two weeks of parallel lab data so we can SIZE the right NV investment. Maybe we still buy NV, but only for the all-hands rooms instead of fleet-wide. Worst case we have receipts for Mark; best case we save the budget for somewhere it matters more.",
+    },
+    {
+      objection: "\"That's a contractor doing engineer-level scoping work.\"",
+      response:
+        "Yep — that's literally the role. The Lambda re-keying, the runbook docs, the lab tests are all in the scope Stacey signed off on. I'll keep you in the loop on every step, and if any of it crosses into territory that needs your call, I'll DM you first before posting.",
+    },
+    {
+      objection: "\"I don't want to manage another vendor for $500 of test gear.\"",
+      response:
+        "Don't have to. I'll handle the procurement through expense if Mark prefers — or pull from petty cash. The capex argument is exactly why I'm doing this part myself.",
+    },
+    {
+      objection: "\"What if it's a waste of two weeks?\"",
+      response:
+        "Two weeks of lab work runs in parallel with the rest of my P0 list (re-keying Lambdas, building the runbook). It's not blocking anything. And even a 'fail' result tells us something useful — that the problem is upstream and NV alone won't fix it.",
+    },
+    {
+      objection: "\"Why now?\"",
+      response:
+        "Because we haven't issued the PO yet. The moment Mark signs the NV PO this test gets a lot less valuable. The window for cheap data is right now.",
+    },
+  ],
+
+  // Final 5-step lab plan
+  labPlan: [
+    "1. Order test gear (Lightware EDID Lock x2, Inogeni/Magewell x2). ~$500. Expense or petty cash.",
+    "2. Pick one clean room (e.g., a SEA conference) and one flaky room (a current VSI complaint room) as the A/B pair.",
+    "3. Day 1–3: baseline both rooms WITHOUT test gear. Record reboot/source-swap/resolution-change failure rates. Splunk panel if possible.",
+    "4. Day 4–10: insert Lightware EDID Lock on the flaky room. Re-run the same matrix. Compare failure rates.",
+    "5. Day 11–14: swap to Inogeni/Magewell USB capture path. Re-run. Compare. Write up findings — pass/fail per option + dollar cost to roll out fleet-wide vs. NV — and bring to the next AV sync.",
+  ],
+};
+
+
 
 export const HANDOFF_KEYS = {
   toolingAndAccounts: [

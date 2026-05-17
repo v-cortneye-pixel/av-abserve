@@ -14,6 +14,7 @@ const NAV_ITEMS = [
   { href: "/splunk", label: "Splunk" },
   { href: "/mac-mini", label: "Mac Mini" },
   { href: "/hdmi", label: "HDMI" },
+  { href: "/glossary", label: "Glossary" },
   { href: "/handoff", label: "Handoff" },
   { href: "/plan", label: "Plan" },
   { href: "/quick-wins", label: "Wins" },

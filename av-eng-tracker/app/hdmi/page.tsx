@@ -1,4 +1,4 @@
-import { HDMI_OPTIONS, ISSUES } from "@/lib/data";
+import { HDMI_LAB_PROPOSAL, HDMI_OPTIONS, ISSUES } from "@/lib/data";
 
 const NV_TROUBLE = [
   {
@@ -170,6 +170,131 @@ export default function HdmiPage() {
           over the last year and I want to make sure we&apos;re not jumping out of one frying pan
           into another.&rdquo;
         </blockquote>
+      </section>
+
+      {/* ============ THE FULL LAB PROPOSAL ============ */}
+      <section id="lab-proposal" className="space-y-6">
+        <header>
+          <p className="z-eyebrow">The full bench-test proposal</p>
+          <h2 className="z-h2 mt-2">
+            What to propose — &amp; what to say if Matt pushes back
+          </h2>
+          <p className="mt-3 max-w-3xl text-sm text-zillow-slate">
+            Capex hygiene before signing a $20k+ Q-Sys NV PO. Spend ~$500 in lab gear to
+            test cheap alternatives first. Doesn&apos;t reopen the decision — runs parallel
+            data so we size the right investment.
+          </p>
+        </header>
+
+        {/* The one-liner */}
+        <article className="z-card border-l-4 border-zillow-blue bg-zillow-blue-light">
+          <div className="z-eyebrow">The one-line pitch</div>
+          <p className="mt-2 text-sm italic leading-relaxed text-zillow-ink">
+            &ldquo;{HDMI_LAB_PROPOSAL.oneLinePitch}&rdquo;
+          </p>
+        </article>
+
+        {/* Why it matters */}
+        <article className="z-card">
+          <h3 className="z-h3">Why this works (Matt-ready talking points)</h3>
+          <ol className="mt-4 space-y-3 pl-5 text-sm leading-relaxed text-zillow-ink list-decimal">
+            {HDMI_LAB_PROPOSAL.whyItMatters.map((w) => (
+              <li key={w.headline}>
+                <span className="font-semibold">{w.headline}</span>
+                <p className="mt-1 text-zillow-slate">{w.detail}</p>
+              </li>
+            ))}
+          </ol>
+        </article>
+
+        {/* The test BOM */}
+        <article className="z-card">
+          <h3 className="z-h3">Test gear shopping list (~$500 total)</h3>
+          <p className="mt-2 text-xs text-zillow-slate">
+            Expense or petty cash — keep it off the capex line so Mark doesn&apos;t even
+            have to sign.
+          </p>
+          <div className="mt-4 overflow-x-auto rounded-xl border border-zillow-gray-border">
+            <table className="w-full text-sm">
+              <thead className="bg-zillow-gray-light text-left">
+                <tr>
+                  <th className="px-4 py-3 font-semibold text-zillow-ink">Part</th>
+                  <th className="px-4 py-3 font-semibold text-zillow-ink">Qty</th>
+                  <th className="px-4 py-3 font-semibold text-zillow-ink">Cost</th>
+                  <th className="px-4 py-3 font-semibold text-zillow-ink">Role</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zillow-gray-border bg-white">
+                {HDMI_LAB_PROPOSAL.testBom.map((b) => (
+                  <tr key={b.part} className="align-top">
+                    <td className="px-4 py-3 font-semibold text-zillow-ink">{b.part}</td>
+                    <td className="px-4 py-3 text-zillow-slate">{b.qty}</td>
+                    <td className="px-4 py-3 font-mono text-xs text-zillow-slate">{b.approxCost}</td>
+                    <td className="px-4 py-3 text-zillow-slate">{b.role}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        {/* Pass / fail criteria */}
+        <article className="z-card">
+          <h3 className="z-h3">Pass / fail criteria — defined BEFORE the test</h3>
+          <p className="mt-2 text-xs text-zillow-slate">
+            Lock in success criteria before you start. Otherwise the test becomes a
+            Rorschach test that everyone reads differently.
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            {HDMI_LAB_PROPOSAL.passFailCriteria.map((c) => (
+              <div key={c.test} className="rounded-md border border-zillow-gray-border p-4">
+                <div className="font-semibold text-zillow-ink">{c.test}</div>
+                <div className="mt-3 rounded-md bg-emerald-50 px-3 py-2 text-xs">
+                  <span className="font-semibold text-emerald-700">Pass: </span>
+                  {c.pass}
+                </div>
+                <div className="mt-2 rounded-md bg-red-50 px-3 py-2 text-xs">
+                  <span className="font-semibold text-zillow-red">Fail: </span>
+                  {c.fail}
+                </div>
+              </div>
+            ))}
+          </div>
+        </article>
+
+        {/* Matt rebuttals */}
+        <article className="z-card bg-amber-50">
+          <h3 className="z-h3">If Matt pushes back — rebuttal flow</h3>
+          <p className="mt-2 text-xs text-zillow-slate">
+            Each objection is paired with a response that doesn&apos;t escalate, doesn&apos;t
+            reopen the decision, and keeps you in your lane.
+          </p>
+          <div className="mt-4 space-y-3">
+            {HDMI_LAB_PROPOSAL.mattRebuttals.map((r) => (
+              <div key={r.objection} className="rounded-md bg-white p-4 ring-1 ring-zillow-gray-border">
+                <div className="text-sm font-semibold text-zillow-red">
+                  Matt: {r.objection}
+                </div>
+                <div className="mt-2 rounded-md bg-zillow-blue-light px-3 py-2 text-sm leading-relaxed text-zillow-ink">
+                  <span className="font-semibold text-zillow-blue">You: </span>
+                  {r.response}
+                </div>
+              </div>
+            ))}
+          </div>
+        </article>
+
+        {/* Lab plan */}
+        <article className="z-card bg-zillow-gray-light">
+          <h3 className="z-h3">The 5-step lab plan</h3>
+          <ol className="mt-3 space-y-2 text-sm leading-relaxed text-zillow-ink">
+            {HDMI_LAB_PROPOSAL.labPlan.map((step) => (
+              <li key={step} className="rounded-md bg-white px-3 py-2">
+                {step}
+              </li>
+            ))}
+          </ol>
+        </article>
       </section>
 
       {hdmiIssue && (
