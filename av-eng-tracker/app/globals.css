@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-zillow-blue: #006aff;
+  --color-zillow-ink: #28282e;
+}
+
+html,
+body {
+  background: #ffffff;
+  color: var(--color-zillow-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--color-zillow-blue);
+  color: #ffffff;
+}
+
+@layer components {
+  .z-card {
+    @apply rounded-xl border border-zillow-gray-border bg-white p-6 shadow-sm;
+  }
+  .z-card-hover {
+    @apply transition-shadow hover:shadow-md;
+  }
+  .z-chip {
+    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+  .z-btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-zillow-blue px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-zillow-blue-dark;
+  }
+  .z-btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-zillow-gray-border bg-white px-5 py-2.5 text-sm font-semibold text-zillow-ink transition-colors hover:bg-zillow-gray-light;
+  }
+  .z-link {
+    @apply text-zillow-blue underline-offset-2 hover:underline;
+  }
+  .z-h1 {
+    @apply text-3xl font-bold tracking-tight text-zillow-ink md:text-4xl;
+  }
+  .z-h2 {
+    @apply text-2xl font-bold tracking-tight text-zillow-ink md:text-3xl;
+  }
+  .z-h3 {
+    @apply text-xl font-semibold tracking-tight text-zillow-ink;
+  }
+  .z-eyebrow {
+    @apply text-xs font-semibold uppercase tracking-wider text-zillow-blue;
+  }
+}
+
+/* Print styles */
+@media print {
+  nav,
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .z-card {
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+}
