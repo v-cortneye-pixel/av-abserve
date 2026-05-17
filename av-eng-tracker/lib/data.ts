@@ -325,16 +325,123 @@ export const ISSUES: Issue[] = [
       },
     ],
     currentState:
-      "WAVE-16 still open. No proactive monitoring. New scheduler drift discovered reactively each time.",
+      "WAVE-16 shows CLOSED in Jira but the underlying issue is still firing — May 16, 2026 daily alerts: IRV-1250 (Controller disconnected) + IRV-1110 ZHL (Offline). Workaround was applied; root cause never confirmed by Zoom. Reopening is justified.",
     cortneyAction:
-      "Take over WAVE-16. Add scheduler firmware version check to daily alerts bot. Build proactive list of v6.6.10 stragglers.",
+      "Reopen WAVE-16 with fresh evidence. Take over the ticket. Add scheduler firmware version check to daily alerts bot. Build proactive list of v6.6.10 stragglers.",
     steps: [
+      "Reopen WAVE-16 with the May 16, 2026 IRV-1250 / IRV-1110 ZHL evidence",
       "Ask Matt for WAVE-16 ticket transfer to me + last touchpoint with Zoom",
       "Pull all schedulers from Zoom Admin and report current firmware versions",
       "Build a v6.6.10 'stragglers' list for proactive remediation",
       "Add scheduler firmware version check to daily alerts bot",
       "Document the panel-reboot workaround for onsite teams",
+      "Resolve open sub-findings: rooms with 2 schedulers (one online/one offline); pad stuck on upgrading screen",
       "Schedule weekly Zoom Support follow-up until root cause confirmed",
+    ],
+  },
+  {
+    id: "neat-mic-coverage",
+    title: "Neat Bar Pro audio coverage limitations + Q-Sys expansion failure",
+    severity: "P1",
+    category: "Audio",
+    rooms: ["IRV-825 (North Star)", "SEA-3829 Dev Space", "Jeremy Hofmann office", "zRetreat fleet"],
+    status: "Open",
+    owner: "Cortney (proposed)",
+    summary:
+      "Neat Bar Pro alone has documented audio coverage limits in larger rooms. Attempts to expand via Q-Sys Core have failed (Matt: 'only worked with audio one way'). Neat's own Oct 2024 firmware introduced dynamic mic selection specifically to address coverage. SEA-3829 Dev Space already pairs a Sennheiser TCC2 with Neat Pads — the only production precedent for ceiling-mic + Neat coexistence.",
+    rootCause:
+      "Neat Bar Pro USB-C audio expansion to Q-Sys is one-way (mic input only, no output). Shure P300 is the only path Matt has confirmed for bidirectional USB audio. AVIO Dante-USB adapter is bidirectional but untested at Zillow.",
+    workaround:
+      "Pair Neat Bar Pro with handheld wireless mics (Shure MXW). Some rooms add ceiling mics (3737, 3647). SEA-3829 uses Sennheiser TCC2 alongside Neat.",
+    quotes: [
+      {
+        who: "Mark Hampson",
+        when: "Jan 31, 2024 06:10 PT",
+        text: "Another underrated of the Neat Center (their version of the sight), is it has mics built in. So it extends the audio limitations of using just the bar/bar pro.",
+      },
+      {
+        who: "Matt Cornick",
+        when: "May 14, 2026 08:46 PT",
+        text: "The last time I tried a Core to expand a Neat Bar Pro, it only worked with audio one way. I think it was for mics. Output wouldn't work. Shure P300 was the only way to get 2 way USB audio connected.",
+      },
+      {
+        who: "Mark Hampson",
+        when: "Feb 6, 2025 13:14 PT",
+        text: "What are our thoughts on using ceiling mics in tandem with wireless mics in zRetreats (like in 3925). Are the ceiling mics pointless? My thoughts are its a nice to have for the few times we may need them, so it is beneficial to have them in the room if we have the budget.",
+      },
+      {
+        who: "Mark Hampson",
+        when: "Feb 6, 2025",
+        text: "So in the new enclosed room, I am thinking we repurpose two MXA910 mics with some handheld mics. The space is definitely smaller than 3925. It's a 30 person room.",
+      },
+      {
+        who: "Matt Cornick",
+        when: "Jan 26, 2026 13:01 PT (SEA-3829 inventory)",
+        text: "SEA-3829: Conference room seating; (1) Front camera; Dual screens HDbT; (1) Senn TCC2; (2) Controller as Neat Pads (x1 floor, x1 wall); (2) Schedulers outside.",
+      },
+      {
+        who: "Cortney Eison",
+        when: "May 14, 2026 (G62 thread)",
+        text: "For example with a neatboardpro an AVIO can be used to add ceiling mics as a companion to a neatcenter. Alternatively with a neatbar pro the same thing.",
+      },
+      {
+        who: "Neat release notes",
+        when: "Oct 2024 (firmware 24.4)",
+        text: "Dynamic microphone selection between Neat Pad and main room. This enables further audio coverage for larger rooms or for rooms where the Pad is placed away from the table (e.g. on a podium).",
+      },
+    ],
+    currentState:
+      "Mark's Feb 2025 open question — 'are ceiling mics pointless with Neat?' — never definitively answered. SEA-3829 is the only documented Neat + ceiling-mic coexistence in production. AVIO bidirectional approach Cortney proposed has not been bench-tested.",
+    cortneyAction:
+      "Use SEA-3829's existing Senn TCC2 + Neat Pad setup as the precedent. Bench-test AVIO USB-C adapter as bidirectional Q-Sys ↔ Neat audio bridge to validate the 45+ space architecture pitched May 14. Document findings for fleet audio coverage standard.",
+    steps: [
+      "Visit SEA-3829 dev space — document the working TCC2 + Neat Pad signal flow as a reference design",
+      "Bench-test AVIO USB-C bidirectional adapter with Neat Bar Pro + Q-Sys Core",
+      "Confirm Matt's prior failure mode — was it AVIO or Shure P300 that was tested?",
+      "Survey Neat-equipped rooms (IRV-825, Hofmann office, zRetreat fleet) for audio coverage complaints",
+      "Document a Neat audio-expansion standard if testing succeeds (Tier 2 → Tier 3 upgrade path)",
+      "Answer Mark's open Feb 2025 question on ceiling-mics-with-Neat — recommendation by next sync",
+    ],
+  },
+  {
+    id: "neat-install-quality",
+    title: "Neat Bar Pro fleet install quality — upside-down mounting",
+    severity: "P2",
+    category: "Hardware",
+    rooms: ["SEA-3940 (fixed)", "SEA-3626 (fixed)", "remaining Neat Bar Pro fleet"],
+    status: "Workaround",
+    owner: "Matt + Face → Cortney (audit)",
+    summary:
+      "Discovered Aug 2025: all Neat Bar Pros were mounted upside down, causing cables to bend 180 degrees at the connector. Matt and Face flipped some manually; full remediation requires patch + paint due to original mounting hole pattern.",
+    rootCause:
+      "Original installer error — mounted upside down across the fleet. Not a Neat hardware defect.",
+    workaround:
+      "Flip the bar in place — exposes cables (cosmetic, not functional). Avoids the cable strain that risks HDMI port damage.",
+    quotes: [
+      {
+        who: "Matt Cornick",
+        when: "Aug 13, 2025 13:06 PT",
+        text: "Neat Bar Pro rooms with a deserved facepalm: All of the Neat Bar Pros are mounted upside down which causes the cables to get bent 180 degrees to get plugged in. It's easy enough to flip them (which I did in 3940) and I can have Face flip the rest but it leaves the cables exposed. If we remount them to hide the cables properly it will leave holes in the wall exposed.",
+      },
+      {
+        who: "Mark Hampson",
+        when: "Aug 13, 2025 13:16 PT",
+        text: "Dude… what?? Ok leave as is for now. I'll try to coordinate remounting them with patch and paint. That's really annoying.",
+      },
+      {
+        who: "Matt Cornick",
+        when: "Aug 13, 2025",
+        text: "3626 is good. They used the vesa mount so I was able to flip it.",
+      },
+    ],
+    currentState: "Some flipped, rest pending. Patch + paint coordination unresolved.",
+    cortneyAction:
+      "Audit remaining Neat Bar Pro fleet for upside-down mounts. Coordinate patch + paint with Workplace as part of next site visits.",
+    steps: [
+      "Build full list of Neat Bar Pro rooms with current mount orientation",
+      "Identify which have been flipped vs still upside-down",
+      "Schedule patch + paint with Workplace for proper remount cycle",
+      "Update install runbook so this never happens again on new deployments",
     ],
   },
   {
