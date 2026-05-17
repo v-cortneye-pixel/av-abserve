@@ -4836,6 +4836,276 @@ export const ACCESS_TILES = [
   },
 ];
 
+// =========================================================================
+// THE PLAYBOOK — friendly-prove-Matt-wrong + earn Stacey's trust + path
+// from contractor → FTE. Every move tied to a specific Slack-evidenced
+// behavior. No fluff, no calendar-time estimates, just sequenced moves.
+// =========================================================================
+
+export const PLAYBOOK_THESIS = {
+  headline: "Friendly out-perform. Never publicly contradict. Make Matt look good in front of Stacey.",
+  text:
+    "Matt set the bar low publicly ('I have some armor on my :broken_heart: now') and Stacey is evaluating you for FTE conversion in real time through her Friday wins/challenges email. The play isn't to show Matt up — it's to quietly close the items he can't, credit him every time, and feed Stacey closed deliverables on her stated operational-excellence goal. Patrick promised the monitoring runbook and never shipped it; deliver it on day 30, deliver Patrick's other open items on day 60, and propose the FTE-only scope on day 90.",
+  threeRules: [
+    "Always write 'Matt and I' in shared docs even when you did 90%.",
+    "Translate every piece of code into plain English in the runbook so Matt can read it. He admitted GitLab is a lighting console — meet him where he is.",
+    "Close one Patrick-broken-since-departure item every week. Stacey notices closed loops, not open promises.",
+  ],
+};
+
+export interface PlaybookMove {
+  id: string;
+  audience: ("Matt" | "Mark" | "Stacey" | "John")[];
+  title: string;
+  why: string; // why this move works for this person, in their words / from Slack
+  how: string; // concrete steps
+  proof: string; // how to surface the win without bragging
+}
+
+export const PLAYBOOK_MOVES: PlaybookMove[] = [
+  // ---- THE MATT MOVES (friendly-prove-wrong) ----
+  {
+    id: "rekey-lambdas-with-matt",
+    audience: ["Matt"],
+    title: "Re-key Patrick's Lambdas — with Matt sitting next to you (screen share)",
+    why: "Matt: 'AV Alerts: I just noticed that it looks like the alerts failed to run this morning. I'm guessing this has to do with Patrick officially being gone.' He's been carrying this alone. Helping him close it = instant credibility, zero ego.",
+    how: "Schedule a 60-min screenshare. You drive AWS console, narrate every step in plain English. Move the Lambda execution role from Patrick's IAM user to a service-account or team IAM role. Make Matt the second-in-line owner.",
+    proof: "Matt sends the green-circle Monday update: 'AV Alerts re-keyed with Cortney, no longer dependent on Patrick's identity.' He gets the credit; Stacey sees it.",
+  },
+  {
+    id: "gitlab-notification-fix",
+    audience: ["Matt"],
+    title: "Fix Matt's GitLab notification settings (and everyone else's)",
+    why: "Patrick discovered Matt was a GitLab 'Member' not 'Owner,' so he wasn't getting pipeline-failure emails. Same trap likely exists on AWS, Splunk, Domotz. Matt himself asked 'Participate?' — he doesn't know the UX.",
+    how: "Audit GitLab + AWS SNS topics + Splunk alert recipients + Domotz email list. Bump every teammate to the right tier and document each setting in the runbook. Walk Matt through it once.",
+    proof: "One-pager titled 'AV notification routing audit' with before/after table. Email to team. Matt forwards to Stacey unprompted.",
+  },
+  {
+    id: "lambda-one-pager",
+    audience: ["Matt", "Mark"],
+    title: "One-pager per Lambda — written so Matt can read it",
+    why: "Matt: 'Looking at Gitlab is like looking at a lighting console for me.' Mark's verdict on Patrick's stack: 'too many variables/too complicated to accurately document.' This is THE foundation gap.",
+    how: "Cursor + Claude to summarize each Lambda in plain English. Sections: what triggers it, where logs go, how to silence, how to debug, who to escalate to. Commit alongside the code in GitLab.",
+    proof: "When Matt next sees an alert and pings you, he opens the one-pager himself first. Send Stacey the doc link in the Friday wins email under 'operational excellence.'",
+  },
+  {
+    id: "irv-802-close-the-loop",
+    audience: ["Matt", "Mark"],
+    title: "Close the IRV-802 hidden-controls ticket Matt eye-rolled at",
+    why: "Matt: 'I think Patrick removed projector and screen controls from the UI :eyeroll: so I had to roll the screens up and turn projectors off manually from QDS.' Mark: 'should be redone. Correct me if I'm wrong but can't this just be a simple Zoom Room?' This is a wound that has been festering. Close it.",
+    how: "Reopen the UCI in Designer. Re-add projector + screen controls under a visible settings tab (not Patrick's hidden 'No source selected' pattern). Push, test, demo to Matt and Mark together.",
+    proof: "Matt's next IRV-802 Slack reference goes from eye-roll emoji to 'fixed in Cortney's last push.' You demoed it WITH him so he understands the change. He owns the explanation to John.",
+  },
+  {
+    id: "cursor-pairing",
+    audience: ["Matt", "Mark"],
+    title: "Cursor pairing session — show Matt one AI win",
+    why: "Mark is already doing 'Claude testing' on his standup. Matt is NOT — he's the one most threatened by the code-side becoming a black box. Demystify it.",
+    how: "Pick one tiny Q-Sys ask Matt mentions in Slack ('we should have a Slack alert when X happens'). Open Cursor with him watching. Talk out loud. Ship the change in <20 minutes. Frame as 'this is the new way we make YOUR ideas real.'",
+    proof: "Matt mentions Cursor in #av-team unprompted within 2 weeks. Mark sees it. Stacey sees it.",
+  },
+  {
+    id: "matt-credit-pattern",
+    audience: ["Matt"],
+    title: "Credit Matt's room knowledge publicly on every closed ticket",
+    why: "Matt has been carrying alone since Patrick left. He's lonely and slightly defensive. Public credit costs you nothing and converts him to your strongest advocate.",
+    how: "Every Jira / Slack close-out: 'Closed with Matt — his read on [the rack / the cable run / the room behavior] caught X.' Mean it.",
+    proof: "Matt is the first person to defend you when someone questions a contractor doing engineer-level work.",
+  },
+  {
+    id: "do-not-publicly-contradict",
+    audience: ["Matt"],
+    title: "Never publicly contradict Matt — only ever in DM",
+    why: "Matt's armor quote is real. He's bracing for being shown up. Public disagreement = Matt locks in. DM disagreement = Matt updates.",
+    how: "If you disagree in #av-team, drop a thumbs-up emoji and DM him the question. Land the disagreement in 1:1 or DM only.",
+    proof: "Watch Matt's tone shift over 30 days. He'll start DMing you BEFORE posting in #av-team to sanity-check.",
+  },
+
+  // ---- THE STACEY MOVES (earn trust + FTE conversion) ----
+  {
+    id: "friday-wins-discipline",
+    audience: ["Stacey"],
+    title: "Friday wins/challenges email — closed deliverables only, no promises",
+    why: "Stacey: 'this year I'd like to focus on operational excellence as a team and having systems that are dependable.' Patrick's 'Eventually I will...' was his career-limiter. Don't repeat it.",
+    how: "Every Friday, 3 lines: (1) what closed this week with link, (2) what's in-flight with target close, (3) what's blocked and who unblocks it. Always tie to Stacey's stated operational-excellence goal.",
+    proof: "Stacey starts forwarding your wins email up. The forward is the FTE-conversion preamble.",
+  },
+  {
+    id: "deliver-the-patrick-doc",
+    audience: ["Stacey", "Matt", "Mark"],
+    title: "Deliver the monitoring runbook Patrick promised — by day 30",
+    why: "Stacey explicitly asked for 'operational excellence — dependable systems' as the annual goal. Patrick agreed and never shipped the doc. Mark's TL;DR: 'too many variables/too complicated to accurately document.' Shipping this doc is the single biggest 'I'm-different-from-Patrick' signal you can send.",
+    how: "One-page-per-Lambda runbooks + a top-level 'AV monitoring stack — overview' doc. Use Cursor to compress Patrick's mess into plain English. Link it from #av-team and the Splunk dashboard.",
+    proof: "Stacey replies in #av-team with 'this is exactly what I asked for last year — thank you Cortney.' That message goes to your FTE file.",
+  },
+  {
+    id: "india-buildout-volunteering",
+    audience: ["Stacey", "Mark"],
+    title: "Take initiative on the India BOMs without being asked twice",
+    why: "Stacey already told Mark to 'share the India BOMs with Cortney.' Mark is busy. Volunteering means Stacey sees you treat new buildouts as your problem, not assigned work.",
+    how: "Get the BOM from Mark Monday. Read it end-to-end. Send back 3 questions + 1 spec suggestion by Wednesday. Don't wait for a meeting.",
+    proof: "Mark mentions 'Cortney owned the India spec validation' in his Monday standup green-circle. That's a Stacey-visible artifact.",
+  },
+  {
+    id: "fte-conversion-case-builder",
+    audience: ["Stacey"],
+    title: "Build the FTE conversion case in a private doc, week 1",
+    why: "Contractor → FTE happens because the manager has a paper trail of impact. Start the trail day 1. Don't ask for conversion — make the case undeniable.",
+    how: "Private Google doc 'Cortney 90-day impact log.' Three columns: date, what closed, who benefited. Add every closed item with link. Share it with Stacey at day 60 as 'thinking ahead to conversion conversation — wanted you to have the receipts.'",
+    proof: "Stacey is the one who proposes the FTE conversion at day 90, not you. The doc gave her the ammo.",
+  },
+  {
+    id: "operational-excellence-anchor",
+    audience: ["Stacey"],
+    title: "Anchor every initiative to Stacey's 'operational excellence' phrase",
+    why: "She invoked that phrase as the team's annual goal. Use it back to her verbatim. Manager-level executives invoke phrases to signal alignment — repeat hers.",
+    how: "In every Friday email, in every 1:1 agenda, frame your work as 'operational excellence — dependable systems' (her words). E.g., 'In service of operational excellence, I closed X this week.'",
+    proof: "She starts using the same phrase in your direction in 1:1s. Alignment language = trust.",
+  },
+  {
+    id: "personal-banter-reciprocate",
+    audience: ["Stacey"],
+    title: "Reciprocate Stacey's personal banter, sparingly",
+    why: "Stacey's 'congrats Cortney! How was it? Are you driving back to SF this weekend?' is a relationship offer. The team uses personal banter to stay close. Decline it and you stay distant.",
+    how: "Answer the personal question briefly + warmly. One sentence. Don't overshare. Reciprocate by asking about her India trip / her travel one time, then go back to work.",
+    proof: "Stacey invites you to off-cadence chats (coffee, casual 1:1). That's the relationship-built signal.",
+  },
+
+  // ---- THE MARK MOVES (peer-allergic-to-custom-stuff) ----
+  {
+    id: "show-not-ask",
+    audience: ["Mark"],
+    title: "Be self-sufficient — Mark shouldn't have to babysit Patrick's onboarding twice",
+    why: "Mark's signal in the Mar 13 thread: 'pretend I'm a new guy.' He wants self-sufficient hires. He's also doing Claude testing — he's open to AI tooling.",
+    how: "File all 9 access tiles day 1 without being asked. Read every existing Google doc Patrick linked. Show up to 1:1 with questions, not 'can you set me up?'",
+    proof: "Mark's first standup green-circle says 'Meet with Cortney' — and afterward he says 'productive sync' not 'spent the hour explaining basics.'",
+  },
+  {
+    id: "standardize-not-customize",
+    audience: ["Mark"],
+    title: "Frame every UCI / room change as 'tier of an existing standard,' never a custom one-off",
+    why: "Mark is allergic to custom plugins (he asked about the provenance of Patrick's). He loves standardization.",
+    how: "Every room change you propose: anchor to Tier 1/2/3 UCI standard or to the Q-Sys community plugin library. Never 'I wrote a custom plugin for this' — instead 'I extended our Tier 2 template.'",
+    proof: "Mark stops asking 'where does this plugin come from?' because every artifact has a documented source.",
+  },
+  {
+    id: "mac-vs-windows-memo",
+    audience: ["Mark", "Matt", "Stacey"],
+    title: "Force the Mac-Mini-vs-Windows-Q-Sys-Connect decision Patrick punted",
+    why: "Patrick's biggest unforced loss. Mark loves clean decisions. Stacey wants operational excellence. Bringing this forward = both wins.",
+    how: "One-page memo: status quo cost, conflict with Q-Sys Connect roadmap, proposed pilot (one room, Windows AV appliance), success criteria, decision needed by date. Send to Matt + Mark + Stacey.",
+    proof: "Decision lands. Whichever way it goes, you forced the architecture call that Patrick avoided. That's an FTE-level move.",
+  },
+
+  // ---- JOHN ----
+  {
+    id: "john-relationship",
+    audience: ["John"],
+    title: "Befriend John — he's daily-in-the-rooms eyes",
+    why: "Patrick called out: 'John is there every day.' John was at the CTO incident. He sees what the dashboards don't. He's also been told the doctor's appointment news for the team while Patrick was gone.",
+    how: "Ask John 'what's the room that frustrates you the most right now?' Listen. Don't problem-solve in the first meeting.",
+    proof: "John starts DMing you with room issues before they hit Slack. That's the field-intel pipeline.",
+  },
+];
+
+// Sequenced execution plan — what to ship in each window, mapped to the
+// audiences each move converts.
+export interface PlaybookPhase {
+  phase: "Week 1" | "Week 2" | "Week 3-4" | "Month 2" | "Month 3 (FTE ask)";
+  theme: string;
+  moves: string[]; // PlaybookMove.id references
+  fteSignal: string; // what evidence accumulates for Stacey
+}
+
+export const PLAYBOOK_PHASES: PlaybookPhase[] = [
+  {
+    phase: "Week 1",
+    theme: "Show up self-sufficient. Re-key the alerts WITH Matt.",
+    moves: [
+      "show-not-ask",
+      "rekey-lambdas-with-matt",
+      "gitlab-notification-fix",
+      "personal-banter-reciprocate",
+      "fte-conversion-case-builder",
+    ],
+    fteSignal:
+      "Stacey's onboarding checklist is half-complete before she has to ask. The av-alerts pipeline is back, re-keyed under a service account. Matt's Monday green-circle mentions 'Cortney' for the right reason.",
+  },
+  {
+    phase: "Week 2",
+    theme: "Document Patrick's mess in plain English. Make Matt look good.",
+    moves: [
+      "lambda-one-pager",
+      "matt-credit-pattern",
+      "do-not-publicly-contradict",
+      "friday-wins-discipline",
+    ],
+    fteSignal:
+      "First Friday wins email is a closed-deliverables-only banger. Stacey forwards it. Matt has been credited publicly twice.",
+  },
+  {
+    phase: "Week 3-4",
+    theme: "Close one Patrick-broken-since-departure item per week. Earn Mark.",
+    moves: [
+      "irv-802-close-the-loop",
+      "cursor-pairing",
+      "india-buildout-volunteering",
+      "standardize-not-customize",
+      "operational-excellence-anchor",
+      "john-relationship",
+    ],
+    fteSignal:
+      "IRV-802 closed. India BOM commented on. Mark stops introducing you as 'the new contractor' and starts introducing you as 'our systems engineer.'",
+  },
+  {
+    phase: "Month 2",
+    theme: "Ship the runbook Patrick promised. Hunt the NYC-1250 dragon.",
+    moves: ["deliver-the-patrick-doc", "mac-vs-windows-memo"],
+    fteSignal:
+      "Stacey replies in #av-team to your runbook drop: 'this is exactly what I asked for last year — thank you Cortney.' That message lives forever in your FTE file. Mac-vs-Windows memo lands with a decision date.",
+  },
+  {
+    phase: "Month 3 (FTE ask)",
+    theme: "Make Stacey propose the conversion. Don't ask.",
+    moves: [],
+    fteSignal:
+      "Share the 90-day impact log with Stacey as 'wanted you to have the receipts when we have the conversion conversation.' Don't push. She'll bring it up. The receipts you've already built make it easy for her to fight for FTE budget. Closing NYC-1250 in this window is the trump card — it's the dragon Patrick never killed.",
+  },
+];
+
+// Anti-patterns — Patrick's traps Cortney must avoid. Every contractor-to-FTE
+// path dies in the same four ways.
+export const PLAYBOOK_ANTIPATTERNS = [
+  {
+    trap: "'Eventually I will...' syndrome",
+    patrickEvidence:
+      "Patrick: 'Eventually, I will have a doc that describes all of our monitoring and alerting efforts.'",
+    avoid:
+      "Never say 'eventually' in #av-team or 1:1s. If you say it, it goes in Jira same day with a target date. No exceptions.",
+  },
+  {
+    trap: "Code-as-yours / single-owner lock-in",
+    patrickEvidence:
+      "Mark: 'do you know where this plugin comes from? Did Patrick write it or get it from his Q-Sys community? It's not on the Q-Sys Library.'",
+    avoid:
+      "Every plugin you write gets license / source / support-contact metadata in the file header. Every MR reviewed by Matt or Mark (Cursor makes it possible for them to read it).",
+  },
+  {
+    trap: "Punting on IT politics",
+    patrickEvidence:
+      "Mac Mini ↔ Q-Sys Connect Windows-only conflict was never escalated to Matt + IT as a formal decision in 4 years.",
+    avoid:
+      "Force the open architectural decisions in writing. Patrick avoided diplomacy debt; you have to spend some of it to lift the foundation.",
+  },
+  {
+    trap: "Public contradiction of teammates",
+    patrickEvidence:
+      "Matt: 'I have some armor on my :broken_heart: now' — bracing for being shown up.",
+    avoid:
+      "Disagreements in DM. Public posts are credit-sharing only. Make Matt's craft visible.",
+  },
+];
+
 // Helper: compute summary percentages by category and by status.
 export const PATRICK_SUMMARY = (() => {
   const total = PATRICK_PORTFOLIO.length;
