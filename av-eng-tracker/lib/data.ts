@@ -6276,6 +6276,73 @@ export interface OneOnOneMeeting {
   agendaScript?: string[];
 }
 
+// =========================================================================
+// BANGALORE QUESTIONS — the actual substantive Bangalore-BOM questions
+// Cortney should bring to the Week 1 Stacey 1:1. Each one is framed as a
+// clarification, not a critique. Each one shows real AV-engineering depth
+// (electrical, vendor coverage, timezone, monitoring, regional cert).
+// =========================================================================
+
+export interface BangaloreQuestion {
+  number: number;
+  topic: string;
+  verbatim: string;
+  whyAsk: string;
+  ifSheKnows: string;
+  ifSheDoesnt: string;
+}
+
+export const BANGALORE_QUESTIONS: BangaloreQuestion[] = [
+  {
+    number: 1,
+    topic: "Power / electrical — 230V 50Hz vs US 120V 60Hz",
+    verbatim:
+      "\"India runs 230V at 50Hz; our US standard is 120V/60Hz. Wanted to confirm whether the PSUs we're sourcing for Bangalore — particularly the Q-Sys cores, NV endpoints, and UPS — are dual-voltage rated, or whether we're going with India-specific variants. Also wanted to ask about UPS sizing — anything 50Hz-rated will be larger than the equivalent 60Hz unit at the same wattage.\"",
+    whyAsk:
+      "Demonstrates real AV-engineering depth without contradicting Mark. Most US AV gear IS dual-voltage but UPS sizing genuinely changes between 50Hz and 60Hz. This question shows you've thought about the physics, not just the BOM.",
+    ifSheKnows:
+      "\"Perfect — wanted to confirm. I'll keep an eye on the PSU SKUs when the order goes through.\"",
+    ifSheDoesnt:
+      "\"No worries — I can check the QSC and NV spec sheets and confirm dual-voltage rating before the PO. Want me to ping Mark with my findings?\" Volunteers the check without making her feel uninformed.",
+  },
+  {
+    number: 2,
+    topic: "Service vendor coverage in India",
+    verbatim:
+      "\"In the US, Service Express handles our hardware replacement on the network side and we lean on QSC for Q-Sys core support. For Bangalore — is there a comparable local AV integrator + replacement-parts contract? Just want to make sure that when a UPS or NV endpoint dies onsite, we have the same loop closure we have in IRV and NYC.\"",
+    whyAsk:
+      "Shows you understand the OPERATIONAL difference between buying gear and supporting it in production. Stacey lives on operational excellence — this question lands there.",
+    ifSheKnows:
+      "\"Great — I'll get the local integrator's contact added to our runbook. Mind looping me in by email so I have it on file?\"",
+    ifSheDoesnt:
+      "\"Worth a conversation with Mark. I can draft a 'service coverage gap' one-pager for Bangalore if that helps — three questions, not three recommendations.\" Offers help without overstepping.",
+  },
+  {
+    number: 3,
+    topic: "Time zone + on-call coverage (IST = UTC+5:30)",
+    verbatim:
+      "\"Bangalore is 12.5 to 13.5 hours ahead of Pacific. The daily AV alerts bot fires US-morning, which is Bangalore evening. Wanted to confirm whether we're staffing local eyes-on-glass during Bangalore business hours, or whether the US team handles it asynchronously with documented runbooks. Either works — I just want to size the runbook ahead of time so the local team isn't waiting on a 12-hour delay when something breaks at 9am IST.\"",
+    whyAsk:
+      "Operational-excellence framing again. Bangalore won't get its first real meeting until construction finishes — Stacey appreciates that you're thinking past go-live.",
+    ifSheKnows:
+      "\"Got it. I'll size the runbook to that model and document the escalation path.\"",
+    ifSheDoesnt:
+      "\"Open question I can take to Matt and Mark — wanted to flag it now so it's on the runbook checklist.\" Frames it as your homework, not her gap.",
+  },
+];
+
+export const BANGALORE_SPEC_SUGGESTION = {
+  topic: "HDMI EDID lock — $100/room insurance",
+  verbatim:
+    "\"One small spec thought — the BOM has the standard HDMI cables and switching. Given how much trouble HDMI handshakes give us across the existing fleet (EDID drama at SEA, IRV, SFO), wanted to suggest adding a Lightware EDID lock — about $100 per table HDMI input — as cheap insurance. Not asking to change the order; just flagging now while the BOM is open in case it's easy to add a SKU.\"",
+  whyAsk:
+    "Suggests something concrete + cheap that demonstrates value. References real fleet pain (EDID across SEA / IRV / SFO) — shows you've actually read the channels. The 'not asking to change the order' framing is the magic phrase.",
+  ifSheLikes:
+    "\"Happy to spec it. I'll write up the part number and pass to Mark.\"",
+  ifSheDoesnt:
+    "\"Totally fine — was a flag, not a recommendation. I'll keep it in mind for our existing rooms.\" Drop it gracefully.",
+};
+
 export const ONE_ON_ONE_PLAN: OneOnOneMeeting[] = [
   // ============================ WEEK 1 — 1:1 ============================
   {
@@ -6303,17 +6370,22 @@ export const ONE_ON_ONE_PLAN: OneOnOneMeeting[] = [
         verbatim:
           "\"Mark shared the Bangalore BOMs. I read through them — wrote down three questions and one small spec suggestion. Wanted to come back to you with substantive feedback before going wide. Want me to walk through them?\"",
         rationale:
-          "She'll say yes. The fact that you're checking with her first = signal you understand Bangalore is HER initiative, not just paperwork. Steve gave her a public High-Five for Bangalore on May 15.",
+          "She'll say yes. The fact that you're checking with her first = signal you understand Bangalore is HER initiative, not just paperwork. Steve gave her a public High-Five for Bangalore on May 15. The 3 questions + 1 suggestion are scripted in detail below — read them verbatim if she says yes.",
         branches: [
           {
             ifSheSays: "\"Yes go ahead\"",
             thenYouSay:
-              "Walk through the three questions calmly. Frame each as a clarification, not a critique. Example: 'On page 3, the audio spec calls for X — wanted to confirm whether that's intentional given Y constraint or whether it's worth revisiting.' Let HER decide which deserve attention.",
+              "Read the 3 Bangalore questions + 1 spec suggestion below in order. Frame each as a clarification, not a critique. Pause after each to let her respond. If she gives you an answer to question 1, ask question 2. If she punts on any, say 'no problem, I'll keep it on my list' and move to the next one.",
           },
           {
             ifSheSays: "\"Send them to me in writing\"",
             thenYouSay:
-              "\"Will do — I'll send them tonight. I'll also CC Mark since he routed the BOMs.\" That's a yes-and. Don't take it as a brush-off — sometimes she's just protecting her cognitive load.",
+              "\"Will do — I'll send them tonight. I'll also CC Mark since he routed the BOMs.\" That's a yes-and. Don't take it as a brush-off — sometimes she's just protecting her cognitive load. The 3 questions are below so you can paste them straight into the email.",
+          },
+          {
+            ifSheSays: "\"Tell me what you found\"",
+            thenYouSay:
+              "Same as 'yes go ahead' — read the 3 questions below in order, pause between each, let her direct attention.",
           },
         ],
       },
