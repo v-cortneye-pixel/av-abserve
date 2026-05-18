@@ -1,0 +1,39 @@
+{
+  "lastUpdated": "2026-05-18",
+  "description": "Maps calendar / Zoom room names to iOffice wayfinder links. Copy to spaceDirectory.json and fill in real URLs for your pilot sites.",
+  "spaces": [
+    {
+      "id": "irv-1109-zretreat",
+      "site": "IRV",
+      "displayName": "IRV-1109 zRetreat",
+      "match": ["IRV-1109", "irv-1109 zretreat", "1109 zretreat"],
+      "zoomRoomName": "IRV-1109 zRetreat",
+      "ioffice": {
+        "spaceId": "REPLACE_WITH_IOFFICE_SPACE_ID",
+        "wayfinderUrl": "https://YOUR_TENANT.iofficecorp.com/wayfinder?spaceId=REPLACE"
+      }
+    },
+    {
+      "id": "sea-3619-all-hands",
+      "site": "SEA",
+      "displayName": "SEA-3619 All Hands",
+      "match": ["SEA-3619", "3619 all hands", "sea-3619 all hands"],
+      "zoomRoomName": "SEA-3619 All Hands",
+      "ioffice": {
+        "spaceId": "REPLACE_WITH_IOFFICE_SPACE_ID",
+        "wayfinderUrl": "https://YOUR_TENANT.iofficecorp.com/wayfinder?spaceId=REPLACE"
+      }
+    },
+    {
+      "id": "sfo-735-board",
+      "site": "SFO",
+      "displayName": "SFO-735 Board Room",
+      "match": ["SFO-735", "735 board", "olympic board"],
+      "zoomRoomName": "SFO-735",
+      "ioffice": {
+        "spaceId": "REPLACE_WITH_IOFFICE_SPACE_ID",
+        "wayfinderUrl": "https://YOUR_TENANT.iofficecorp.com/wayfinder?spaceId=REPLACE"
+      }
+    }
+  ]
+}
