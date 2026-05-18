@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+      Arial, sans-serif;
+    color: theme("colors.ink");
+    background: #fafbfc;
+    -webkit-font-smoothing: antialiased;
+  }
+  code, pre {
+    font-family: "SF Mono", Monaco, Menlo, Consolas, "Courier New", monospace;
+  }
+}
+
+@layer components {
+  .container-main {
+    @apply mx-auto max-w-container px-6;
+  }
+  .card {
+    @apply rounded-xl border border-gray-border bg-white p-6 shadow-sm;
+  }
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-wider text-slate;
+  }
+  .h1 {
+    @apply text-3xl font-bold leading-tight tracking-tight text-ink md:text-4xl;
+  }
+  .h2 {
+    @apply text-2xl font-bold tracking-tight text-ink;
+  }
+  .h3 {
+    @apply text-lg font-bold text-ink;
+  }
+  .step-num {
+    @apply flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue text-base font-bold text-white;
+  }
+}
