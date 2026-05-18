@@ -22,6 +22,7 @@ const NAV_ITEMS = [
   { href: "/mac-mini", label: "Mac Mini" },
   { href: "/hdmi", label: "HDMI" },
   { href: "/glossary", label: "Glossary" },
+  { href: "/node", label: "Node.js (why)" },
   { href: "/handoff", label: "Handoff" },
   { href: "/plan", label: "Plan" },
   { href: "/quick-wins", label: "Wins" },
