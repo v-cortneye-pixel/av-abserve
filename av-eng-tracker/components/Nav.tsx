@@ -5,6 +5,7 @@ const NAV_ITEMS = [
   { href: "https://av-windows-setup.vercel.app", label: "🖥️ Windows Setup ↗" },
   { href: "/todo", label: "To-Do (do now)" },
   { href: "/triage", label: "Triage (P0 first)" },
+  { href: "/findings", label: "📋 Findings (share-ready)" },
   { href: "/playbook", label: "Playbook (FTE)" },
   { href: "/one-on-one", label: "1:1 Strategy (private)" },
   { href: "/jira", label: "Jira" },
