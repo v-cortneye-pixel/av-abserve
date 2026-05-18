@@ -1,0 +1,36 @@
+{
+  "beta": {
+    "name": "Workplace Brief",
+    "codename": "moment-ready",
+    "version": "0.1.0-beta"
+  },
+  "pilot": {
+    "primarySite": "IRV",
+    "userEmails": [],
+    "sites": ["IRV", "SEA", "SFO", "NYC", "DEN", "KCY"],
+    "importanceKeywords": [
+      "All Hands",
+      "Town Hall",
+      "Board",
+      "Customer",
+      "Executive",
+      "zRetreat",
+      "QBR"
+    ]
+  },
+  "ioffice": {
+    "wayfinderBaseUrl": "",
+    "notes": "Set wayfinderBaseUrl to your iOffice wayfinder host. Per-space URLs live in data/spaceDirectory.json."
+  },
+  "briefing": {
+    "tier1Only": true,
+    "lookaheadHours": 24,
+    "maxEventsPerUser": 12,
+    "includeAllDay": false,
+    "postToSlackWhenEmpty": false
+  },
+  "slack": {
+    "useTestChannelWhenTesting": true,
+    "dmPilotUsers": false
+  }
+}

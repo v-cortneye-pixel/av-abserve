@@ -29,7 +29,17 @@ An AWS Lambda function that serves as an elegant traffic director for real-time 
 - **Dual Logging**: Logs both raw and processed events to Splunk for analysis
 - **Slack Alerting**: Sends immediate notifications for critical system events
 
-### 3. [av-docker](./apps/av-docker/) - *Deprecated Metrics Exporter*
+### 3. [av-workplace-brief](./apps/av-workplace-brief/) - *Workplace Brief (beta)*
+Employee-facing Slack briefings: calendar + AV room readiness + iOffice wayfinder links. Reuses shared modules; sibling to av-daily-update.
+
+```bash
+npm run test:workplace-brief   # Demo, no API keys
+```
+
+**Vercel demo site:** [workplace-brief-web](./apps/workplace-brief-web/) — public demo only (no secrets).  
+**Full setup:** [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md) — GitLab CI + Vercel instructions.
+
+### 4. [av-docker](./apps/av-docker/) - *Deprecated Metrics Exporter*
 A containerized Prometheus metrics exporter for Q-SYS systems. **Note: This application is deprecated** in favor of the more comprehensive av-daily-update approach.
 
 ## Quick Start

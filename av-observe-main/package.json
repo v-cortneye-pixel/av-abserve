@@ -17,12 +17,17 @@
     "test:lambda": "curl -X POST https://x2bzkdfz2skxnzbsi4thtn6x4y0lbaml.lambda-url.us-west-2.on.aws/ -H 'Content-Type: application/json' -H 'User-Agent: npm-test-script' -d '{\"test\":\"message from package.json test script\"}'",
     "app:docker": "node apps/av-docker/index.js",
     "app:daily-update": "node apps/av-daily-update/app.js",
+    "test:workplace-brief": "WORKPLACE_DEMO=true WORKPLACE_DRY_RUN=true node apps/av-workplace-brief/app.js",
+    "test:workplace-brief:tier1": "WORKPLACE_DEMO=true WORKPLACE_DRY_RUN=true WORKPLACE_TIER1_ONLY=true node apps/av-workplace-brief/app.js",
+    "test:workplace-brief:slack": "mode=testing WORKPLACE_DEMO=true node apps/av-workplace-brief/app.js",
+    "app:workplace-brief": "node apps/av-workplace-brief/app.js",
     "script:reboot-docker": "bash apps/av-docker/redeploy.sh",
     "script:package-alerts": "cd apps/av-alerts-api && bash package-lambda.sh",
     "script:upload-alerts": "aws lambda update-function-code --function-name av-alerts-api --zip-file fileb://apps/av-alerts-api/code.zip --region us-west-2",
     "script:deploy-alerts": "npm run script:package-alerts && npm run script:upload-alerts"
   },
   "dependencies": {
+    "@av-observe/shared": "*",
     "@aws-sdk/client-kms": "^3.896.0",
     "@slack/web-api": "^7.9.2",
     "axios": "^1.9.0",

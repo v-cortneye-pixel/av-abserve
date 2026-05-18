@@ -1,0 +1,3 @@
+# Monorepo entry — AV Observe lives in av-observe-main/
+include:
+  - local: av-observe-main/.gitlab-ci.yml
