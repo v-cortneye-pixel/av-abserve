@@ -5926,6 +5926,24 @@ export const STACEY_CARDS: StaceyCard[] = [
     staceyKeyword: "operational excellence",
     dontSay: ["Patrick never sent these properly."],
   },
+  {
+    id: "card-zodiac-team-add",
+    category: "Question to ask",
+    headline:
+      "Zodiac team membership — 'would it be easiest to add me to the AV Zodiac team you own? My Splunk + AWS access flows from there cleanly.'",
+    framing:
+      "Tiny, immediate, framed as preserving HER team-level ownership rather than asking for special access. She can add you in a click.",
+    staceyAngle:
+      "Demonstrates you understand the org architecture (not just the tooling) — that the Zodiac team auto-provisions Splunk + AWS. Frames the ask as keeping HER ownership clean, not as you needing special permissions.",
+    playability: "1:1 only",
+    weekIdeal: 1,
+    staceyKeyword: "operational excellence",
+    dontSay: [
+      "I need admin access to zgav.",
+      "Patrick had this and I should too.",
+      "Can you file the OBSERV ticket for me?",
+    ],
+  },
 
   // ============ Week 2 — first small closures ============
   {
@@ -7072,7 +7090,12 @@ export const ONE_ON_ONE_PLAN: OneOnOneMeeting[] = [
     type: "1:1",
     theme: "Onboarding. Listen 70%. No pitches. No opinions on Patrick's stack.",
     duration: "30 minutes typical",
-    cards: ["card-recap", "card-india-baseline", "card-friday-email-format"],
+    cards: [
+      "card-recap",
+      "card-india-baseline",
+      "card-friday-email-format",
+      "card-zodiac-team-add",
+    ],
     opening: {
       verbatim:
         "\"Hey Stacey — thanks for the time. I've been spending the week reading #av-team back to January, reading the daily bot output, and getting a feel for the cadence. Wanted to ground myself before I start adding noise. Mind if I share what I'm taking in and a couple questions?\"",
@@ -7127,6 +7150,36 @@ export const ONE_ON_ONE_PLAN: OneOnOneMeeting[] = [
             ifSheSays: "\"Add X section\"",
             thenYouSay:
               "\"Done — I'll work it in.\" Don't push back. Whatever she suggests, do.",
+          },
+        ],
+      },
+      {
+        title:
+          "4. Zodiac team add — the tiny unlock at the end (saves a 3-4 day OBSERV ticket)",
+        verbatim:
+          "\"One small ask if you have a second — combing the channels I realized the zgav Splunk app permissions flow from your Zodiac team ownership. Would it be easiest to just add me as a member of the AV Zodiac team? That way my Splunk + AWS access stays clean rather than me filing one-off tickets, and we keep team-level ownership consistent with how Patrick had it.\"",
+        rationale:
+          "Three things in one sentence: (1) demonstrates you understand the org architecture (Zodiac → Splunk + AWS auto-provisioning, not many people know that), (2) asks for something tiny + reversible (a click for her), (3) frames it as preserving HER team-level ownership cleanly — not as you needing special permissions. She'll add you on the spot.",
+        branches: [
+          {
+            ifSheSays: "\"Sure, I'll add you now\" or \"Already done\"",
+            thenYouSay:
+              "\"Perfect — thanks. I'll wait ~15 minutes for SSO sync and confirm access this afternoon. Will DM you if anything's off.\"",
+          },
+          {
+            ifSheSays: "\"What's a Zodiac team?\"",
+            thenYouSay:
+              "\"Internal team registry — Zillow uses it to auto-provision Splunk apps and AWS access based on team membership. The AV team's Zodiac entry is what created the zgav Splunk app originally. Happy to send you the URL if I find it, or I can ask Mark.\" Don't lecture. Light touch.",
+          },
+          {
+            ifSheSays: "\"Let me check with Mark / IT first\"",
+            thenYouSay:
+              "\"Totally — no rush. I have read access already so I can do the inventory work in the meantime.\" Never push.",
+          },
+          {
+            ifSheSays: "\"Why do you need that?\"",
+            thenYouSay:
+              "\"Right now to inventory Patrick's saved searches + HEC tokens so we can re-key them off his identity. Read access is enough for the inventory; member access just lets me close the loop without filing an OBSERV ticket for object reassignment.\"",
           },
         ],
       },
