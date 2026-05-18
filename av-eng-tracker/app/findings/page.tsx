@@ -1,9 +1,15 @@
-import Link from "next/link";
+import type { Metadata } from "next";
 import {
   ISSUES,
   NEW_FINDINGS_FROM_CHANNELS,
   UCI_ISSUES,
 } from "@/lib/data";
+
+export const metadata: Metadata = {
+  title: "AV Findings — for team review",
+  description:
+    "Open AV issues observed across the team's Slack channel record. Categorized by severity. Each item linked to its source thread.",
+};
 
 type Severity = "P0" | "P1" | "P2" | "P3";
 

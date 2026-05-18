@@ -1,4 +1,12 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+// Paths that are shareable / forward-facing. When the user is on one of these,
+// the full strategy nav is hidden so links to private pages (Playbook, 1:1
+// Strategy, Patrick Audit, etc.) aren't exposed if the URL is shared.
+const PUBLIC_PATHS = ["/findings"];
 
 const NAV_ITEMS = [
   { href: "/", label: "Dashboard" },
@@ -30,6 +38,33 @@ const NAV_ITEMS = [
 ];
 
 export default function Nav() {
+  const pathname = usePathname();
+  const isPublic = PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p + "/"));
+
+  // On forward-facing / shareable paths, render a stripped header with no
+  // hamburger menu. Prevents accidental exposure of private strategy pages
+  // when the URL is shared with the team.
+  if (isPublic) {
+    return (
+      <nav className="no-print sticky top-0 z-50 border-b border-zillow-gray-border bg-white/95 backdrop-blur">
+        <div className="mx-auto flex max-w-container items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-zillow-blue text-lg font-bold text-white">
+              Z
+            </div>
+            <div className="leading-tight">
+              <div className="text-sm font-semibold text-zillow-ink">AV Engineering</div>
+              <div className="text-xs text-zillow-slate">Findings · for team review</div>
+            </div>
+          </div>
+          <span className="rounded-md bg-zillow-gray-light px-2 py-1 text-[10px] font-mono uppercase tracking-wider text-zillow-slate">
+            Share-ready view
+          </span>
+        </div>
+      </nav>
+    );
+  }
+
   return (
     <nav className="no-print sticky top-0 z-50 border-b border-zillow-gray-border bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-container items-center justify-between px-6 py-4">
