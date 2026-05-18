@@ -6277,6 +6277,337 @@ export interface OneOnOneMeeting {
 }
 
 // =========================================================================
+// ACTIVE TO-DO — sequenced action items grouped by section. Each item has
+// a "do now" flag, estimate, prerequisites, and reference links. Used by
+// /todo as a checkable working list.
+// =========================================================================
+
+export interface TodoItem {
+  id: string;
+  task: string;
+  detail?: string;
+  doNow?: boolean;
+  estimateMinutes?: number;
+  links?: { label: string; href: string; external?: boolean }[];
+  prerequisites?: string[];
+}
+
+export interface TodoReference {
+  category: "People" | "Slack channels" | "Jira project" | "Docs / Runbooks" | "URLs to bookmark";
+  items: { label: string; detail: string; href?: string }[];
+}
+
+export interface TodoSection {
+  id: string;
+  title: string;
+  context: string;
+  items: TodoItem[];
+  references?: TodoReference[];
+  copyBlock?: { title: string; body: string }; // copy-paste ready template
+}
+
+export const TODO_SECTIONS: TodoSection[] = [
+  {
+    id: "splunk-inheritance",
+    title: "Splunk inheritance — take over Patrick's zgav app",
+    context:
+      "Patrick was the zgav Splunk app owner. With his deactivation, his dashboards, saved searches, alert rules, and HEC tokens are in frozen ownership — they still function but nobody on the AV team has admin rights to reassign them. The Observability team controls Splunk globally and is the only path to ownership transfer. This is the sequenced plan to inherit it cleanly.",
+    items: [
+      {
+        id: "splunk-1",
+        task: "Bookmark the zgav dashboard URL",
+        detail:
+          "Direct link to Patrick's main AV dashboard. Save it to your browser bookmarks — you'll be opening this every day for the next 90 days.",
+        doNow: true,
+        estimateMinutes: 1,
+        links: [
+          {
+            label: "zgav_non-prod dashboard",
+            href: "https://zillowgroup.splunkcloud.com/en-US/app/zgav/zgav_non-prod",
+            external: true,
+          },
+        ],
+      },
+      {
+        id: "splunk-2",
+        task: "Join #splunk-cloud-community Slack channel",
+        detail:
+          "Public Splunk Q&A channel at Zillow. The Observability team and other Splunk users post here. Browse recent threads to see if anyone has done a similar inheritance transfer recently — that gives you the language pattern for your OBSERV ticket.",
+        doNow: true,
+        estimateMinutes: 2,
+      },
+      {
+        id: "splunk-3",
+        task: "Click 'Click Here for a Guide to these metrics' on the dashboard",
+        detail:
+          "Patrick wrote his own explanation of what each metric means. Read it before doing anything else — it tells you what counts as an 'error' vs a 'problem' and how the data flows.",
+        doNow: true,
+        estimateMinutes: 5,
+      },
+      {
+        id: "splunk-4",
+        task: "Tour all 5 tabs of the zgav dashboard",
+        detail:
+          "Zoom Rooms (you're on this), Q-Sys, Domotz, Zoom, MISC. Screenshot the headline panel from each. Note the 'Last updated' timestamp on each panel — anything older than 24h = dark panel = broken HEC token.",
+        doNow: true,
+        estimateMinutes: 15,
+        prerequisites: ["splunk-3"],
+      },
+      {
+        id: "splunk-5",
+        task: "Run the SPL query to list Patrick's saved searches",
+        detail:
+          "Paste this into the Splunk search bar (top of any page) with time range 'All time' and run it. Outputs every Patrick-owned saved search + its actual SPL + cron schedule + alert actions in one screen.",
+        doNow: true,
+        estimateMinutes: 5,
+        prerequisites: ["splunk-4"],
+      },
+      {
+        id: "splunk-6",
+        task: "Export the saved-search results to CSV",
+        detail:
+          "Top-right of the search results pane → Export → CSV. Save to your audit folder. This single CSV is your authoritative inventory of Patrick's monitoring logic.",
+        doNow: true,
+        estimateMinutes: 2,
+        prerequisites: ["splunk-5"],
+      },
+      {
+        id: "splunk-7",
+        task: "Inventory HEC tokens owned by Patrick",
+        detail:
+          "Settings → Data Inputs → HTTP Event Collector. Note every token where Owner = patrick.gilligan@zillowgroup.com. Do NOT modify any token yet — read-only inventory only.",
+        doNow: true,
+        estimateMinutes: 5,
+      },
+      {
+        id: "splunk-8",
+        task: "Find your Splunk role / capability",
+        detail:
+          "Top-right name → Account Settings. Read your assigned Roles field. Common roles: user (view only), power (save own stuff), admin (modify others). If you see Access Controls → Users in the Settings menu → you're admin. If not → you're not.",
+        doNow: true,
+        estimateMinutes: 3,
+      },
+      {
+        id: "splunk-9",
+        task: "Find the AV Zodiac team page",
+        detail:
+          "Splunk apps are auto-provisioned from Zodiac team service registration. Patrick was the Zodiac team owner for zgav → that gave him admin. Try these URLs to find the right team: https://zodiac.zgtools.net/teams/av-team, /teams/wave, /teams/cloud-hq-experience-av, /teams/av-engineering. Whichever loads → check the members list. You're probably not on it yet.",
+        doNow: true,
+        estimateMinutes: 5,
+        links: [
+          {
+            label: "Zodiac homepage",
+            href: "https://zodiac.zgtools.net/",
+            external: true,
+          },
+        ],
+      },
+      {
+        id: "splunk-10",
+        task: "Get added to the AV Zodiac team",
+        detail:
+          "If you're not on it, DM Mark first (he's likely the team Maintainer now). Frame: 'Need to be added to the AV Zodiac team so my Splunk + AWS access flows from the team membership rather than individual requests.' Mark will likely handle it directly or route to whoever can.",
+        estimateMinutes: 5,
+        prerequisites: ["splunk-9"],
+      },
+      {
+        id: "splunk-11",
+        task: "Read the Splunk Cloud runbook",
+        detail:
+          "Internal Zillow runbook on Splunk app permissions, team-app provisioning, and common access issues. Read the 'App permissions' section so you can cite the right capability name in your OBSERV ticket.",
+        estimateMinutes: 15,
+        links: [
+          {
+            label: "Splunk Cloud runbook (GitLab)",
+            href: "https://gitlab.zgtools.net/groups/devex/observability/-/wikis/splunk-cloud-runbook",
+            external: true,
+          },
+        ],
+      },
+      {
+        id: "splunk-12",
+        task: "File the OBSERV Jira ticket",
+        detail:
+          "Use the copy-paste template below. The Observability team has a 3-4 business day SLA. While it's in flight, continue read-only inventory work (which doesn't need elevated access).",
+        estimateMinutes: 10,
+        prerequisites: ["splunk-11"],
+      },
+      {
+        id: "splunk-13",
+        task: "Compare the dashboard data to the daily bot digest in #av-alerts",
+        detail:
+          "The bot's per-site stats should mirror what the zgav dashboard reports. Pull a recent bot post and the current dashboard view side-by-side. If they match → confirms one pipeline backs both. If they don't → there are TWO pipelines, and one needs to be reconciled.",
+        estimateMinutes: 10,
+      },
+      {
+        id: "splunk-14",
+        task: "Document everything in a Google Doc",
+        detail:
+          "Title: 'AV Splunk inheritance audit — May 17, 2026'. Three columns: What I found / Current owner / Action needed. This becomes the WAVE-CT-001 ticket artifact + the Friday wins email link + the receipt you'll hand Stacey at Week 10.",
+        estimateMinutes: 20,
+        prerequisites: ["splunk-6", "splunk-7"],
+      },
+      {
+        id: "splunk-15",
+        task: "DM Matt with a single-line update",
+        detail:
+          "End-of-session DM (one line): 'Got Splunk access today — did a read-only audit of zgav. Found [N] dark panels and [N] Patrick-owned HEC tokens. Writing it up and sharing tomorrow. No changes made yet.' Read-only-first discipline is the trust deposit.",
+        estimateMinutes: 1,
+        prerequisites: ["splunk-14"],
+      },
+      {
+        id: "splunk-16",
+        task: "Once OBSERV ticket lands — re-key the HEC tokens with Matt watching",
+        detail:
+          "WAVE-CT-001 / QW31 is the actual re-key work. Do it screenshare with Matt so he gets visibility. Move every Patrick-owned token + saved search + dashboard ownership to a team-shared service account or to you. Matt sends the Monday standup update — he gets the credit.",
+        prerequisites: ["splunk-12", "splunk-14", "splunk-15"],
+        links: [
+          {
+            label: "QW31 + WAVE-CT-001 — Re-key Lambdas with Matt",
+            href: "/jira#patrick-stack",
+          },
+        ],
+      },
+    ],
+    references: [
+      {
+        category: "People",
+        items: [
+          {
+            label: "Jack Howsley (@jackh)",
+            detail:
+              "Observability Team Lead — escalation path for owner transfers if OBSERV ticket stalls",
+          },
+          {
+            label: "Rajan Pawar (@rajanp)",
+            detail: "Observability team member — visible on Splunk roadmap discussions",
+          },
+          {
+            label: "Steven Burgart (@stevenbu)",
+            detail: "Observability team member — wrote the Zodiac → Splunk provisioning docs",
+          },
+          {
+            label: "Mark Hampson (@markham)",
+            detail:
+              "Your peer-manager. Already has Splunk read access ('I have splunk access' — Mar 13, 2026). Likely the current AV Zodiac team maintainer.",
+          },
+          {
+            label: "Matt Cornick (@U06KHP9S407)",
+            detail:
+              "Co-engineer. Has Splunk access per Patrick's Mar 13 hopeful statement. Read-level. Do screenshare audits WITH him.",
+          },
+        ],
+      },
+      {
+        category: "Slack channels",
+        items: [
+          {
+            label: "#splunk-cloud-community",
+            detail: "Public Splunk Q&A. Join first. Browse for inheritance-transfer examples.",
+          },
+          {
+            label: "#observability",
+            detail:
+              "Observability team's main channel. Don't post unless escalating a stuck OBSERV ticket.",
+          },
+          {
+            label: "#dev-enablement",
+            detail: "Broader dev-tooling support (Splunk + GitLab + AWS).",
+          },
+          {
+            label: "#av-alerts",
+            detail: "Where Patrick's daily bot digest lives. Compare to dashboard data.",
+          },
+        ],
+      },
+      {
+        category: "Jira project",
+        items: [
+          {
+            label: "OBSERV",
+            detail:
+              "Observability team's Jira project. File Splunk permission tickets here. 3-4 business day SLA. Use the copy-paste template below.",
+          },
+        ],
+      },
+      {
+        category: "Docs / Runbooks",
+        items: [
+          {
+            label: "Splunk Cloud runbook",
+            detail:
+              "Internal Zillow runbook on Splunk app permissions, team-app provisioning. READ THIS before filing the OBSERV ticket.",
+            href: "https://gitlab.zgtools.net/groups/devex/observability/-/wikis/splunk-cloud-runbook",
+          },
+        ],
+      },
+      {
+        category: "URLs to bookmark",
+        items: [
+          {
+            label: "zgav main dashboard",
+            detail: "Patrick's daily-digest dashboard. The most-used URL.",
+            href: "https://zillowgroup.splunkcloud.com/en-US/app/zgav/zgav_non-prod",
+          },
+          {
+            label: "Splunk Cloud home",
+            detail: "Top-level Splunk Cloud landing.",
+            href: "https://zillowgroup.splunkcloud.com",
+          },
+          {
+            label: "Zodiac homepage",
+            detail: "Internal team/service registry. Need to be on the AV team here for app access.",
+            href: "https://zodiac.zgtools.net/",
+          },
+          {
+            label: "Q-Sys Reflect Dashboard",
+            detail:
+              "QSC's cloud monitor. Source of the events Patrick's Lambda forwards into Splunk.",
+            href: "https://reflect.qsc.com",
+          },
+          {
+            label: "Zoom Offline Rooms (live)",
+            detail: "Quick check on the live offline-rooms view.",
+            href: "https://zillowgroup.zoom.us/location?roomStatus=1",
+          },
+          {
+            label: "Domotz Portal",
+            detail: "Network-device monitoring portal.",
+            href: "https://portal.domotz.com/webapp/inventoryDashboard?tab=devices",
+          },
+        ],
+      },
+    ],
+    copyBlock: {
+      title: "OBSERV Jira ticket template — copy-paste ready",
+      body: `Project: OBSERV
+Title: Splunk App Access — AV Team (zgav app) — Patrick Gilligan backfill
+
+Description:
+Hello Observability team,
+
+I'm backfilling Patrick Gilligan (deactivated Mar 2026) on the AV team. I need Patrick-equivalent permissions on the zgav Splunk app so I can:
+
+1. Reassign object ownership for dashboards, saved searches, and alert rules that are currently owned by Patrick's (now-deactivated) user.
+2. Manage HTTP Event Collector (HEC) tokens — specifically re-keying any token that was created under Patrick's identity to a team-shared service account.
+3. Maintain the daily AV monitoring bot that posts to #av-alerts, #sea-av, #irvine-av, #nyc-av.
+
+Specific request:
+- Add me (Cortney Eison) to the AV Zodiac team if not already a member.
+- Grant admin_all_objects capability within the zgav app context.
+- Provide the path / runbook for transferring ownership of saved-search objects from a deactivated user.
+
+Patrick was the original Zodiac team owner who provisioned the zgav app. Mark Hampson (AV Implementation Manager) and Matt Cornick (Senior AV Engineer) currently have Splunk access but neither has admin rights for the zgav app. The AV monitoring pipeline (bot, Lambdas, alerts) is currently functional but un-rotatable until ownership is restored to an active team member.
+
+Happy to jump on a call to walk through the audit if helpful.
+
+Thanks,
+Cortney`,
+    },
+  },
+];
+
+// =========================================================================
 // TEAM & CHANNEL TIMELINE — when each teammate joined, who created which
 // channels, key milestones. Reconstructed from Slack record + user IDs +
 // channel IDs (Slack IDs are issued in order, so they encode age).
