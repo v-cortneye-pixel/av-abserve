@@ -7529,10 +7529,11 @@ export const ONE_ON_ONE_PLAN: OneOnOneMeeting[] = [
       "card-irv-1110",
       "card-india-followup",
       "card-kcy-discovery",
+      "card-zodiac-team-add",
     ],
     opening: {
       verbatim:
-        "\"Hey Stacey — quick update on three closures and one thing I want to surface to you only.\"",
+        "\"Hey Stacey — quick update on closures, one thing to surface to you only, and one tiny ask that'll save us an OBSERV ticket.\"",
       rationale:
         "Telegraphs structure. The 'to you only' is a discreet flag that you have something that's 1:1-sensitive, not team-meeting material.",
     },
@@ -7586,6 +7587,36 @@ export const ONE_ON_ONE_PLAN: OneOnOneMeeting[] = [
             ifSheSays: "\"Hold off — let me check on KCY status\"",
             thenYouSay:
               "\"Sounds good — I'll let you drive on this one. Just wanted you to know it was there.\"",
+          },
+        ],
+      },
+      {
+        title:
+          "5. Zodiac team add — the tiny unlock at the end (carried over from Week 1)",
+        verbatim:
+          "\"One small ask if you have a second — combing the channels I realized the zgav Splunk app permissions flow from your Zodiac team ownership. Would it be easiest to just add me as a member of the AV Zodiac team? That way my Splunk + AWS access stays clean rather than me filing one-off tickets, and we keep team-level ownership consistent with how Patrick had it.\"",
+        rationale:
+          "If you haven't played this yet, NOW. By Week 3 you have enough context that this lands as 'thoughtful' rather than 'rushing the access.' She can add you in a click. Three things in one sentence: (1) demonstrates you understand org architecture (Zodiac → Splunk + AWS auto-provisioning), (2) tiny + reversible ask, (3) preserves HER ownership cleanly.",
+        branches: [
+          {
+            ifSheSays: "\"Sure, I'll add you now\" or \"Already done\"",
+            thenYouSay:
+              "\"Perfect — thanks. I'll wait ~15 minutes for SSO sync and confirm access this afternoon. Will DM you if anything's off.\"",
+          },
+          {
+            ifSheSays: "\"What's a Zodiac team?\"",
+            thenYouSay:
+              "\"Internal team registry — Zillow uses it to auto-provision Splunk apps and AWS access based on team membership. The AV team's Zodiac entry is what created the zgav Splunk app originally. Happy to send you the URL if I find it.\"",
+          },
+          {
+            ifSheSays: "\"Why didn't you ask sooner?\"",
+            thenYouSay:
+              "\"Honestly — I wanted to do enough read-only inventory first to know exactly what I'd do with admin once I had it. Now I do.\" Direct, no apology, demonstrates discipline.",
+          },
+          {
+            ifSheSays: "\"Let me check with Mark / IT first\"",
+            thenYouSay:
+              "\"Totally — no rush. Read access is enough for the inventory work in the meantime.\"",
           },
         ],
       },
