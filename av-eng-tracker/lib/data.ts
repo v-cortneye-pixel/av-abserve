@@ -113,19 +113,19 @@ export const ISSUE_TEAM_SCRIPTS: Record<string, TeamScript> = {
           "'Capex hygiene' is Stacey's love language. 'Doesn't push the NV PO timeline' disarms Matt + Mark — they don't lose anything by saying yes.",
       },
       {
-        title: "4. The Matt / Patrick precedent",
+        title: "4. The Patrick precedent (not Matt — verified)",
         verbatim:
-          "\"You and Patrick actually tested this family of approach at SFO-716 and SFO-1027 last year — the USB extender + native UVC camera control. It worked. This is the same playbook applied to HDMI share, not a new direction. I'd document this as a continuation of that work.\"",
+          "\"Patrick actually tested a related approach at SFO-716 in Feb-Mar 2024 — USB extenders + native UVC camera control. His conclusion: for non-All-Hands rooms, USB cameras + native Zoom controls were a simpler stack than the Q-Sys panel approach. That was a different problem (camera control, not share), but the architectural pattern is similar. I'd cite his threads in the lab write-up so we're building on documented team history, not inventing.\"",
         rationale:
-          "Cites Matt's own past success. Frames you as continuing his thread, not contradicting it. Matt's name on the precedent = Matt's name on the new test.",
+          "ACCURATE: it was Patrick's test, with Matt as a brand-new Week-1 contractor helper. Earlier draft of this script said 'You and Patrick tested' — Matt replied 'I'm not sure what you're talking about' in #av-team May 18, 2026. Don't put Matt's name on a test that wasn't really his. Cite Patrick's permalinks instead.",
       },
     ],
     questionsToTeam: [
       {
         question:
-          "\"Matt — would you have time to walk me through the SFO-716 / SFO-1027 USB extender test you ran with Patrick? Want to make sure I understand what worked and what didn't before I set up the lab.\"",
+          "\"Matt — do you remember the USB extender test Patrick ran at SFO-716 back in Feb 2024? I read his Slack threads but you were new at the time so might not have been deep in it. Just want to make sure I'm citing prior team work correctly before I set up the lab.\"",
         whyAsk:
-          "Honors Matt's expertise. He gets to teach. You get the actual technical history of the team's HDMI work. Maximum-trust framing.",
+          "REVISED May 18, 2026: Matt joined Feb 21, 2024. Patrick's test was Feb 27, 2024 (6 days into Matt's contractor period). Matt may not remember — and that's fine. This phrasing gives him a graceful out while still honoring the question. Earlier version of this question presumed Matt's deep involvement and led to him replying 'I'm not sure what you're talking about' in #av-team.",
       },
       {
         question:
@@ -140,6 +140,12 @@ export const ISSUE_TEAM_SCRIPTS: Record<string, TeamScript> = {
         theySay: "\"We already decided on NV. Why are you reopening this?\"",
         youSay:
           "\"Totally fair — I'm not asking to reopen the decision. I'm asking for two weeks of parallel lab data so we can SIZE the right NV investment. Maybe we still buy NV, but only for the Tier 3 event rooms instead of fleet-wide. Worst case we have receipts for Mark; best case we save the budget for somewhere it matters more.\"",
+      },
+      {
+        audience: "Matt",
+        theySay: "\"I'm not sure what you're talking about\" (about an old test or thread)",
+        youSay:
+          "\"Ah my mistake — I pulled the names from a Slack thread Patrick posted Feb 27 and Mar 11, 2024 about a USB extender test in SFO-716. He said 'Matt and I' but you were brand new at that point so totally possible you weren't deep in it. [Paste permalinks]. The TL;DR was Patrick proved UVC camera control over USB3 worked. Curious if you remember the room-level outcome — did SFO-716 stay USB or get reverted? Either way, no need to dig deep — just wanted to make sure I wasn't ignoring prior team work.\" Owns the imprecision without putting it on Matt. Cites the actual permalinks so he can verify.",
       },
       {
         audience: "Matt",
