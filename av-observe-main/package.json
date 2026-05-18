@@ -18,6 +18,7 @@
     "app:docker": "node apps/av-docker/index.js",
     "app:daily-update": "node apps/av-daily-update/app.js",
     "test:workplace-brief": "WORKPLACE_DEMO=true WORKPLACE_DRY_RUN=true node apps/av-workplace-brief/app.js",
+    "test:workplace-brief:tier1": "WORKPLACE_DEMO=true WORKPLACE_DRY_RUN=true WORKPLACE_TIER1_ONLY=true node apps/av-workplace-brief/app.js",
     "test:workplace-brief:slack": "mode=testing WORKPLACE_DEMO=true node apps/av-workplace-brief/app.js",
     "app:workplace-brief": "node apps/av-workplace-brief/app.js",
     "script:reboot-docker": "bash apps/av-docker/redeploy.sh",

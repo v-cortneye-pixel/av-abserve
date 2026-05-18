@@ -1,6 +1,7 @@
 import { Zoom, Microsoft } from '@av-observe/shared/modules/index.js';
 import { loadSpaceDirectory, resolveSpace, getWayfinderUrl } from './spaceDirectory.js';
 import { normalizeRoomName } from './normalizeRoomName.js';
+import { applyTier1Filter, isTier1Event } from './tier1Filter.js';
 
 function getDemoBrief() {
   const spaces = loadSpaceDirectory().spaces;
@@ -38,15 +39,31 @@ function getDemoBrief() {
       importance: 'normal',
       isInOffice: false
     }
-  ].map((event) => enrichEvent(event, spaces, {}, buildDemoAvHealth()));
+  ]
+    .map((event) => {
+      const enriched = enrichEvent(event, spaces, {}, buildDemoAvHealth());
+      enriched.isImportant = isImportantEvent(enriched, [
+        'QBR',
+        'Customer',
+        'All Hands',
+        'Board',
+        'zRetreat'
+      ]);
+      return enriched;
+    });
+
+  const { events: tier1Events, totalBefore, totalAfter, tier1Only } = applyTier1Filter(
+    events,
+    { pilot: { importanceKeywords: ['QBR', 'Customer', 'All Hands', 'Board', 'zRetreat'] }, briefing: { tier1Only: true } }
+  );
 
   return {
     mode: 'demo',
     generatedAt: now.toISOString(),
     pilotUsers: [{ email: 'pilot@example.com', displayName: 'Pilot User (demo)' }],
-    events,
-    avHealthByRoom: buildDemoAvHealth(),
-    meta: { source: 'demo', eventCount: events.length }
+    events: tier1Events,
+    avHealthByRoom: Object.fromEntries(buildDemoAvHealth()),
+    meta: { source: 'demo', eventCount: tier1Events.length, tier1Only, totalBefore, totalAfter }
   };
 }
 
@@ -172,16 +189,29 @@ export async function collectBriefData(appConfig) {
 
   allEvents.sort((a, b) => new Date(a.start) - new Date(b.start));
 
+  const capped = allEvents.slice(
+    0,
+    (appConfig.briefing?.maxEventsPerUser || 12) * pilotEmails.length
+  );
+
+  const { events: tier1Events, totalBefore, totalAfter, tier1Only } = applyTier1Filter(
+    capped,
+    appConfig
+  );
+
   return {
     mode: process.env.mode === 'testing' ? 'testing' : 'production',
     generatedAt: now.toISOString(),
     pilotUsers: pilotEmails.map((email) => ({ email })),
-    events: allEvents.slice(0, appConfig.briefing?.maxEventsPerUser * pilotEmails.length || 50),
+    events: tier1Events,
     avHealthByRoom: Object.fromEntries(avHealthByRoom),
     meta: {
       source: 'live',
-      eventCount: allEvents.length,
-      lookaheadHours
+      eventCount: tier1Events.length,
+      lookaheadHours,
+      tier1Only,
+      totalBefore,
+      totalAfter
     }
   };
 }

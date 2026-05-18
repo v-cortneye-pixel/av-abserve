@@ -1,0 +1,75 @@
+# AV Observe + Workplace Brief — internal CI (secrets via GitLab CI/CD variables only)
+# Schedule in GitLab: CI/CD → Schedules
+#   - av-daily-update: daily e.g. 0 15 * * 1-5  (7:00 AM Pacific in UTC varies; adjust)
+#   - workplace-brief-morning: daily e.g. 0 14 * * 1-5
+
+stages:
+  - observe
+  - workplace
+
+default:
+  image: node:22-bookworm
+  before_script:
+    - cd av-observe-main
+    - npm ci || npm install
+
+variables:
+  CI: "true"
+  GITLAB_CI: "true"
+
+# ---------------------------------------------------------------------------
+# AV Observe — full daily infrastructure digest (existing flagship job)
+# ---------------------------------------------------------------------------
+av-daily-update:
+  stage: observe
+  script:
+    - npm run app:daily-update
+  artifacts:
+    when: always
+    paths:
+      - av-observe-main/.data/
+      - av-observe-main/data-output.json
+    expire_in: 14 days
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "daily-update"
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == null
+      when: manual
+    - when: manual
+  allow_failure: false
+
+# ---------------------------------------------------------------------------
+# Workplace Brief — tier-1 morning brief → Slack (testing channel in mode=testing)
+# ---------------------------------------------------------------------------
+workplace-brief-morning:
+  stage: workplace
+  variables:
+    mode: testing
+    WORKPLACE_TIER1_ONLY: "true"
+  script:
+    - npm run app:workplace-brief
+  artifacts:
+    when: always
+    paths:
+      - av-observe-main/.data/workplace-brief.json
+    expire_in: 7 days
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "workplace-brief"
+    - when: manual
+  needs: []
+
+workplace-brief-dry-run:
+  stage: workplace
+  variables:
+    WORKPLACE_DEMO: "true"
+    WORKPLACE_DRY_RUN: "true"
+    WORKPLACE_TIER1_ONLY: "true"
+  script:
+    - npm run test:workplace-brief
+  artifacts:
+    when: always
+    paths:
+      - av-observe-main/.data/workplace-brief.json
+    expire_in: 3 days
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - when: manual

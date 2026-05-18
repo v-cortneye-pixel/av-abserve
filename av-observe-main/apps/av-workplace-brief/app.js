@@ -40,8 +40,23 @@ async function main() {
   console.log(`  demo=${process.env.WORKPLACE_DEMO === 'true'}`);
   console.log(`  mode=${process.env.mode || 'production'}`);
   console.log(`  dry_run=${process.env.WORKPLACE_DRY_RUN === 'true'}`);
+  console.log(`  tier1_only=${process.env.WORKPLACE_TIER1_ONLY !== 'false'}`);
 
   const briefData = await collectBriefData(appConfig);
+  console.log(
+    `  events=${briefData.events.length} (tier1: ${briefData.meta?.totalBefore ?? '?'} → ${briefData.meta?.totalAfter ?? '?'})`
+  );
+
+  if (
+    briefData.events.length === 0 &&
+    !appConfig.briefing?.postToSlackWhenEmpty
+  ) {
+    await saveArtifact(briefData, { text: 'No tier-1 events in window.', blocks: [] });
+    console.log('No tier-1 events — skipping Slack post (set briefing.postToSlackWhenEmpty to override).');
+    if (process.env.WORKPLACE_DRY_RUN === 'true') return;
+    return;
+  }
+
   const slackMessage = generateSlackBrief(briefData, {
     betaName: appConfig.beta?.name,
     version: appConfig.beta?.version

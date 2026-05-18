@@ -58,8 +58,8 @@ function SiteFooter() {
         </a>
       </p>
       <p className="mt-2">
-        Deploy on Vercel · Slack bot via{' '}
-        <code className="text-slate-400">apps/av-workplace-brief</code>
+        Demo on Vercel (no secrets) · Production on GitLab CI ·{' '}
+        <code className="text-slate-400">docs/DEPLOYMENT.md</code>
       </p>
     </footer>
   );

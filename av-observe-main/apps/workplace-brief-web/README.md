@@ -2,6 +2,8 @@
 
 Marketing and **live demo UI** for Workplace Brief. Deploy separately from the Slack bot (`../av-workplace-brief`).
 
+**No API keys on Vercel** — production briefs run on GitLab CI. See [DEPLOYMENT.md](../../docs/DEPLOYMENT.md).
+
 ## Deploy to Vercel
 
 ### Option A — Vercel Dashboard

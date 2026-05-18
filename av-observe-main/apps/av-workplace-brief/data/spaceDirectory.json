@@ -1,0 +1,87 @@
+{
+  "lastUpdated": "2026-05-18",
+  "pilotSite": "IRV",
+  "description": "IRV pilot — replace ioffice.wayfinderUrl values with real iOffice links from your tenant.",
+  "spaces": [
+    {
+      "id": "irv-1109-zretreat",
+      "site": "IRV",
+      "displayName": "IRV-1109 zRetreat",
+      "match": ["IRV-1109", "irv-1109", "1109 zretreat"],
+      "zoomRoomName": "IRV-1109 zRetreat",
+      "ioffice": {
+        "wayfinderUrl": "REPLACE_IOFFICE_WAYFINDER_IRV_1109"
+      }
+    },
+    {
+      "id": "irv-1250-zretreat",
+      "site": "IRV",
+      "displayName": "IRV-1250 zRetreat",
+      "match": ["IRV-1250", "irv-1250", "1250 zretreat"],
+      "zoomRoomName": "IRV-1250 zRetreat",
+      "ioffice": {
+        "wayfinderUrl": "REPLACE_IOFFICE_WAYFINDER_IRV_1250"
+      }
+    },
+    {
+      "id": "irv-1216-1223",
+      "site": "IRV",
+      "displayName": "IRV-1216/1223",
+      "match": ["IRV-1216", "IRV-1223", "1216", "1223"],
+      "zoomRoomName": "IRV-1216/1223",
+      "ioffice": {
+        "wayfinderUrl": "REPLACE_IOFFICE_WAYFINDER_IRV_1216"
+      }
+    },
+    {
+      "id": "irv-1249",
+      "site": "IRV",
+      "displayName": "IRV-1249",
+      "match": ["IRV-1249", "irv-1249", "1249"],
+      "zoomRoomName": "IRV-1249",
+      "ioffice": {
+        "wayfinderUrl": "REPLACE_IOFFICE_WAYFINDER_IRV_1249"
+      }
+    },
+    {
+      "id": "irv-board-olympic",
+      "site": "IRV",
+      "displayName": "Olympic Board Room",
+      "match": ["olympic board", "board room irv"],
+      "zoomRoomName": "Olympic Board Room",
+      "ioffice": {
+        "wayfinderUrl": "REPLACE_IOFFICE_WAYFINDER_IRV_BOARD"
+      }
+    },
+    {
+      "id": "irv-805-851",
+      "site": "IRV",
+      "displayName": "IRV-805/851",
+      "match": ["IRV-805", "IRV-851", "805", "851"],
+      "zoomRoomName": "IRV-805/851",
+      "ioffice": {
+        "wayfinderUrl": "REPLACE_IOFFICE_WAYFINDER_IRV_805"
+      }
+    },
+    {
+      "id": "irv-802",
+      "site": "IRV",
+      "displayName": "IRV-802",
+      "match": ["IRV-802", "irv-802"],
+      "zoomRoomName": "IRV-802",
+      "ioffice": {
+        "wayfinderUrl": "REPLACE_IOFFICE_WAYFINDER_IRV_802"
+      }
+    },
+    {
+      "id": "irv-training",
+      "site": "IRV",
+      "displayName": "IRV Training Room",
+      "match": ["irv training", "training room"],
+      "zoomRoomName": "IRV Training Room",
+      "ioffice": {
+        "wayfinderUrl": "REPLACE_IOFFICE_WAYFINDER_IRV_TRAINING"
+      }
+    }
+  ]
+}
