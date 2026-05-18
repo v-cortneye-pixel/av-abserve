@@ -6311,7 +6311,7 @@ export const TODO_SECTIONS: TodoSection[] = [
     id: "splunk-inheritance",
     title: "Splunk inheritance — take over Patrick's zgav app",
     context:
-      "Patrick was the zgav Splunk app owner. With his deactivation, his dashboards, saved searches, alert rules, and HEC tokens are in frozen ownership — they still function but nobody on the AV team has admin rights to reassign them. The Observability team controls Splunk globally and is the only path to ownership transfer. This is the sequenced plan to inherit it cleanly.",
+      "UPDATED MAY 18: Stacey is the Zodiac AV-team owner — which means SHE owns the zgav Splunk app at the team level, NOT Patrick. Patrick was the engineer who BUILT the dashboards / alerts / HEC tokens, but app-level access flows from Stacey's Zodiac team membership. This dramatically shortens the path: you don't need to file an OBSERV ticket for app access — you just need Stacey to add you to her Zodiac team. The OBSERV ticket is only needed for reassigning Patrick's individual dashboards / searches / HEC tokens (object-level ownership), which is downstream cleanup work after you have app access. Sequence below reflects this.",
     items: [
       {
         id: "splunk-1",
@@ -6389,9 +6389,9 @@ export const TODO_SECTIONS: TodoSection[] = [
       },
       {
         id: "splunk-9",
-        task: "Find the AV Zodiac team page",
+        task: "Open the AV Zodiac team page (Stacey owns it)",
         detail:
-          "Splunk apps are auto-provisioned from Zodiac team service registration. Patrick was the Zodiac team owner for zgav → that gave him admin. Try these URLs to find the right team: https://zodiac.zgtools.net/teams/av-team, /teams/wave, /teams/cloud-hq-experience-av, /teams/av-engineering. Whichever loads → check the members list. You're probably not on it yet.",
+          "Stacey told you she's the Zodiac team owner. Ask her in your next 1:1 (or DM) for the exact Zodiac team URL — she'll have it. Could be /teams/av-team, /teams/wave, /teams/cloud-hq-experience-av, or something else. Once you have it, bookmark and confirm the members list.",
         doNow: true,
         estimateMinutes: 5,
         links: [
@@ -6404,17 +6404,26 @@ export const TODO_SECTIONS: TodoSection[] = [
       },
       {
         id: "splunk-10",
-        task: "Get added to the AV Zodiac team",
+        task: "DM Stacey to add you to the AV Zodiac team",
         detail:
-          "If you're not on it, DM Mark first (he's likely the team Maintainer now). Frame: 'Need to be added to the AV Zodiac team so my Splunk + AWS access flows from the team membership rather than individual requests.' Mark will likely handle it directly or route to whoever can.",
-        estimateMinutes: 5,
+          "This is the unlock. Stacey OWNS the Zodiac team → she can add you in one click. No OBSERV ticket needed for app access. Suggested DM (one line):\n\n\"Hey Stacey — you mentioned you own the AV Zodiac team. Could you add me as a member? That'll get my zgav Splunk + AWS access flowing from team membership rather than one-off tickets. Thanks!\"\n\nThat's it. She replies with confirmation, you wait ~15 min for SSO sync, you check your zgav permissions, done.",
+        doNow: true,
+        estimateMinutes: 2,
         prerequisites: ["splunk-9"],
       },
       {
         id: "splunk-11",
+        task: "Verify your zgav app permissions after Zodiac sync",
+        detail:
+          "After Stacey adds you to the Zodiac team, wait ~15 min for SSO sync. Then re-login to Splunk. Re-test: top-right name → Account Settings → Roles. You should now see a zgav-team role or admin capability for the zgav app. Try opening Settings → Data Inputs → HTTP Event Collector — if you can SEE the tokens, you have admin.",
+        estimateMinutes: 5,
+        prerequisites: ["splunk-10"],
+      },
+      {
+        id: "splunk-12",
         task: "Read the Splunk Cloud runbook",
         detail:
-          "Internal Zillow runbook on Splunk app permissions, team-app provisioning, and common access issues. Read the 'App permissions' section so you can cite the right capability name in your OBSERV ticket.",
+          "Internal Zillow runbook on Splunk app permissions, team-app provisioning, and common access issues. Still useful to read even though you don't need to file OBSERV for app access — it tells you how to reassign object-level ownership (Patrick's individual dashboards / searches / HEC tokens).",
         estimateMinutes: 15,
         links: [
           {
@@ -6425,10 +6434,10 @@ export const TODO_SECTIONS: TodoSection[] = [
         ],
       },
       {
-        id: "splunk-12",
-        task: "File the OBSERV Jira ticket",
+        id: "splunk-13a",
+        task: "File OBSERV ticket ONLY if needed for object reassignment",
         detail:
-          "Use the copy-paste template below. The Observability team has a 3-4 business day SLA. While it's in flight, continue read-only inventory work (which doesn't need elevated access).",
+          "Once you have zgav admin (via Stacey's Zodiac add), check if you can directly reassign Patrick's saved-search ownership: Settings → Searches, reports, and alerts → click a Patrick-owned search → Edit → Permissions → change Owner. If that works → no OBSERV ticket needed. If it errors with 'permission denied' (only deactivated-user reassignment is admin-restricted) → file the OBSERV ticket using the template below as a fallback.",
         estimateMinutes: 10,
         prerequisites: ["splunk-11"],
       },
@@ -6457,10 +6466,10 @@ export const TODO_SECTIONS: TodoSection[] = [
       },
       {
         id: "splunk-16",
-        task: "Once OBSERV ticket lands — re-key the HEC tokens with Matt watching",
+        task: "Re-key the HEC tokens with Matt watching",
         detail:
           "WAVE-CT-001 / QW31 is the actual re-key work. Do it screenshare with Matt so he gets visibility. Move every Patrick-owned token + saved search + dashboard ownership to a team-shared service account or to you. Matt sends the Monday standup update — he gets the credit.",
-        prerequisites: ["splunk-12", "splunk-14", "splunk-15"],
+        prerequisites: ["splunk-11", "splunk-14", "splunk-15"],
         links: [
           {
             label: "QW31 + WAVE-CT-001 — Re-key Lambdas with Matt",
@@ -6474,9 +6483,14 @@ export const TODO_SECTIONS: TodoSection[] = [
         category: "People",
         items: [
           {
+            label: "⭐ Stacey Newman (@staceyn) — YOUR UNLOCK",
+            detail:
+              "Owns the AV Zodiac team. Splunk app permissions flow from her. One DM unlocks zgav admin. Don't escalate to Observability before talking to her.",
+          },
+          {
             label: "Jack Howsley (@jackh)",
             detail:
-              "Observability Team Lead — escalation path for owner transfers if OBSERV ticket stalls",
+              "Observability Team Lead — only needed if Stacey's Zodiac add doesn't grant full object-reassignment rights. Fallback path, not primary.",
           },
           {
             label: "Rajan Pawar (@rajanp)",
@@ -6489,7 +6503,7 @@ export const TODO_SECTIONS: TodoSection[] = [
           {
             label: "Mark Hampson (@markham)",
             detail:
-              "Your peer-manager. Already has Splunk read access ('I have splunk access' — Mar 13, 2026). Likely the current AV Zodiac team maintainer.",
+              "Your peer-manager. Already has Splunk read access ('I have splunk access' — Mar 13, 2026). Stacey handles Zodiac team membership, but loop Mark in once your access lands.",
           },
           {
             label: "Matt Cornick (@U06KHP9S407)",
@@ -6579,27 +6593,29 @@ export const TODO_SECTIONS: TodoSection[] = [
       },
     ],
     copyBlock: {
-      title: "OBSERV Jira ticket template — copy-paste ready",
+      title:
+        "OBSERV Jira ticket template — FALLBACK only (use if Stacey's Zodiac add doesn't grant object-reassignment rights)",
       body: `Project: OBSERV
-Title: Splunk App Access — AV Team (zgav app) — Patrick Gilligan backfill
+Title: Splunk Object Reassignment — zgav app — Patrick Gilligan backfill
 
 Description:
 Hello Observability team,
 
-I'm backfilling Patrick Gilligan (deactivated Mar 2026) on the AV team. I need Patrick-equivalent permissions on the zgav Splunk app so I can:
+I'm backfilling Patrick Gilligan (deactivated Mar 2026) on the AV team. My manager Stacey Newman owns the AV Zodiac team and has already added me as a member, so I now have app-level access to zgav.
 
-1. Reassign object ownership for dashboards, saved searches, and alert rules that are currently owned by Patrick's (now-deactivated) user.
-2. Manage HTTP Event Collector (HEC) tokens — specifically re-keying any token that was created under Patrick's identity to a team-shared service account.
-3. Maintain the daily AV monitoring bot that posts to #av-alerts, #sea-av, #irvine-av, #nyc-av.
+However, I'm unable to directly reassign Patrick's individual objects (saved searches, dashboards, HEC tokens) because they were created under his (now-deactivated) user identity. Need either:
 
-Specific request:
-- Add me (Cortney Eison) to the AV Zodiac team if not already a member.
-- Grant admin_all_objects capability within the zgav app context.
-- Provide the path / runbook for transferring ownership of saved-search objects from a deactivated user.
+1. An admin to reassign ownership of every Patrick-owned object in the zgav app context to me (Cortney Eison) or a team-shared service account.
+2. OR — the runbook for self-service reassignment if that's available with my current capability set.
 
-Patrick was the original Zodiac team owner who provisioned the zgav app. Mark Hampson (AV Implementation Manager) and Matt Cornick (Senior AV Engineer) currently have Splunk access but neither has admin rights for the zgav app. The AV monitoring pipeline (bot, Lambdas, alerts) is currently functional but un-rotatable until ownership is restored to an active team member.
+Specific objects affected (counts will be in the attached audit doc):
+- ~N saved searches with cron schedules + Lambda webhook actions
+- ~N dashboards (including zgav_non-prod main view)
+- ~N HEC tokens powering the daily AV monitoring bot
 
-Happy to jump on a call to walk through the audit if helpful.
+Pipeline impact: The bot posting to #av-alerts, #sea-av, #irvine-av, #nyc-av is currently functional but un-rotatable until ownership transfers complete.
+
+Happy to jump on a call to walk through the audit.
 
 Thanks,
 Cortney`,
