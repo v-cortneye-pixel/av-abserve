@@ -41,6 +41,603 @@ export interface Issue {
   steps: string[];
 }
 
+// =========================================================================
+// TEAM-MEETING SCRIPTS PER ISSUE — diplomatic verbatim language Cortney
+// can read off when he wants to raise a specific issue in a team meeting
+// (Mark + Matt + Stacey). Different from /one-on-one (which is solo with
+// Stacey) and different from /playbook (which is the FTE-conversion
+// strategy). This is the AV-sync conversation script.
+// =========================================================================
+
+export interface TeamScriptBranch {
+  audience: "Matt" | "Mark" | "Stacey" | "Anyone";
+  theySay: string;
+  youSay: string;
+}
+
+export interface TeamScriptKeyPoint {
+  title: string;
+  verbatim: string;
+  rationale: string;
+}
+
+export interface TeamScriptQuestion {
+  question: string;
+  whyAsk: string;
+}
+
+export interface TeamScript {
+  whenToRaise: string;
+  audienceFocus: string;
+  opening: { verbatim: string; rationale: string };
+  keyPoints: TeamScriptKeyPoint[];
+  questionsToTeam?: TeamScriptQuestion[];
+  branches: TeamScriptBranch[];
+  dontSay: string[];
+  closing: { verbatim: string; rationale: string };
+}
+
+export const ISSUE_TEAM_SCRIPTS: Record<string, TeamScript> = {
+  // ============================ HDMI Share Reliability ============================
+  "hdmi-share": {
+    whenToRaise:
+      "Next AV sync, OR the moment Mark mentions Q-Sys NV pricing, OR if Matt brings up the next HDMI ticket. Do NOT raise in #av-team without pre-briefing Stacey 1:1 first.",
+    audienceFocus:
+      "Matt + Mark primarily. Stacey listens. Frame everything as 'parallel data,' never 'reopening the decision.'",
+    opening: {
+      verbatim:
+        "\"Want to flag something on the HDMI / NV thread before we issue any POs. Combing the last few months of #av-team, HDMI share is consistently the #1 user-facing issue — Matt called it 10x bigger than anything else. Before we commit capex on NV endpoints fleet-wide, I want to propose a 2-week lab bench-test of two cheap alternatives, not as a substitute for NV but to size the right investment. Mind if I walk through it?\"",
+      rationale:
+        "Three things in one opening: (1) cites Matt's own quote so he hears himself echoed, (2) the 'not as a substitute' phrase pre-empties the 'we already decided' rebuttal, (3) asks permission to continue — gives Matt veto power before you've made your case.",
+    },
+    keyPoints: [
+      {
+        title: "1. The problem isn't necessarily the encoder hardware",
+        verbatim:
+          "\"Most fleet-wide HDMI failures trace to EDID handshake — the source and the encoder disagreeing on resolution or audio format. Not the cable, not the encoder hardware. A source-side EDID lock — Lightware makes a $100 box — forces a known-good profile so the handshake stops failing. If that works on a flaky room, we may not need NV at all. If it doesn't, we know NV is the right answer.\"",
+        rationale:
+          "Reframes the problem as a CAUSE question, not a HARDWARE question. NV replaces hardware; EDID lock fixes the cause. Both could be valid — let's measure which.",
+      },
+      {
+        title: "2. The second test confirms whether NV is even targeting the right layer",
+        verbatim:
+          "\"The other test is direct USB capture — Inogeni or Magewell. HDMI → USB → into the Mac Mini's USB port → Zoom shares natively. Bypasses the AV switch entirely. If that works cleanly, we have a separate diagnostic: the failure isn't at the switch layer at all. NV is at the switch layer too — so if USB capture works and VSI doesn't, NV will inherit the same constraints.\"",
+        rationale:
+          "Demonstrates AV-engineering depth — distinguishing the source/sink layer from the switch layer. Matt will respect this even if he disagrees with the conclusion.",
+      },
+      {
+        title: "3. Cost framing: this is a parallel data exercise, not a delay",
+        verbatim:
+          "\"Total lab gear is about $500 — two Lightware EDID locks and two Inogeni or Magewell capture devices. I can expense it, no PO needed. Two weeks of testing, no production room impact. Doesn't push the NV PO timeline at all if we still want to go that route — but in a worst case where EDID forcing solves it, we save tens of thousands and we have a documented capex-hygiene story.\"",
+        rationale:
+          "'Capex hygiene' is Stacey's love language. 'Doesn't push the NV PO timeline' disarms Matt + Mark — they don't lose anything by saying yes.",
+      },
+      {
+        title: "4. The Matt / Patrick precedent",
+        verbatim:
+          "\"You and Patrick actually tested this family of approach at SFO-716 and SFO-1027 last year — the USB extender + native UVC camera control. It worked. This is the same playbook applied to HDMI share, not a new direction. I'd document this as a continuation of that work.\"",
+        rationale:
+          "Cites Matt's own past success. Frames you as continuing his thread, not contradicting it. Matt's name on the precedent = Matt's name on the new test.",
+      },
+    ],
+    questionsToTeam: [
+      {
+        question:
+          "\"Matt — would you have time to walk me through the SFO-716 / SFO-1027 USB extender test you ran with Patrick? Want to make sure I understand what worked and what didn't before I set up the lab.\"",
+        whyAsk:
+          "Honors Matt's expertise. He gets to teach. You get the actual technical history of the team's HDMI work. Maximum-trust framing.",
+      },
+      {
+        question:
+          "\"Mark — is there a flex room or a low-traffic room you'd suggest I use as the lab? Want to avoid anything exec-adjacent or anything with active project work.\"",
+        whyAsk:
+          "Mark owns the room calendar / project timeline. Asking him to pick the room = he owns the choice, not you.",
+      },
+    ],
+    branches: [
+      {
+        audience: "Matt",
+        theySay: "\"We already decided on NV. Why are you reopening this?\"",
+        youSay:
+          "\"Totally fair — I'm not asking to reopen the decision. I'm asking for two weeks of parallel lab data so we can SIZE the right NV investment. Maybe we still buy NV, but only for the Tier 3 event rooms instead of fleet-wide. Worst case we have receipts for Mark; best case we save the budget for somewhere it matters more.\"",
+      },
+      {
+        audience: "Matt",
+        theySay: "\"What if your lab test just delays everything?\"",
+        youSay:
+          "\"Runs fully in parallel with my P0 list — re-keying Lambdas, building the runbook, IRV-1110. It's not blocking anything. And even a 'fail' result tells us something useful — that the problem is upstream and NV alone won't fix it.\"",
+      },
+      {
+        audience: "Mark",
+        theySay: "\"I don't want to manage another vendor relationship for $500 of test gear.\"",
+        youSay:
+          "\"On me. I'll expense it or pull from petty cash — no vendor onboarding, no PO. The whole capex argument is exactly why I'm doing this part myself.\"",
+      },
+      {
+        audience: "Mark",
+        theySay: "\"Do we have a flex room I can use for the lab?\"",
+        youSay:
+          "\"Pick one you'd most like to see settled — I'll align my test schedule to whatever you suggest. Could be one of the SEA rooms or a SFO room — whatever doesn't have active project work this month.\"",
+      },
+      {
+        audience: "Stacey",
+        theySay: "\"How does this fit operational excellence?\"",
+        youSay:
+          "\"It IS operational excellence — capex hygiene before issuing a $20k+ PO. $500 to validate cheap alternatives. Worst case the data still supports the NV decision and we have documented evidence. Best case we keep that capex budget for the SFO All Hands rebuild instead.\"",
+      },
+      {
+        audience: "Anyone",
+        theySay: "\"What if Patrick already tried this and ruled it out?\"",
+        youSay:
+          "\"Not that I can find in #av-team or in the Patrick-handoff doc — and Matt's SFO-716 work was a different test (camera, not share). If Patrick did rule it out specifically, I want to find that decision and incorporate it. Can someone share what they remember?\"",
+      },
+    ],
+    dontSay: [
+      "\"The NV decision was wrong.\"",
+      "\"Mark might be jumping the gun on the PO.\"",
+      "\"Patrick should have tested this before deciding on NV.\"",
+      "\"I want to lead the HDMI strategy.\"",
+      "Any phrase that starts with \"Well actually...\"",
+    ],
+    closing: {
+      verbatim:
+        "\"Cool — I'll write up a one-pager with the test plan, lab gear list, success criteria, and timeline by EOW. Will share before I order anything so anyone can veto. Sound good?\"",
+      rationale:
+        "Closes with a written deliverable + explicit veto invitation. Doesn't ask for approval to TEST — just to share the test plan. That's the lowest-friction yes the team can give.",
+    },
+  },
+
+  // ============================ Mac Mini ============================
+  "mac-mini": {
+    whenToRaise:
+      "Not in team meeting until after Week 5+ AND only AFTER you've pre-briefed Stacey 1:1. Mac Mini is sacred ground — Stacey signed off on the standard. Treat carefully.",
+    audienceFocus:
+      "Matt is most likely to push back here. Mark cares about the cost. Stacey cares about whether you respect the existing decision.",
+    opening: {
+      verbatim:
+        "\"Wanted to flag a roadmap conflict I noticed — not pitching a change today, just want to make sure we have it documented. Q-Sys Connect for Zoom Rooms is Windows-only on QSC's roadmap. Our Zoom Room host standard is Mac Mini. As we plan the next buildouts — India / Bangalore specifically — I want to make sure we don't lock in a stack that conflicts with Q-Sys Connect down the road. Stacey and I have started discussing this.\"",
+      rationale:
+        "Cites the roadmap conflict as fact, not opinion. The 'Stacey and I have started discussing' line tells Matt this isn't going behind anyone's back — it lands in the meeting WITH her implicit support. Patrick's failure was punting on this — you're not punting, but also not rushing.",
+    },
+    keyPoints: [
+      {
+        title: "1. The sunk-cost framing — don't touch the existing fleet",
+        verbatim:
+          "\"Nothing changes for the existing Mac Mini fleet. The investment is sunk and the rooms work. This is purely about whether the NEXT room — first one in India, or the next Tier 3 buildout — gets locked into a stack that conflicts with Q-Sys Connect.\"",
+        rationale:
+          "Disarms the 'you want to rip everything out' fear. Frames it as a buildout-spec question, not a fleet-replacement question.",
+      },
+      {
+        title: "2. The proposal: ONE room, measurable",
+        verbatim:
+          "\"What I want to propose is: one Tier 3 room — could be a zRetreat or Founder's Suite candidate — gets a Windows AV appliance pilot. Pre-defined success criteria, time-bounded. If it fails on any criterion, we go back to Mac Mini for that room. If it succeeds, we have data for the next buildout decision. Zero impact on anything else.\"",
+        rationale:
+          "Measurable + reversible + tiny scope. Each constraint disarms a specific objection.",
+      },
+      {
+        title: "3. Why we can't punt on this forever",
+        verbatim:
+          "\"Patrick acknowledged this conflict but never escalated it to a decision. I don't want to repeat that pattern — even if the decision is 'we stay all-Mac and ignore Q-Sys Connect,' I'd rather have that decision in writing than in someone's head.\"",
+        rationale:
+          "Honors Patrick's framing while explicitly NOT repeating his career-limiting punt. Names the failure mode (decision in someone's head) so the team has a concrete pattern to push against.",
+      },
+    ],
+    branches: [
+      {
+        audience: "Matt",
+        theySay: "\"Mac Mini works. Why touch it?\"",
+        youSay:
+          "\"Existing rooms stay Mac. This is one new room, pilot scope. The reason to test now is so we have data BEFORE the next buildout, not after.\"",
+      },
+      {
+        audience: "Mark",
+        theySay: "\"We've spent a fortune on Mac Minis. Don't tell me we're replacing them.\"",
+        youSay:
+          "\"Sunk cost — fleet stays. The next buildout is the only thing on the table here. If Windows fails the pilot, we keep buying Macs.\"",
+      },
+      {
+        audience: "Mark",
+        theySay: "\"What's the ServiceNow / IT angle on this?\"",
+        youSay:
+          "\"You'd be the one driving the IT conversation — you mentioned an exception path with Andrew Spokes before. I'll write the one-pager; you take it to IT when you're ready.\"",
+      },
+      {
+        audience: "Stacey",
+        theySay: "\"What's the worst case if we run this pilot?\"",
+        youSay:
+          "\"Worst case the Windows appliance fails the criteria, the room goes back to Mac, and we close the question with documented evidence. That's still a win — it gives you a clean answer for Steve when the buildout strategy comes up.\"",
+      },
+    ],
+    dontSay: [
+      "\"Mac Mini is the wrong call.\"",
+      "\"Patrick should have done this years ago.\"",
+      "\"We're going to have to replace the whole fleet.\"",
+      "\"Apple update behavior makes this fundamentally broken.\"",
+    ],
+    closing: {
+      verbatim:
+        "\"I'll draft a one-page memo this week with status quo cost, the roadmap conflict, the proposed pilot, success criteria, and decision date. Will share with Matt and Mark first, then we can land it formally with Stacey. Sound right?\"",
+      rationale:
+        "Explicitly names the review order — Matt + Mark FIRST, then Stacey. That tells Matt + Mark you're not going around them. Patrick's pattern was the opposite — yours is humble.",
+    },
+  },
+
+  // ============================ Scheduler Offline (WAVE-16 reopen) ============================
+  "scheduler-offline": {
+    whenToRaise:
+      "Any team meeting where scheduler / firmware / WAVE-16 comes up. The May 16 IRV-1250 / IRV-1110 ZHL evidence is recent — strike now.",
+    audienceFocus: "Matt is the WAVE-16 ticket owner. Mark is the firmware-version cadence owner.",
+    opening: {
+      verbatim:
+        "\"Want to flag I think WAVE-16 might need reopening. The same offline pattern we saw before the close — IRV-1250 and IRV-1110 ZHL controllers disconnected — is back, May 16. I have the evidence in the daily bot output. Matt, mind if I take the WAVE-16 ticket and re-engage Zoom Support with the new data?\"",
+      rationale:
+        "Frames as 'I think' — gives Matt veto power. Asks permission to take the ticket — doesn't grab it. Asks Zoom Support reopening — outsources the actual investigation rather than making it Cortney-vs-Matt.",
+    },
+    keyPoints: [
+      {
+        title: "1. The pattern is repeating",
+        verbatim:
+          "\"The daily bot has flagged IRV-1110 ZHL offline every morning for weeks, and IRV-1250 controller-disconnect recently. That's the same controller-disconnect pattern WAVE-16 was tracking. If Zoom marked it 'resolved' but the symptom returned, we have a re-investigate case.\"",
+        rationale:
+          "Specific room IDs + the bot's persistent evidence = factual, not opinion. The 'same pattern' framing lets Zoom Support own the investigation without anyone on the AV team owning blame.",
+      },
+      {
+        title: "2. The straggler scan we should have running",
+        verbatim:
+          "\"Independent of WAVE-16, I want to add a daily check: any Zoom Room scheduler still on firmware version 6.6.10 or below. That's the version we'd flagged. A simple Splunk panel and a Slack alert. Closes the proactive side so we're not just reacting.\"",
+        rationale:
+          "Pairs the reactive (reopen WAVE-16) with the proactive (firmware straggler scan). Closes a noise-vs-signal gap Patrick would have wanted.",
+      },
+      {
+        title: "3. The panel-reboot runbook is undocumented",
+        verbatim:
+          "\"Side note: I've heard the panel-reboot fix Matt has been using, but I don't think it's written down. If we get it into a one-pager, John and Adali can run it without paging Matt. That's a 30-minute documentation pass.\"",
+        rationale:
+          "Names Matt's tribal knowledge respectfully, offers to document it, names the downstream beneficiaries (John + Adali). All trust deposits.",
+      },
+    ],
+    branches: [
+      {
+        audience: "Matt",
+        theySay: "\"I already worked it with Zoom. Don't reopen yet.\"",
+        youSay:
+          "\"Got it — I won't reopen. Want me to keep the new evidence in a doc so we have it when the next occurrence hits, or just attach it to the existing ticket?\"",
+      },
+      {
+        audience: "Matt",
+        theySay: "\"Go ahead and take the ticket.\"",
+        youSay:
+          "\"Thanks. I'll DM you my Zoom Support contact and the case ID once it's reopened. Will keep you copied on every Zoom reply.\"",
+      },
+      {
+        audience: "Mark",
+        theySay: "\"Are we sure this is the same root cause?\"",
+        youSay:
+          "\"Honestly, no — that's exactly why I want Zoom to look at it again with the new data. If they confirm it's the same, we have a recurrence story. If it's different, we have a new ticket. Either way we have receipts.\"",
+      },
+    ],
+    dontSay: [
+      "\"WAVE-16 was closed prematurely.\"",
+      "\"Zoom Support didn't do their job.\"",
+      "\"Matt should have kept it open.\"",
+    ],
+    closing: {
+      verbatim:
+        "\"Matt, I'll wait for your green light on the reopen. Either way I'll add the firmware-version daily check to my Splunk panel work this week — that part doesn't need anyone's signoff. Anything I'm missing?\"",
+      rationale:
+        "Splits the request: the reopen needs Matt's approval, the proactive check doesn't. You get to ship one win this week regardless of what Matt decides on the reopen.",
+    },
+  },
+
+  // ============================ SEA-3647 Audio ============================
+  "sea-3647-audio": {
+    whenToRaise:
+      "Team meeting, OR when Shelby/John mentions SEA-3647 in passing, OR when the bot flags it offline again.",
+    audienceFocus: "Matt is the ceiling-mic SME on this team.",
+    opening: {
+      verbatim:
+        "\"SEA-3647 came up again in the bot output. Last documented echo issue was Sep 2025 — wasn't able to find a documented RCA. Want to take 30 minutes on-site with John or Shelby to walk the room and confirm MXA910 mute states + Dante routing. Matt, would you rather I do it or want to come along?\"",
+      rationale:
+        "Concrete proposal (30 min on-site walk) with named partners (John or Shelby). Asks Matt if he wants to come — gives him the chance to participate without making it about authority.",
+    },
+    keyPoints: [
+      {
+        title: "1. Tuning, not replacement",
+        verbatim:
+          "\"Going in with the hypothesis that this is a gate-threshold or mute-state issue, not a hardware failure. MXA910s respond well to tuning when you can sit in the room. If the walking-talker test reveals dead zones, we have a different conversation.\"",
+        rationale:
+          "Sets expectation that this is a tuning pass, not a hardware request. Mark hears 'no PO needed.' Matt hears 'I'm not pre-deciding to replace your install.'",
+      },
+      {
+        title: "2. RCA habit going forward",
+        verbatim:
+          "\"Whichever way this resolves, I want to write it up in Patrick's IRV-RCA format so the next person who hits SEA-3647 echo can read it. I'll link it from the issue tracker.\"",
+        rationale:
+          "Uses Patrick's own RCA format — honors his pattern. Builds the documentation discipline Stacey wants.",
+      },
+    ],
+    branches: [
+      {
+        audience: "Matt",
+        theySay: "\"It's probably just the gate threshold. Patrick adjusted it before.\"",
+        youSay:
+          "\"Perfect — that gives me a starting point. Want me to use the same baseline numbers Patrick used, or do you want to adjust them first?\"",
+      },
+      {
+        audience: "Matt",
+        theySay: "\"Want me to come on-site?\"",
+        youSay:
+          "\"Whatever's easiest for you. If you can join remotely while I'm walking the room, that's enough — I'll FaceTime / Slack-huddle you with the Designer file open.\"",
+      },
+      {
+        audience: "Mark",
+        theySay: "\"Are we eventually replacing these with MXA920s?\"",
+        youSay:
+          "\"Separate conversation — I want to bring you a one-pager on MXA910 vs MXA920 vs TCC2 in the next two weeks. Today is just the tuning pass.\"",
+      },
+    ],
+    dontSay: [
+      "\"The MXA910 install was wrong.\"",
+      "\"This should be a TCC2 anyway.\"",
+      "\"Why hasn't this been fixed yet?\"",
+    ],
+    closing: {
+      verbatim:
+        "\"I'll DM John or Shelby to find 30 min onsite this week, send Matt the runbook before I go, and write up findings in RCA format whether it's resolved on-site or needs hardware. Sound good?\"",
+      rationale:
+        "Single closing action — DM John or Shelby. Promises the RCA writeup regardless of outcome — guarantees a deliverable.",
+    },
+  },
+
+  // ============================ UCI Standardization (Tier 1/2/3) ============================
+  "ui-standardization": {
+    whenToRaise:
+      "Only AFTER you've pre-briefed Stacey 1:1 (Week 5+) AND after Matt + Mark have seen your draft. NEVER raise in team meeting cold.",
+    audienceFocus: "Matt and Mark are the authority on UCIs. Stacey listens and protects scope.",
+    opening: {
+      verbatim:
+        "\"I've been thinking about how to frame our UCI direction so new buildouts have a clear spec. Drafted a Tier 1/2/3 strawman that builds on Patrick's single-page UCI work — sent it to both of you Friday. Not asking for a decision today; just want to hear pushback before I formalize it.\"",
+      rationale:
+        "Names that you sent the draft FIRST (no surprise). 'Builds on Patrick's' frames it as continuation, not contradiction. 'Not asking for a decision' takes the pressure off.",
+    },
+    keyPoints: [
+      {
+        title: "1. The single-page UCI is the Tier 2 default",
+        verbatim:
+          "\"Patrick's SEA-3647 single-page UCI is the proof point — it works for the standard conference room. I'd codify that as our Tier 2 default for all new builds. Nothing changes for the existing rooms with that pattern.\"",
+        rationale:
+          "Honors Patrick's work as the baseline. Existing rooms unchanged = no migration cost.",
+      },
+      {
+        title: "2. Tier 3 needs more — without contradicting the simplicity instinct",
+        verbatim:
+          "\"For Tier 3 — event spaces, exec rooms, multi-display rooms like IRV-802 — single-page hides the controls users actually need. Projector wake, source routing, display power. I'd propose those go on a settings tab behind a long-press or PIN, so the main UI stays clean and only operators see the controls.\"",
+        rationale:
+          "Acknowledges Patrick's simplicity instinct ('main UI stays clean') while solving the actual operator-recovery problem. The gated-tab pattern is the architectural fix to the 'remove controls entirely' anti-pattern.",
+      },
+      {
+        title: "3. Tier 1 is the new addition — huddle rooms",
+        verbatim:
+          "\"For huddles and small focus rooms, we could go simpler than Tier 2 — just join / leave / mute, no source switching. Most huddles don't need the full Zoom controls. This is the lowest-touch option for new builds where complexity isn't justified.\"",
+        rationale:
+          "Adds without subtracting. Mark hears 'cheaper spec for huddle rooms.' Matt hears 'less code to maintain.' Stacey hears 'tiered standard.'",
+      },
+    ],
+    branches: [
+      {
+        audience: "Matt",
+        theySay: "\"Patrick had a reason for the no-touch-panel direction.\"",
+        youSay:
+          "\"He absolutely did — the CTO incident at SEA-3611. Where we differ is the fix: he removed the controls; I think we tune them and gate the recovery ones. Single-page stays the default. We're agreeing on 80% of this.\"",
+      },
+      {
+        audience: "Matt",
+        theySay: "\"Adding tiers means more code to maintain.\"",
+        youSay:
+          "\"Fair — but Tier 1 is actually LESS code than Tier 2. And we're not retrofitting existing rooms. The complexity only kicks in on new builds where we'd be writing UCI code anyway.\"",
+      },
+      {
+        audience: "Mark",
+        theySay: "\"What's the cost difference per tier?\"",
+        youSay:
+          "\"Hardware-wise zero — the same touch panel runs any tier. Labor difference is small. The biggest cost saver is Tier 1 — we'd stop spec'ing full UCIs in rooms that don't need them.\"",
+      },
+      {
+        audience: "Stacey",
+        theySay: "\"Does this delay India / Bangalore?\"",
+        youSay:
+          "\"No — gives us a clearer spec for Bangalore. Bangalore is a fresh deployment which is rare for us; the tiered spec is exactly what new buildouts need.\"",
+      },
+    ],
+    dontSay: [
+      "\"Patrick's UCI thesis was wrong.\"",
+      "\"We need to redo the existing rooms.\"",
+      "\"The SEA-3611 incident was Patrick's design flaw.\"",
+    ],
+    closing: {
+      verbatim:
+        "\"I'll incorporate what you've said today into a final v1 by Friday and share. Then we land it formally — could be on the next AV sync or whenever you'd prefer. Sound good?\"",
+      rationale:
+        "Single deliverable + the team picks the venue. Gives them control of timing.",
+    },
+  },
+
+  // ============================ MXA Strategy ============================
+  "mxa-strategy": {
+    whenToRaise:
+      "When ceiling-mic spec comes up for NYC-1204, or any time Mark asks 'what should we standardize on.'",
+    audienceFocus: "Mark is the budget owner. Matt is the install authority.",
+    opening: {
+      verbatim:
+        "\"Want to put a one-pager on the table for the ceiling-mic spec question. Mark, you'd asked Patrick about TCC2 vs MXA920 for the event spaces — wanted to close that loop. Going to bring the comparison with a recommendation.\"",
+      rationale:
+        "Names Mark's old open question — shows you read the channels carefully. 'Close that loop' is direct: a year-old question deserves a year-old answer.",
+    },
+    keyPoints: [
+      {
+        title: "1. The hidden cost — commissioning labor",
+        verbatim:
+          "\"The spec-sheet differences (auto-steer, pickup pattern) are well-known. What's missing from most comparisons is commissioning labor — TCC2 needs an in-room tuning pass per install; MXA920 auto-steers. For event spaces with shifting use patterns, that labor cost adds up.\"",
+        rationale:
+          "Demonstrates AV-engineering depth — most installers don't price commissioning. Mark hears 'total cost of ownership.'",
+      },
+      {
+        title: "2. A platform-pick + a sweep plan",
+        verbatim:
+          "\"Recommendation: standardize NEW builds on one platform; sweep existing TCC2s to tune them properly first (SEA-3925 has a known HVAC issue, SFO All Hands and SEA-3829 next). That gives us data on whether tuning closes the gap before we commit to fleet-wide replacement.\"",
+        rationale:
+          "Pairs the decision with a measurement plan. Doesn't commit to ripping out the existing fleet.",
+      },
+    ],
+    branches: [
+      {
+        audience: "Mark",
+        theySay: "\"What's the cost difference?\"",
+        youSay:
+          "\"Per-room hardware delta is in the spec sheet — I'll have the numbers in the one-pager. Labor delta is what most people miss — auto-steer saves about 4-8 hours of in-room tuning per install. Over 20 rooms, that's a real number.\"",
+      },
+      {
+        audience: "Matt",
+        theySay: "\"Have you actually tuned a TCC2?\"",
+        youSay:
+          "\"Honestly no, not in production. I'd want to do SEA-3925 with you watching first before recommending anything fleet-wide. If we tune it cleanly, that's data point #1 for the sweep.\"",
+      },
+      {
+        audience: "Mark",
+        theySay: "\"Are we just going to spec Shure for everything?\"",
+        youSay:
+          "\"That's one option. The other is mixed — Shure where the auto-steer behavior fits, Sennheiser where the lobe control matters. The one-pager will show both.\"",
+      },
+    ],
+    dontSay: [
+      "\"The TCC2 install was wrong.\"",
+      "\"We need to replace everything.\"",
+      "\"Sennheiser was a bad call.\"",
+    ],
+    closing: {
+      verbatim:
+        "\"One-pager by next AV sync. Starts with the NYC-1204 spec question, recommendation for new builds, and a tuning-sweep schedule for the existing TCC2s.\"",
+      rationale:
+        "Specific deliverable + timeline. Closes a year-old question by name.",
+    },
+  },
+
+  // ============================ NV-21 Tracking ============================
+  "nv21-tracking": {
+    whenToRaise:
+      "Team meeting when gear-replacement process comes up, OR when John or Adali has a new NV to install.",
+    audienceFocus: "Mark approves the template. John + Adali use it daily.",
+    opening: {
+      verbatim:
+        "\"Quick process gap I want to close — when John or Adali pulls an NV, we're not consistently capturing SN/MAC/replacement-reason. Drafted a 30-second Jira template. Mark, want your approval before I share with onsite folks.\"",
+      rationale:
+        "Diagnoses the gap from John's own recent experience (bad NV pull). Asks Mark for approval. Closes with onsite-team buy-in — three trust deposits in one ask.",
+    },
+    keyPoints: [
+      {
+        title: "1. The template is light, not heavy",
+        verbatim:
+          "\"Six fields max — SN, MAC, IP, room, install date, why-replaced. Onsite teams shouldn't be filling clerical work that isn't going to be referenced. Patrick and Matt already trimmed the IP doc for the same reason.\"",
+        rationale:
+          "Names the prior tightening — shows you understood the team's existing process discipline.",
+      },
+      {
+        title: "2. Spares inventory + location tracking",
+        verbatim:
+          "\"Pairing this with a spares inventory doc — NV-21s, NV-32s, PSUs, Phoenix blocks, capture cards. Currently Matt's stash is on the SFO 10th floor; that needs to be findable by someone who isn't Matt.\"",
+        rationale:
+          "Specifically calls out the Matt-stash problem. Frames the fix as 'findable by anyone' not 'we need to take inventory from Matt.'",
+      },
+    ],
+    branches: [
+      {
+        audience: "Mark",
+        theySay: "\"Will the onsite teams actually use this?\"",
+        youSay:
+          "\"I'll DM John and Adali after your approval to get buy-in before it goes wide. If they push back on any field, we trim. The goal is something they fill in 30 seconds, not 5 minutes.\"",
+      },
+      {
+        audience: "Matt",
+        theySay: "\"My stash isn't 'unfindable.'\"",
+        youSay:
+          "\"Fair — but if someone other than you needed an NV-21 PSU tomorrow, would they know where to look? The doc is for that case, not as a critique of how you've been handling it.\"",
+      },
+    ],
+    dontSay: [
+      "\"Matt's hoarding spare parts.\"",
+      "\"John didn't follow the process before.\"",
+      "\"We need more documentation.\"",
+    ],
+    closing: {
+      verbatim:
+        "\"Mark, will send you the draft tomorrow. After your green light I'll DM John and Adali. Want to ship this by end of next week.\"",
+      rationale:
+        "Specific name + specific deliverable + specific date.",
+    },
+  },
+
+  // ============================ IRV-802 Projector Controls ============================
+  "irv-802-projector": {
+    whenToRaise:
+      "Team meeting, OR when Matt or John brings up IRV-802 issues, OR while you're already discussing UCI Tier 3.",
+    audienceFocus: "Matt is the one who's been rolling screens manually from QDS. Mark cares about the room schedule.",
+    opening: {
+      verbatim:
+        "\"Want to close out IRV-802. Matt, the 'No source selected' gating that hides projector and screen controls — happy to fix it this week and demo to you before pushing. Want me to take it?\"",
+      rationale:
+        "Names the exact UX issue. Asks permission. Offers demo before push. Three trust deposits.",
+    },
+    keyPoints: [
+      {
+        title: "1. Settings tab pattern, not full surface",
+        verbatim:
+          "\"I'd add the controls under a settings tab behind a long-press, not exposed to the meeting user. Same simplicity for the user, but you and John can access them without leaving QDS.\"",
+        rationale:
+          "Honors the simplicity instinct that drove Patrick's original hide-it pattern, while solving the operator problem.",
+      },
+      {
+        title: "2. Aligns with the broader Tier 3 work",
+        verbatim:
+          "\"This is exactly the gated-control pattern I'm proposing for the Tier 3 UCI standard — IRV-802 becomes the pilot for that pattern. If it works here, we have the template for the other multi-display rooms.\"",
+        rationale:
+          "Connects today's fix to the larger architectural direction without making it about the architecture.",
+      },
+    ],
+    branches: [
+      {
+        audience: "Matt",
+        theySay: "\"Sure, take it.\"",
+        youSay:
+          "\"Thanks. Will demo with you remote before pushing to the core. Should have it ready by end of week.\"",
+      },
+      {
+        audience: "Matt",
+        theySay: "\"I'd rather you didn't touch IRV-802 — we're going to redo it.\"",
+        youSay:
+          "\"Got it — won't touch. Want me to focus on a different multi-display room as the pilot for the gated-tab pattern, or wait until the redo?\"",
+      },
+      {
+        audience: "Mark",
+        theySay: "\"When can it be tested without disrupting users?\"",
+        youSay:
+          "\"Pick the window — I can do it any evening or early morning. Will coordinate with Adali for onsite if needed.\"",
+      },
+    ],
+    dontSay: [
+      "\"Patrick's hide-the-controls pattern is broken.\"",
+      "\"Matt shouldn't have had to roll screens manually.\"",
+      "\"This was a bad UCI design choice.\"",
+    ],
+    closing: {
+      verbatim:
+        "\"If Matt's good with me taking it, I'll have the fix demo'd this week and pushed by end of next. Will document it in RCA format and link from the issue tracker.\"",
+      rationale:
+        "Specific timeline + documentation commitment. Matt has full veto.",
+    },
+  },
+};
+
+
 export const ISSUES: Issue[] = [
   {
     id: "hdmi-share",
