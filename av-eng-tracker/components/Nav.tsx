@@ -2,6 +2,7 @@ import Link from "next/link";
 
 const NAV_ITEMS = [
   { href: "/", label: "Dashboard" },
+  { href: "https://av-windows-setup.vercel.app", label: "🖥️ Windows Setup ↗" },
   { href: "/todo", label: "To-Do (do now)" },
   { href: "/triage", label: "Triage (P0 first)" },
   { href: "/playbook", label: "Playbook (FTE)" },
@@ -56,16 +57,30 @@ export default function Nav() {
             <span>Menu</span>
           </summary>
           <ul className="absolute right-0 top-12 z-50 max-h-[80vh] w-64 overflow-y-auto rounded-xl border border-zillow-gray-border bg-white p-2 shadow-xl">
-            {NAV_ITEMS.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="block rounded-lg px-3 py-2 text-sm font-medium text-zillow-slate transition-colors hover:bg-zillow-gray-light hover:text-zillow-ink"
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
+            {NAV_ITEMS.map((item) => {
+              const isExternal = item.href.startsWith("http");
+              return (
+                <li key={item.href}>
+                  {isExternal ? (
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block rounded-lg px-3 py-2 text-sm font-medium text-zillow-slate transition-colors hover:bg-zillow-gray-light hover:text-zillow-ink"
+                    >
+                      {item.label}
+                    </a>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      className="block rounded-lg px-3 py-2 text-sm font-medium text-zillow-slate transition-colors hover:bg-zillow-gray-light hover:text-zillow-ink"
+                    >
+                      {item.label}
+                    </Link>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </details>
       </div>
