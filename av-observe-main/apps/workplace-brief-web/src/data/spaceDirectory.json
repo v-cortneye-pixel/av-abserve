@@ -1,0 +1,34 @@
+{
+  "spaces": [
+    {
+      "id": "irv-1109-zretreat",
+      "site": "IRV",
+      "displayName": "IRV-1109 zRetreat",
+      "match": ["IRV-1109", "irv-1109 zretreat", "1109 zretreat"],
+      "zoomRoomName": "IRV-1109 zRetreat",
+      "ioffice": {
+        "wayfinderUrl": "https://demo.iofficecorp.com/wayfinder/irv-1109-zretreat"
+      }
+    },
+    {
+      "id": "sea-3619-all-hands",
+      "site": "SEA",
+      "displayName": "SEA-3619 All Hands",
+      "match": ["SEA-3619", "3619 all hands", "sea-3619 all hands"],
+      "zoomRoomName": "SEA-3619 All Hands",
+      "ioffice": {
+        "wayfinderUrl": "https://demo.iofficecorp.com/wayfinder/sea-3619-all-hands"
+      }
+    },
+    {
+      "id": "sfo-735-board",
+      "site": "SFO",
+      "displayName": "SFO-735 Board Room",
+      "match": ["SFO-735", "735 board", "olympic board"],
+      "zoomRoomName": "SFO-735",
+      "ioffice": {
+        "wayfinderUrl": "https://demo.iofficecorp.com/wayfinder/sfo-735"
+      }
+    }
+  ]
+}

@@ -36,6 +36,8 @@ Employee-facing Slack briefings: calendar + AV room readiness + iOffice wayfinde
 npm run test:workplace-brief   # Demo, no API keys
 ```
 
+**Vercel demo site:** [workplace-brief-web](./apps/workplace-brief-web/) — deploy with root directory `av-observe-main/apps/workplace-brief-web`.
+
 ### 4. [av-docker](./apps/av-docker/) - *Deprecated Metrics Exporter*
 A containerized Prometheus metrics exporter for Q-SYS systems. **Note: This application is deprecated** in favor of the more comprehensive av-daily-update approach.
 

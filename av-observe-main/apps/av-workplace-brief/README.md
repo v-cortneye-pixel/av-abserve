@@ -32,6 +32,12 @@ This app is a **sibling integration** to [av-daily-update](../av-daily-update/):
 
 ---
 
+## Vercel demo site
+
+A public-facing Next.js UI lives in [workplace-brief-web](../workplace-brief-web/). Deploy to Vercel with **Root Directory** = `av-observe-main/apps/workplace-brief-web` (no API keys required for demo).
+
+---
+
 ## Quick start
 
 From repo root (`av-observe-main/`):
