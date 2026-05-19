@@ -64,6 +64,7 @@ A **Slack-native copilot** that proactively briefs people on what matters today,
 - **Q-SYS / Domotz** summary unchanged; highlight systems tied to today’s event rooms where matchable
 - **Schedule:** run with daily update (e.g. 8:00 local per site timezone in `config.siteTimezones`)
 - **Test mode:** all site briefings → `testSiteAlert` channel
+- **Olympic Board Room:** events for that room appear **only** in the `Olympic` Slack channel (`C04B26YDH27`)—never in site AV channels (no redacted stubs in `#av-sea`, etc.)
 
 ### Out of scope (later phases)
 
@@ -96,8 +97,17 @@ Configured in `shared/config.json` → `slack.channelIds`. Used today by `sendSi
 | `alert` | Main daily AV digest | `C07SY86AY31` |
 | `testAlert` | Test main digest | `C08B281AYA2` |
 | `testSiteAlert` | Test all site posts | `C09HL5L98KT` |
-| `Olympic` | Olympic / exec board room alerts | `C04B26YDH27` |
+| `Olympic` | Olympic Board Room — **exclusive** home for copilot events in that room | `C04B26YDH27` |
 | `live-alerts` | Real-time webhook alerts | `C09SURDPU6N` |
+
+### Olympic routing (decided)
+
+| Rule | Behavior |
+|------|----------|
+| Match | Calendar room name or resource matches `olympicOnlyRooms` (today: `Olympic Board Room`) |
+| Site channels | **Exclude** — do not list, redact, or mention in IRV/SEA/SFO/NYC/DEN/KCY briefings |
+| Olympic channel | **Include** — full subject, time, organizer (if available), AV readiness |
+| Test mode | Olympic briefing → `testSiteAlert`, prefixed `[Olympic]` (site briefings also go there) |
 
 **Gap to track:** Zoom/sites may appear in data without a matching `slack.channelIds[site]` key—today those sites log `No channel configured for site` and skip posting. Phase 1 should add a config audit job or document owner for any new site.
 
@@ -123,7 +133,7 @@ Configured in `shared/config.json` → `slack.channelIds`. Used today by `sendSi
 |------|--------|
 | **Microsoft `getCalendarsBySite()`** | Documented in shared README but **not implemented** in `Microsoft.js` nor wired in `app.js`—Phase 1 engineering prerequisite |
 | **Room calendar IDs** | Need mapping: M365 resource mailbox → site code → Zoom room name |
-| **Privacy** | `hideMeetingDetails` already in config for sensitive rooms (e.g. Olympic Board Room)—respect in briefings |
+| **Olympic privacy** | Olympic Board Room events routed **only** to `Olympic` channel—never duplicated to site channels |
 | **Calendar vs AV truth** | Calendar can show booked while gear is offline—copilot must surface **both** |
 | **False confidence** | Copy must say “AV status as of {time}” not “guaranteed ready” |
 
